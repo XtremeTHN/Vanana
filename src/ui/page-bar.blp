@@ -1,0 +1,28 @@
+using Gtk 4.0;
+
+template $PageBar: Box {
+  margin-top: 5;
+  margin-bottom: 5;
+  halign: center;
+  spacing: 10;
+
+  Button prev_btt {
+    styles [
+      "circular",
+    ]
+
+    icon-name: "go-previous-symbolic";
+    clicked => $previous_page();
+  }
+
+  Label page_counter {}
+
+  Button next_btt {
+    styles [
+      "circular",
+    ]
+
+    icon-name: "go-next-symbolic";
+    clicked => $next_page();
+  }
+}

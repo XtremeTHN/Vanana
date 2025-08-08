@@ -1,0 +1,60 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $VananaWindow: Adw.ApplicationWindow {
+  width-request: 800;
+  height-request: 800;
+
+  content: Adw.NavigationView nav_view {
+    Adw.NavigationPage {
+      title: "Banana";
+
+      child: Adw.ToolbarView {
+        [top]
+        Adw.HeaderBar {
+          [end]
+          Button {
+            icon-name: "download-symbolic";
+            clicked => $on_downloads_clicked();
+          }
+          [end]
+          Button {
+            icon-name: "system-search-symbolic";
+            clicked => $on_search_btt_clicked();
+          }
+        }
+
+        content: Box {
+          orientation: vertical;
+
+          SearchBar search_bar {
+            child: Gtk.SearchEntry search_entry {
+              search-delay: 800;
+              placeholder-text: _("Search mods");
+              search-changed => $on_search_changed();
+            };
+          }
+
+          Stack stack {
+            StackPage {
+              title: _("Banana");
+              name: "home";
+
+              child: $HomePage home_page {};
+            }
+
+            // StackPage {
+            //   title: _("Search");
+            //   name: "home-search";
+
+            //   child: $SearchPage search_page {
+            //     search-entry: search_entry;
+            //   };
+            // }
+          }
+        };
+      };
+    }
+    // $DownloadsPage down_page {}
+  };
+}

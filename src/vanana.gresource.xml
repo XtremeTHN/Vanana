@@ -1,7 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <gresources>
-  <gresource prefix="/com/github/XtremeTHN/Vanana">
-    <file preprocess="xml-stripblanks">window.ui</file>
-    <file preprocess="xml-stripblanks">gtk/help-overlay.ui</file>
-  </gresource>
+    <gresource prefix="/com/github/XtremeTHN/Vanana/">
+        <!-- <file>style.css</file> -->
+        
+        <file preprocess="xml-stripblanks">navigation.ui</file>
+        <file preprocess="xml-stripblanks">submission-button.ui</file>
+        <file preprocess="xml-stripblanks">top-submission.ui</file>
+        <file preprocess="xml-stripblanks">window.ui</file>
+        <file preprocess="xml-stripblanks">submission-download-dialog.ui</file>
+        <file preprocess="xml-stripblanks">search-page.ui</file>
+        <file preprocess="xml-stripblanks">mod-page.ui</file>
+        <file preprocess="xml-stripblanks">home-page.ui</file>
+        <file preprocess="xml-stripblanks">screenshot.ui</file>
+        <file preprocess="xml-stripblanks">wip-page.ui</file>
+        <file preprocess="xml-stripblanks">page-bar.ui</file>
+        <file preprocess="xml-stripblanks">downloads-page.ui</file>
+        <file preprocess="xml-stripblanks">download-item.ui</file>
+        <file preprocess="xml-stripblanks">news-page.ui</file>
+    </gresource>
+
+    <gresource prefix="/com/github/XtremeTHN/Vanana/icons/scalable/actions/">
+        <file preprocess="xml-stripblanks" alias="loupe-large-symbolic.svg">ui/icons/loupe-large-symbolic.svg</file>
+        <file preprocess="xml-stripblanks" alias="heart-symbolic.svg">ui/icons/heart-symbolic.svg</file>
+        <file preprocess="xml-stripblanks" alias="checkmark-symbolic.svg">ui/icons/checkmark-symbolic.svg</file>
+        <file preprocess="xml-stripblanks" alias="download-symbolic.svg">ui/icons/download-symbolic.svg</file>
+        <file preprocess="xml-stripblanks" alias="eye-symbolic.svg">ui/icons/eye-symbolic.svg</file>
+        <file preprocess="xml-stripblanks" alias="external-link-symbolic.svg">ui/icons/external-link-symbolic.svg</file>
+    </gresource>
 </gresources>

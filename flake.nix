@@ -31,7 +31,7 @@
     };
 
     packages.${system}.default = pkgs.stdenv.mkDerivation {
-      name = "banana";
+      name = "vanana";
       version = "0.1";
       src = ./.;
       inherit nativeBuildInputs buildInputs;

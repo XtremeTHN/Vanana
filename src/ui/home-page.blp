@@ -1,0 +1,56 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $HomePage: Adw.Bin {
+  child: Adw.ToolbarView {
+    [bottom]
+    $PageBar page_bar {}
+
+    content: ScrolledWindow {
+      vexpand: true;
+
+      child: Box {
+        orientation: vertical;
+        spacing: 20;
+
+        Box {
+          orientation: vertical;
+          vexpand: true;
+          spacing: 5;
+          Adw.Clamp {
+            orientation: vertical;
+            maximum-size: 200;
+            child: Adw.Carousel mod_carousel {
+              styles [
+                "box-10",
+              ]
+
+              // vexpand: true;
+              valign: start;
+              spacing: 10;
+            };
+          }
+
+          Adw.CarouselIndicatorDots {
+            carousel: mod_carousel;
+          }
+        }
+
+        Adw.Clamp {
+          maximum-size: 800;
+
+          child: Gtk.FlowBox mods {
+            hexpand: false;
+            valign: end;
+            margin-start: 20;
+            margin-end: 20;
+            min-children-per-line: 3;
+            max-children-per-line: 9;
+            row-spacing: 10;
+            column-spacing: 5;
+          };
+        }
+      };
+    };
+  };
+}

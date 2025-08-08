@@ -40,8 +40,10 @@ public class Vanana.Application : Adw.Application {
 
     public override void activate () {
         base.activate ();
-        //  var win = this.active_window ?? new Vanana.Window (this);
-        //  win.present ();
+        
+        var win = new Window ();
+        add_window (win);
+        win.present ();
     }
 
     private void on_about_action () {

@@ -13,10 +13,15 @@ vanana_deps = [
   dependency('libadwaita-1', version: '>= 1.4'),
 ]
 
+subdir('ui')
+
 vanana_sources += gnome.compile_resources('vanana-resources',
   'vanana.gresource.xml',
-  c_name: 'vanana'
+  c_name: 'vanana',
+  dependencies: blueprints
 )
+
+
 
 executable('vanana', vanana_sources,
   dependencies: vanana_deps,

@@ -1,0 +1,60 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $SearchPage: Adw.Bin {
+  child: Adw.ToolbarView {
+    [bottom]
+    $PageBar page_bar {}
+
+    content: ScrolledWindow {
+      child: Adw.Clamp {
+        maximum-size: 700;
+
+        child: Stack stack {
+          StackPage {
+            name: "no-results";
+
+            child: Adw.StatusPage {
+              title: _("No results");
+              description: _("Try a different search");
+              icon-name: "edit-find-symbolic";
+            };
+          }
+
+          StackPage {
+            name: "results";
+
+            child: Gtk.FlowBox mods {
+              vexpand: false;
+              valign: start;
+              min-children-per-line: 3;
+              max-children-per-line: 3;
+              row-spacing: 10;
+              column-spacing: 5;
+            };
+          }
+
+          StackPage {
+            name: "loading";
+
+            child: Adw.StatusPage loading_page {
+              title: _("Loading");
+              description: _("Please wait while we fetch the results");
+              // description: _("Fetching results...");
+            };
+          }
+
+          StackPage {
+            name: "too-short";
+
+            child: Adw.StatusPage {
+              title: _("Too short");
+              description: _("The search must be 3 characters or more");
+              icon-name: "edit-find-symbolic";
+            };
+          }
+        };
+      };
+    };
+  };
+}

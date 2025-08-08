@@ -1,0 +1,86 @@
+using Gtk 4.0;
+
+template $TopSubmission: Overlay {
+  styles [
+    "box-10",
+  ]
+
+  child: Frame {
+    child: Picture mod_preview {
+      // styles ["top-mod-cover"]
+      height-request: 250;
+      content-fit: cover;
+    };
+  };
+
+  [overlay]
+  Button download_btt {
+    styles [
+      "osd",
+      "circular",
+    ]
+
+    valign: center;
+    halign: center;
+    visible: false;
+    icon-name: "folder-download-symbolic";
+  }
+
+  [overlay]
+  Label mod_feature_type {
+    styles [
+      "osd",
+      "title-2",
+      "bordered-10",
+      "margin-10",
+    ]
+
+    valign: start;
+    halign: start;
+  }
+
+  [overlay]
+  Image mod_submitter {
+    styles [
+      "osd",
+      "bordered-10",
+      "margin-10",
+    ]
+
+    valign: start;
+    halign: end;
+    pixel-size: 44;
+  }
+
+  [overlay]
+  Box {
+    styles [
+      "osd",
+      "bordered-10",
+      "margin-10",
+    ]
+
+    valign: end;
+    halign: start;
+    orientation: vertical;
+
+    Label mod_name {
+      styles [
+        "title-2",
+      ]
+
+      ellipsize: end;
+      xalign: 0;
+    }
+
+    Label mod_caption {
+      styles [
+        "caption",
+      ]
+
+      wrap: true;
+      xalign: 0;
+      opacity: 0.8;
+    }
+  }
+}

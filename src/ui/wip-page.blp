@@ -1,0 +1,219 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $WipPage: Adw.NavigationPage {
+  title: "Wip";
+
+  child: Adw.ToolbarView {
+    [top]
+    Adw.HeaderBar {}
+
+    content: Stack stack {
+      transition-type: slide_left_right;
+      margin-bottom: 10;
+      margin-top: 10;
+
+      StackPage {
+        name: "loading";
+
+        child: Adw.StatusPage loading_status {
+          title: _("Loading");
+          description: _("Loading wip information...");
+        };
+      }
+
+      StackPage {
+        name: "trashed";
+
+        child: Adw.StatusPage trashed_status {
+          title: _("Trashed");
+          icon-name: "user-trash-symbolic";
+        };
+      }
+
+      StackPage {
+        name: "main";
+
+        child: ScrolledWindow {
+          child: Adw.Clamp {
+            orientation: horizontal;
+            maximum-size: 900;
+
+            child: Box {
+              spacing: 20;
+              orientation: vertical;
+
+              Box {
+                spacing: 20;
+                // Ugly fix to prevent the picture from growing too much
+                Frame {
+                  valign: start;
+
+                  child: Overlay {
+                    width-request: 300;
+                    height-request: 200;
+
+                    [overlay]
+                    Picture submission_icon {
+                      content-fit: cover;
+                    }
+                  };
+                }
+
+                Box {
+                  orientation: vertical;
+                  valign: center;
+                  hexpand: true;
+                  spacing: 20;
+
+                  Box {
+                    orientation: vertical;
+
+                    Label submission_title {
+                      styles [
+                        "title-1",
+                      ]
+
+                      xalign: 0;
+                      wrap: true;
+                    }
+
+                    Label submission_caption {
+                      styles [
+                        "caption",
+                      ]
+
+                      xalign: 0;
+                      opacity: 0.8;
+                    }
+                  }
+
+                  Adw.WrapBox {
+                    child-spacing: 5;
+
+                    Box {
+                      styles [
+                        "card",
+                        "mod-data",
+                      ]
+
+                      spacing: 5;
+
+                      Image {
+                        icon-name: "heart-symbolic";
+                        pixel-size: 12;
+                      }
+
+                      Label likes {
+                        styles [
+                          "caption",
+                        ]
+                      }
+                    }
+
+                    Box {
+                      styles [
+                        "card",
+                        "mod-data",
+                      ]
+
+                      spacing: 5;
+
+                      Image {
+                        pixel-size: 12;
+                        icon-name: "eye-symbolic";
+                      }
+
+                      Label views {
+                        styles [
+                          "caption",
+                        ]
+                      }
+                    }
+                  }
+
+                  Label {
+                    halign: center;
+                    valign: end;
+                    label: "Work in progress";
+                  }
+                }
+              }
+
+              Box {
+                spacing: 2;
+                orientation: vertical;
+
+                Label completed_label {
+                  halign: center;
+                  xalign: 1;
+                }
+
+                LevelBar completed {}
+              }
+
+              ScrolledWindow {
+                vscrollbar-policy: never;
+                hscrollbar-policy: automatic;
+                child: $HtmlView submission_description {};
+              }
+
+              Adw.Carousel screenshots_carousel {
+                height-request: 250;
+                spacing: 10;
+              }
+
+              Adw.CarouselIndicatorDots {
+                carousel: screenshots_carousel;
+              }
+
+              Box {
+                orientation: vertical;
+                spacing: 10;
+
+                Label {
+                  styles [
+                    "title-4",
+                  ]
+
+                  xalign: 0;
+                  label: "Updates";
+                }
+
+                ListBox submission_updates_box {
+                  styles [
+                    "boxed-list",
+                  ]
+
+                  selection-mode: none;
+                }
+              }
+
+              Box {
+                orientation: vertical;
+                spacing: 10;
+
+                Label {
+                  styles [
+                    "title-4",
+                  ]
+
+                  xalign: 0;
+                  label: "Credits";
+                }
+
+                ListBox submission_credits_box {
+                  styles [
+                    "boxed-list",
+                  ]
+
+                  selection-mode: none;
+                }
+              }
+            };
+          };
+        };
+      }
+    };
+  };
+}

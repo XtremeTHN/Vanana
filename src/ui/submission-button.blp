@@ -1,0 +1,62 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $SubmissionButton: Button {
+  hexpand: true;
+  halign: center;
+  clicked => $on_clicked();
+
+  child: Adw.Clamp {
+    child: Box {
+      valign: center;
+      halign: center;
+      orientation: vertical;
+      spacing: 10;
+
+      styles [
+        "b",
+      ]
+      Stack stack {
+        StackPage {
+          child: Adw.Spinner {
+            height-request: 14;
+            width-request: 14;
+          };
+        }
+        StackPage {
+          name: "main";
+          child: Frame {
+            vexpand: true;
+            hexpand: true;
+
+            child: Picture mod_cover {
+              width-request: 180;
+              height-request: 120;
+              content-fit: cover;
+              valign: fill;
+              halign: center;
+            };
+          };
+        }
+      }
+
+      Box {
+        orientation: vertical;
+
+        Label mod_name {
+          wrap: true;
+        }
+
+        Label mod_caption {
+          styles [
+            "caption",
+            "dimmed",
+          ]
+
+          visible: false;
+          opacity: 0.7;
+        }
+      }
+    };
+  };
+}
