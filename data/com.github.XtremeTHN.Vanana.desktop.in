@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=vanana
+Exec=vanana
+Icon=com.github.XtremeTHN.Vanana
+Terminal=false
+Type=Application
+Categories=Utility;
+Keywords=GTK;
+StartupNotify=true
+DBusActivatable=true
