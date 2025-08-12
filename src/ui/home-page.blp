@@ -1,56 +1,103 @@
 using Gtk 4.0;
 using Adw 1;
 
-template $HomePage: Adw.Bin {
-  child: Adw.ToolbarView {
-    [bottom]
-    $PageBar page_bar {}
+template $HomePage: Adw.NavigationPage {
+    title: "Vanana";
 
-    content: ScrolledWindow {
-      vexpand: true;
+    child: Adw.ToolbarView {
+        [top]
+        Adw.HeaderBar {
+            [start]
+            Button {
+                icon-name: "sidebar-show-symbolic";
+                action-name: "app.toggle-sidebar";
+            }
+        }
 
-      child: Box {
-        orientation: vertical;
-        spacing: 20;
-
-        Box {
-          orientation: vertical;
-          vexpand: true;
-          spacing: 5;
-          Adw.Clamp {
-            orientation: vertical;
-            maximum-size: 200;
-            child: Adw.Carousel mod_carousel {
-              styles [
+        content: Box {
+            styles [
                 "box-10",
-              ]
+            ]
 
-              // vexpand: true;
-              valign: start;
-              spacing: 10;
-            };
-          }
+            orientation: vertical;
 
-          Adw.CarouselIndicatorDots {
-            carousel: mod_carousel;
-          }
-        }
+            SearchBar {
+                child: SearchEntry search_entry {
+                    search-delay: 800;
+                    placeholder-text: _("Search submissions");
+                    search-changed => $on_search_changed();
+                };
+            }
 
-        Adw.Clamp {
-          maximum-size: 800;
+            ScrolledWindow {
+                vexpand: true;
 
-          child: Gtk.FlowBox mods {
-            hexpand: false;
-            valign: end;
-            margin-start: 20;
-            margin-end: 20;
-            min-children-per-line: 3;
-            max-children-per-line: 9;
-            row-spacing: 10;
-            column-spacing: 5;
-          };
-        }
-      };
+                child: Stack stack {
+                    StackPage {
+                        name: "loading";
+
+                        child: Adw.StatusPage loading_page {
+                            title: _("Loading");
+                            description: _("Fetching the results...");
+                        };
+                    }
+
+                    StackPage {
+                        name: "no-results";
+
+                        child: Adw.StatusPage {
+                            title: _("No results");
+                            description: _("Try a different search");
+                            icon-name: "edit-find-symbolic";
+                        };
+                    }
+
+                    StackPage {
+                        name: "too-short";
+
+                        child: Adw.StatusPage {
+                            title: _("Too short");
+                            description: _("The search must be 3 characters or more");
+                            icon-name: "edit-find-symbolic";
+                        };
+                    }
+
+                    StackPage {
+                        name: "main";
+
+                        child: Box {
+                            orientation: vertical;
+                            spacing: 5;
+
+                            Adw.Clamp {
+                                orientation: vertical;
+                                maximum-size: 200;
+
+                                child: Adw.Carousel top_submissions {
+                                    valign: start;
+                                    spacing: 5;
+                                    height-request: 120;
+                                };
+                            }
+
+                            ListBox submission_list {
+                                styles [
+                                    "boxed-list-separate",
+                                ]
+                            }
+
+                            Button load_btt {
+                                clicked => $on_load_clicked();
+
+                                child: Adw.ButtonContent {
+                                    icon-name: "load-symbolic";
+                                    label: _("Load more");
+                                };
+                            }
+                        };
+                    }
+                };
+            }
+        };
     };
-  };
 }

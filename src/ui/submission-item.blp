@@ -1,0 +1,147 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $SubmissionItem: ListBoxRow {
+    vexpand: false;
+
+    child: Box {
+        margin-start: 5;
+        margin-end: 5;
+        margin-bottom: 5;
+        margin-top: 5;
+        spacing: 10;
+        hexpand: true;
+
+        Overlay {
+            height-request: 80;
+            width-request: 100;
+
+            [overlay]
+            Frame {
+                Picture submission_icon {
+                    content-fit: cover;
+                }
+            }
+        }
+
+        Box {
+            spacing: 10;
+            orientation: vertical;
+            valign: center;
+
+            Box {
+                orientation: vertical;
+
+                Label submission_name {
+                    styles [
+                        "heading",
+                    ]
+
+                    xalign: 0;
+                    wrap-mode: word_char;
+                }
+
+                Label submission_type {
+                    styles [
+                        "caption",
+                    ]
+
+                    xalign: 0;
+                    label: "Mod";
+                }
+            }
+
+            Adw.WrapBox {
+                child-spacing: 5;
+
+                Box {
+                    styles [
+                        "card",
+                        "sub-data",
+                    ]
+
+                    spacing: 5;
+
+                    Image {
+                        icon-name: "clock-alt-symbolic";
+                        pixel-size: 11;
+                    }
+
+                    Label submission_upload_date {
+                        styles [
+                            "caption",
+                        ]
+
+                        label: "7d";
+                    }
+                }
+
+                Box {
+                    styles [
+                        "card",
+                        "sub-data",
+                    ]
+
+                    spacing: 5;
+
+                    Image {
+                        icon-name: "update-symbolic";
+                        pixel-size: 11;
+                    }
+
+                    Label submission_update_date {
+                        styles [
+                            "caption",
+                        ]
+
+                        label: "31m";
+                    }
+                }
+
+                Box {
+                    styles [
+                        "card",
+                        "sub-data",
+                    ]
+
+                    spacing: 5;
+
+                    Image {
+                        icon-name: "heart-filled-symbolic";
+                        pixel-size: 11;
+                    }
+
+                    Label submission_likes {
+                        styles [
+                            "caption",
+                        ]
+
+                        label: "232K";
+                    }
+                }
+
+                Box {
+                    styles [
+                        "card",
+                        "sub-data",
+                    ]
+
+                    spacing: 5;
+
+                    Image {
+                        icon-name: "views-symbolic";
+                        pixel-size: 11;
+                    }
+
+                    Label submission_views {
+                        styles [
+                            "caption",
+                        ]
+
+                        label: "534k";
+                    }
+                }
+            }
+        }
+    };
+}

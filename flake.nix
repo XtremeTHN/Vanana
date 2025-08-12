@@ -27,6 +27,7 @@
       inherit nativeBuildInputs buildInputs;
       packages = with pkgs; [
         vala-language-server
+        vala-lint
       ];
     };
 

@@ -1,86 +1,103 @@
 using Gtk 4.0;
+using Adw 1;
 
-template $TopSubmission: Overlay {
-  styles [
-    "box-10",
-  ]
+template $TopSubmission: Adw.Bin {
+    hexpand: true;
 
-  child: Frame {
-    child: Picture mod_preview {
-      // styles ["top-mod-cover"]
-      height-request: 250;
-      content-fit: cover;
+    child: Overlay {
+        styles [
+            "box-10",
+        ]
+
+        child: Stack stack {
+            StackPage {
+                child: Adw.Spinner {
+                    width-request: 60;
+                    height-request: 60;
+                };
+            }
+
+            StackPage {
+                name: "main";
+
+                child: Frame {
+                    child: Picture submission_preview {
+                        height-request: 250;
+                        content-fit: cover;
+                    };
+                };
+            }
+        };
+
+        [overlay]
+        Button open_btt {
+            styles [
+                "osd",
+                "circular",
+            ]
+
+            valign: center;
+            halign: center;
+            visible: false;
+            clicked => $show_submission_page();
+        }
+
+        [overlay]
+        Label submission_feature_type {
+            styles [
+                "osd",
+                "title-2",
+                "bordered-10",
+                "margin-10",
+            ]
+
+            valign: start;
+            halign: start;
+        }
+
+        [overlay]
+        Image submission_submitter {
+            styles [
+                "osd",
+                "bordered-10",
+                "margin-10",
+            ]
+
+            valign: start;
+            halign: end;
+            pixel-size: 44;
+        }
+
+        [overlay]
+        Box {
+            styles [
+                "osd",
+                "bordered-10",
+                "margin-10",
+            ]
+
+            valign: end;
+            halign: start;
+            orientation: vertical;
+
+            Label submission_name {
+                styles [
+                    "title-2",
+                ]
+
+                ellipsize: end;
+                xalign: 0;
+            }
+
+            Label submission_caption {
+                styles [
+                    "caption",
+                ]
+
+                wrap: true;
+                xalign: 0;
+                opacity: 0.8;
+            }
+        }
     };
-  };
-
-  [overlay]
-  Button download_btt {
-    styles [
-      "osd",
-      "circular",
-    ]
-
-    valign: center;
-    halign: center;
-    visible: false;
-    icon-name: "folder-download-symbolic";
-  }
-
-  [overlay]
-  Label mod_feature_type {
-    styles [
-      "osd",
-      "title-2",
-      "bordered-10",
-      "margin-10",
-    ]
-
-    valign: start;
-    halign: start;
-  }
-
-  [overlay]
-  Image mod_submitter {
-    styles [
-      "osd",
-      "bordered-10",
-      "margin-10",
-    ]
-
-    valign: start;
-    halign: end;
-    pixel-size: 44;
-  }
-
-  [overlay]
-  Box {
-    styles [
-      "osd",
-      "bordered-10",
-      "margin-10",
-    ]
-
-    valign: end;
-    halign: start;
-    orientation: vertical;
-
-    Label mod_name {
-      styles [
-        "title-2",
-      ]
-
-      ellipsize: end;
-      xalign: 0;
-    }
-
-    Label mod_caption {
-      styles [
-        "caption",
-      ]
-
-      wrap: true;
-      xalign: 0;
-      opacity: 0.8;
-    }
-  }
 }

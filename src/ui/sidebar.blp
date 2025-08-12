@@ -1,0 +1,47 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $VananaSidebar: Adw.NavigationPage {
+    title: "Downloads";
+
+    child: Adw.ToolbarView {
+        [top]
+        Adw.HeaderBar {}
+
+        [bottom]
+        Button stop_all_btt {
+            styles [
+                "margin-10",
+            ]
+
+            sensitive: false;
+
+            child: Adw.ButtonContent {
+                icon-name: "media-playback-stop-symbolic";
+                label: "Stop all";
+            };
+        }
+
+        content: Stack stack {
+            StackPage {
+                name: "placeholder";
+
+                child: Adw.StatusPage {
+                    styles [
+                        "compact",
+                    ]
+
+                    icon-name: "folder-download-symbolic";
+                    title: _("No active downloads");
+                    description: _("Active downloads will appear here");
+                };
+            }
+
+            StackPage {
+                name: "main";
+
+                child: Gtk.ListBox downloads_box {};
+            }
+        };
+    };
+}

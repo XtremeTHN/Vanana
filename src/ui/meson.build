@@ -1,26 +1,12 @@
 blueprints = custom_target('blueprints',
   input: files(
-    'navigation.blp',
-    'submission-button.blp',
+    'home-page.blp',
+    'sidebar.blp',
+    # 'sub-download-item.blp',
+    'submission-item.blp',
     'top-submission.blp',
-    'window.blp',
-    'submission-download-dialog.blp',
-    'search-page.blp',
-    'mod-page.blp',
-    'home-page.blp',
-    'screenshot.blp',
-    'wip-page.blp',
-    'home-page.blp',
-    'page-bar.blp',
-    'download-item.blp',
-    'downloads-page.blp',
-    'news-page.blp'
+    'window.blp'
   ),
   output: '.',
   command: [find_program('blueprint-compiler'), 'batch-compile', '@OUTPUT@', '@CURRENT_SOURCE_DIR@', '@INPUT@'],
 )
-
-vanana_sources += [
-  'ui/window.vala',
-  'ui/home_page.vala'
-]

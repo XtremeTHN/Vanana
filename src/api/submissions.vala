@@ -1,17 +1,43 @@
 using Soup;
 
-enum SubmissionType {
+public enum SubmissionType {
     MOD,
     NEWS,
-    WIP
+    WIP,
+    TOOL;
+
+    public static SubmissionType? from_string (string value) {
+        switch (value.ascii_up ()) {
+            case "MOD":
+                return SubmissionType.MOD;
+            case "NEWS":
+                return SubmissionType.NEWS;
+            case "WIP":
+                return SubmissionType.WIP;
+            case "TOOL":
+                return SubmissionType.TOOL;
+            default:
+                return null;
+        }
+    }
 }
 
-enum SortType {
+public enum SortType {
     NEW,
     DEFAULT,
     UPDATED
 }
 
+public string capitalize_first(string input) {
+    if (input.length == 0)
+        return input;
+
+    string inp = input.ascii_down ();
+
+    return inp.substring(0, 1).up() + inp.substring(1);
+}
+
+[SingleInstance]
 class Gamebanana.Submissions : Object {
     Session s_session;
 
@@ -32,7 +58,7 @@ class Gamebanana.Submissions : Object {
     }
 
     public async Json.Object? search (string query, SortType sort, int page = 1) throws Error {
-        string method = "/Game/%i/Subfeed?_nPage=%i&_sSort=%s&_sName=%s".printf (GAME_ID, page, sort.to_string(), query);
+        string method = "/Game/%i/Subfeed?_nPage=%i&_sSort=%s&_sName=%s".printf (GAME_ID, page, sort.to_string().ascii_down (), query);
         var json = yield _get(method);
         var obj = json.get_object ();
 
@@ -42,7 +68,7 @@ class Gamebanana.Submissions : Object {
     }
 
     public async Json.Object? get_info (SubmissionType type, int id) throws Error {
-        string method = "/%s/%i/ProfilePage".printf (type.to_string(), id);
+        string method = "/%s/%i/ProfilePage".printf (capitalize_first (type.to_string()), id);
         var json = yield _get (method);
         var obj = json.get_object ();
 
@@ -57,7 +83,7 @@ class Gamebanana.Submissions : Object {
 
         while (true) {
             string method = "/%s/%i/ProfilePage";
-            var json = yield _get (method.printf(type.to_string(), page));
+            var json = yield _get (method.printf(capitalize_first (type.to_string()), page));
             var obj = json.get_object ();
 
             assert_nonnull (obj);
@@ -77,10 +103,9 @@ class Gamebanana.Submissions : Object {
         return _results;
     }
 
-    public async Json.Array? get_top() throws Error {
+    public async Json.Array? get_top () throws Error {
         string method = "/Game/%i/TopSubs".printf (GAME_ID);
         var json = yield _get (method);
-        print("%s\n", json.get_node_type ().to_string ());
         var obj = json.get_array ();
 
         warn_if_fail (obj != null);
