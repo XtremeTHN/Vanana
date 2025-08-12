@@ -18,8 +18,19 @@ template $SubmissionItem: ListBoxRow {
 
             [overlay]
             Frame {
-                Picture submission_icon {
-                    content-fit: cover;
+                Stack stack {
+                    Adw.Spinner {
+                        width-request: 20;
+                        height-request: 20;
+                    }
+
+                    StackPage {
+                        name: "main";
+
+                        child: Picture submission_icon {
+                            content-fit: cover;
+                        };
+                    }
                 }
             }
         }

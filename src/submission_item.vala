@@ -21,6 +21,9 @@ public class SubmissionItem : Gtk.ListBoxRow {
     [GtkChild]
     private unowned Gtk.Label submission_views;
 
+    [GtkChild]
+    private unowned Gtk.Stack stack;
+
     public int64 submission_id;
     public SubmissionType type;
 
@@ -44,7 +47,8 @@ public class SubmissionItem : Gtk.ListBoxRow {
             var images = preview.get_array_member ("_aImages");
             
             var first_image = images.get_element (0).get_object ();
-            string url = first_image.get_string_member ("_sBaseUrl") + "/" + first_image.get_string_member ("_aImages");
+
+            string url = first_image.get_string_member ("_sBaseUrl") + "/" + first_image.get_string_member ("_sFile");
             
             Vanana.cache_download (url, set_preview_icon);
         }
@@ -71,6 +75,8 @@ public class SubmissionItem : Gtk.ListBoxRow {
 
     private void set_preview_icon (File? prev) {
         return_if_fail (prev != null);
+
+        stack.set_visible_child_name ("main");
         submission_icon.set_file (prev);
     }
 }

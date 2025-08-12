@@ -36,16 +36,16 @@ public class HomePage : Adw.NavigationPage {
             }
         });
 
-        //  api.get_featured.begin (current_page, (obj, res) => {
-        //      try {
-        //          var subs = api.get_featured.end (res);
-        //          return_if_fail (subs.has_member ("_aRecords"));
+        api.get_featured.begin (current_page, (obj, res) => {
+            try {
+                var subs = api.get_featured.end (res);
+                return_if_fail (subs.has_member ("_aRecords"));
 
-        //          populate_submission_list (subs.get_array_member ("_aRecords"));
-        //      } catch (Error e) {
-        //          warning ("Couldn't populate the submission list: %s", e.message);
-        //      }
-        //  });
+                populate_submission_list (subs.get_array_member ("_aRecords"));
+            } catch (Error e) {
+                warning ("Couldn't populate the submission list: %s", e.message);
+            }
+        });
     }
 
     [GtkCallback]
