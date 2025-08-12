@@ -18,6 +18,7 @@
     buildInputs = with pkgs; [
       gtk4
       glib
+      gxml
       libsoup_3
       json-glib
       libadwaita
@@ -29,7 +30,6 @@
         vala-language-server
         vala-lint
         gdb
-        gdbgui
       ];
     };
 
