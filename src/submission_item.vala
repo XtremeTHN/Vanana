@@ -66,10 +66,12 @@ public class SubmissionItem : Gtk.ListBoxRow {
             return "%dm".printf ( (int) (diff / 60)); // minutes
         } else if (diff < 86400) {
             return "%dh".printf ( (int) (diff / 3600)); // hours
-        } else if (diff < 31536000) {
+        } else if (diff < 2592000) {
             return "%dd".printf ( (int) (diff / 86400)); // days
+        } else if (diff < 31536000) {
+            return "%dm".printf ((int) (diff / 2592000)); // months
         } else {
-            return "%dy".printf ((int) (diff / 31536000));
+            return "%dy".printf ((int) (diff / 31536000)); // years
         }
     }
 
