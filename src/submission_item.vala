@@ -48,7 +48,7 @@ public class SubmissionItem : Gtk.ListBoxRow {
 
             var first_image = images.get_element (0).get_object ();
 
-            string url = first_image.get_string_member ("_sBaseUrl") + "/" + first_image.get_string_member ("_sFile220");
+            string url = first_image.get_string_member ("_sBaseUrl")+ "/" +first_image.get_string_member ("_sFile220");
 
             Vanana.cache_download (url, set_preview_icon);
         }

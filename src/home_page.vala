@@ -106,6 +106,7 @@ public class HomePage : Adw.NavigationPage {
 
     [GtkCallback]
     private void on_load_clicked () {
+        load_btt.set_sensitive (false);
         current_page += 1;
 
         // in search mode
@@ -114,7 +115,6 @@ public class HomePage : Adw.NavigationPage {
         } else { // normal mode
             request_featured_submissions (false);
         }
-
     }
 
     private void populate_search (Json.Object? response, bool remove_all) {
@@ -136,8 +136,6 @@ public class HomePage : Adw.NavigationPage {
             return;
         }
 
-        load_btt.set_sensitive (!metadata.get_boolean_member_with_default ("_bIsComplete", true));
-
         if (remove_all)
             submission_list.remove_all ();
 
@@ -148,6 +146,7 @@ public class HomePage : Adw.NavigationPage {
             submission_list.append (widget);
         }
 
+        load_btt.set_sensitive (!metadata.get_boolean_member_with_default ("_bIsComplete", true));
         stack.set_visible_child_name ("main");
     }
 
@@ -162,12 +161,12 @@ public class HomePage : Adw.NavigationPage {
 
     private void populate_submission_list (Json.Object? response) {
         var metadata = response.get_object_member ("_aMetadata");
-        load_btt.set_sensitive (!metadata.get_boolean_member_with_default ("_bIsComplete", true));
 
         var submissions = response.get_array_member ("_aRecords");
         foreach (var sub in submissions.get_elements ()) {
             var top = new SubmissionItem (sub.get_object ());
             submission_list.append (top);
         }
+        load_btt.set_sensitive (!metadata.get_boolean_member_with_default ("_bIsComplete", true));
     }
 }
