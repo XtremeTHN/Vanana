@@ -61,13 +61,13 @@ public class SubmissionItem : Gtk.ListBoxRow {
         int64 diff = now - timestamp;
 
         if (diff < 60) {
-            return "%ds".printf( (int) diff); // seconds
+            return "%ds".printf ( (int) diff); // seconds
         } else if (diff < 3600) {
-            return "%dm".printf( (int) (diff / 60)); // minutes
+            return "%dm".printf ( (int) (diff / 60)); // minutes
         } else if (diff < 86400) {
-            return "%dh".printf( (int) (diff / 3600)); // hours
+            return "%dh".printf ( (int) (diff / 3600)); // hours
         } else if (diff < 31536000) {
-            return "%dd".printf( (int) (diff / 86400)); // days
+            return "%dd".printf ( (int) (diff / 86400)); // days
         } else {
             return "%dy".printf ((int) (diff / 31536000));
         }

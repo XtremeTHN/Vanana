@@ -18,7 +18,7 @@ public class Vanana.Window : Adw.ApplicationWindow {
         app.create_action ("message", new VariantType ("s")).activate.connect (show_message);
 
         home.search_bar.set_key_capture_widget (this);
-        
+
         split_view.set_sidebar (new Sidebar ());
 
         navigation_view.add (home);
@@ -30,6 +30,6 @@ public class Vanana.Window : Adw.ApplicationWindow {
     }
 
     private void toggle_sidebar (Variant? _) {
-        split_view.set_show_sidebar(!split_view.show_sidebar);
+        split_view.set_show_sidebar (!split_view.show_sidebar);
     }
 }

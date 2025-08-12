@@ -1,11 +1,11 @@
 namespace Utils {
-    public string capitalize_first(string input) {
+    public string capitalize_first (string input) {
         if (input.length == 0)
             return input;
 
         string inp = input.ascii_down ();
 
-        return inp.substring(0, 1).up () + inp.substring (1);
+        return inp.substring (0, 1).up () + inp.substring (1);
     }
 
     public void dump_json_obj (Json.Object obj) {
