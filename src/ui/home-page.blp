@@ -15,10 +15,6 @@ template $HomePage: Adw.NavigationPage {
         }
 
         content: Box {
-            styles [
-                "box-10",
-            ]
-
             orientation: vertical;
 
             SearchBar {
@@ -33,6 +29,10 @@ template $HomePage: Adw.NavigationPage {
                 vexpand: true;
 
                 child: Stack stack {
+                    styles [
+                        "box-10",
+                    ]
+
                     StackPage {
                         name: "loading";
 
@@ -65,35 +65,37 @@ template $HomePage: Adw.NavigationPage {
                     StackPage {
                         name: "main";
 
-                        child: Box {
-                            orientation: vertical;
-                            spacing: 5;
-
-                            Adw.Clamp {
+                        child: Adw.Clamp {
+                            child: Box {
                                 orientation: vertical;
-                                maximum-size: 200;
+                                spacing: 5;
 
-                                child: Adw.Carousel top_submissions {
-                                    valign: start;
-                                    spacing: 5;
-                                    height-request: 120;
-                                };
-                            }
+                                Adw.Clamp {
+                                    orientation: vertical;
+                                    maximum-size: 200;
 
-                            ListBox submission_list {
-                                styles [
-                                    "boxed-list-separate",
-                                ]
-                            }
+                                    child: Adw.Carousel top_submissions {
+                                        valign: start;
+                                        spacing: 5;
+                                        height-request: 150;
+                                    };
+                                }
 
-                            Button load_btt {
-                                clicked => $on_load_clicked();
+                                ListBox submission_list {
+                                    styles [
+                                        "boxed-list-separate",
+                                    ]
+                                }
 
-                                child: Adw.ButtonContent {
-                                    icon-name: "load-symbolic";
-                                    label: _("Load more");
-                                };
-                            }
+                                Button load_btt {
+                                    clicked => $on_load_clicked();
+
+                                    child: Adw.ButtonContent {
+                                        icon-name: "load-symbolic";
+                                        label: _("Load more");
+                                    };
+                                }
+                            };
                         };
                     }
                 };
