@@ -41,10 +41,13 @@ public class HomePage : Adw.NavigationPage {
         });
     }
 
-    private void request_featured_submissions () {
-        submission_list.remove_all ();
+    private void request_featured_submissions (bool remove_all = true) {
+        if (remove_all) {
+            current_page = 1;
+            submission_list.remove_all ();
+        }
 
-        api.get_featured.begin (1, (obj, res) => {
+        api.get_featured.begin (current_page, (obj, res) => {
             try {
                 var subs = api.get_featured.end (res);
                 return_if_fail (subs.has_member ("_aRecords"));
@@ -52,6 +55,18 @@ public class HomePage : Adw.NavigationPage {
                 populate_submission_list (subs);
             } catch (Error e) {
                 warning ("Couldn't populate the submission list: %s", e.message);
+            }
+        });
+    }
+
+    private void search (string query, bool remove_all = true) {
+        api.search.begin (query, SortType.DEFAULT, current_page, (obj, res) => {
+            try {
+                var response = api.search.end (res);
+                populate_search (response, remove_all);
+
+            } catch (Error e) {
+                warning ("Error while querying submissions: %s", e.message);
             }
         });
     }
@@ -80,22 +95,25 @@ public class HomePage : Adw.NavigationPage {
             return;
         }
 
+        current_page = 1;
         stack.set_visible_child_name ("loading");
-        api.search.begin (query, SortType.DEFAULT, 1, (obj, res) => {
-            try {
-                var response = api.search.end (res);
-                populate_search (response);
-
-            } catch (Error e) {
-                warning ("Error while querying submissions: %s", e.message);
-            }
-        });
+        search (query);
     }
 
     [GtkCallback]
-    private void on_load_clicked () {}
+    private void on_load_clicked () {
+        current_page += 1;
 
-    private void populate_search (Json.Object? response) {
+        // in search mode
+        if (search_entry.text.length > 0) {
+            search (search_entry.text, false);
+        } else { // normal mode
+            request_featured_submissions (false);
+        }
+
+    }
+
+    private void populate_search (Json.Object? response, bool remove_all) {
         if (response == null) {
             warning ("query response is null");
             return;
@@ -115,7 +133,9 @@ public class HomePage : Adw.NavigationPage {
         }
 
         load_btt.set_sensitive (!metadata.get_boolean_member_with_default ("_bIsComplete", true));
-        submission_list.remove_all ();
+
+        if (remove_all)
+            submission_list.remove_all ();
 
         foreach (var item in submissions.get_elements ()) {
             var sub = item.get_object ();
