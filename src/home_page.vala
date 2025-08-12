@@ -41,6 +41,10 @@ public class HomePage : Adw.NavigationPage {
         });
     }
 
+    public void toggle_searchbar () {
+        search_bar.set_search_mode (!search_bar.search_mode_enabled);
+    }
+
     private void request_featured_submissions (bool remove_all = true) {
         if (remove_all) {
             current_page = 1;

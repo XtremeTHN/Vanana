@@ -11,12 +11,12 @@ public class Vanana.Window : Adw.ApplicationWindow {
 
     public Window (Vanana.Application app) {
         Object ();
-        get_type ().ensure ();
+        var home = new HomePage ();
 
         app.create_action ("toggle-sidebar").activate.connect (toggle_sidebar);
+        app.create_action ("toggle-search").activate.connect (home.toggle_searchbar);
         app.create_action ("message", new VariantType ("s")).activate.connect (show_message);
 
-        var home = new HomePage ();
         home.search_bar.set_key_capture_widget (this);
         
         split_view.set_sidebar (new Sidebar ());
