@@ -25,7 +25,7 @@ public class SubmissionItem : Gtk.ListBoxRow {
     private unowned Gtk.Stack stack;
 
     public int64 submission_id;
-    public SubmissionType type;
+    public SubmissionType? type;
 
     public SubmissionItem (Json.Object info) {
         Object ();
@@ -39,7 +39,7 @@ public class SubmissionItem : Gtk.ListBoxRow {
 
         submission_upload_date.set_label (format_relative_time (info.get_int_member ("_tsDateAdded")));
         submission_update_date.set_label (format_relative_time (info.get_int_member ("_tsDateModified")));
-        submission_likes.set_label (fmt.printf (info.get_int_member ("_nLikeCount")));
+        submission_likes.set_label (fmt.printf (info.get_int_member_with_default ("_nLikeCount", 0)));
         submission_views.set_label (fmt.printf (info.get_int_member ("_nViewCount")));
 
         var preview = info.get_object_member ("_aPreviewMedia");

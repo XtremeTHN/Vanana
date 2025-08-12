@@ -4,6 +4,9 @@ public class HomePage : Adw.NavigationPage {
     private unowned Gtk.SearchEntry search_entry;
 
     [GtkChild]
+    public unowned Gtk.SearchBar search_bar;
+
+    [GtkChild]
     private unowned Gtk.Stack stack;
 
     [GtkChild]
@@ -18,6 +21,7 @@ public class HomePage : Adw.NavigationPage {
     [GtkChild]
     private unowned Gtk.Button load_btt;
 
+    private Gamebanana.Submissions api;
     public int current_page = 1;
 
     public HomePage () {
@@ -25,23 +29,27 @@ public class HomePage : Adw.NavigationPage {
 
         var spin = new Adw.SpinnerPaintable (loading_page);
         loading_page.set_paintable (spin);
-        var api = new Gamebanana.Submissions ();
+        api = new Gamebanana.Submissions ();
 
         api.get_top.begin ((obj, res) => {
             try {
-                var subs = api.get_top.end(res);
+                var subs = api.get_top.end (res);
                 populate_carousel (subs);
             } catch (Error e) {
                 warning ("Couldn't populate the submission carousel: %s", e.message);
             }
         });
+    }
 
-        api.get_featured.begin (current_page, (obj, res) => {
+    private void request_featured_submissions () {
+        submission_list.remove_all ();
+
+        api.get_featured.begin (1, (obj, res) => {
             try {
                 var subs = api.get_featured.end (res);
                 return_if_fail (subs.has_member ("_aRecords"));
 
-                populate_submission_list (subs.get_array_member ("_aRecords"));
+                populate_submission_list (subs);
             } catch (Error e) {
                 warning ("Couldn't populate the submission list: %s", e.message);
             }
@@ -51,15 +59,73 @@ public class HomePage : Adw.NavigationPage {
     [GtkCallback]
     private void on_search_changed () {
         var query = search_entry.get_text ();
-        if (query.length != 0) {
-            top_submissions.set_visible (false);
+
+        if (query.length == 0) {
+            current_page = 1;
+            if (stack.get_visible_child_name () != "main") {
+                stack.set_visible_child_name ("main");
+            }
+
+            top_submissions.set_visible (true);
+            request_featured_submissions ();
             return;
         }
-        // TODO: implement search
+
+        if (query.length > 0) {
+            top_submissions.set_visible (false);
+        }
+
+        if (query.length < 3) {
+            stack.set_visible_child_name ("too-short");
+            return;
+        }
+
+        stack.set_visible_child_name ("loading");
+        api.search.begin (query, SortType.DEFAULT, 1, (obj, res) => {
+            try {
+                var response = api.search.end (res);
+                populate_search (response);
+
+            } catch (Error e) {
+                warning ("Error while querying submissions: %s", e.message);
+            }
+        });
     }
 
     [GtkCallback]
     private void on_load_clicked () {}
+
+    private void populate_search (Json.Object? response) {
+        if (response == null) {
+            warning ("query response is null");
+            return;
+        }
+        var metadata = response.get_object_member ("_aMetadata");
+
+        if (metadata == null) {
+            warning ("metadata is null");
+            return;
+        }
+
+        var submissions = response.get_array_member ("_aRecords");
+
+        if (submissions.get_length () == 0) {
+            stack.set_visible_child_name ("no-results");
+            return;
+        }
+
+        load_btt.set_sensitive (!metadata.get_boolean_member_with_default ("_bIsComplete", true));
+        submission_list.remove_all ();
+
+        foreach (var item in submissions.get_elements ()) {
+            var sub = item.get_object ();
+
+            var widget = new SubmissionItem (sub);
+            submission_list.append (widget);
+        }
+
+        stack.set_visible_child_name ("main");
+    }
 
     private void populate_carousel (Json.Array? submissions) {
         foreach (var sub in submissions.get_elements ()) {
@@ -70,7 +136,11 @@ public class HomePage : Adw.NavigationPage {
         stack.set_visible_child_name ("main");
     }
 
-    private void populate_submission_list (Json.Array? submissions) {
+    private void populate_submission_list (Json.Object? response) {
+        var metadata = response.get_object_member ("_aMetadata");
+        load_btt.set_sensitive (!metadata.get_boolean_member_with_default ("_bIsComplete", true));
+
+        var submissions = response.get_array_member ("_aRecords");
         foreach (var sub in submissions.get_elements ()) {
             var top = new SubmissionItem (sub.get_object ());
             submission_list.append (top);

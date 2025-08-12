@@ -1,6 +1,7 @@
 vanana_sources = [
   'main.vala',
   'application.vala',
+  'utils.vala',
   'api/gamebanana.vala',
   'api/submissions.vala',
   'sidebar.vala',
@@ -30,7 +31,7 @@ vanana_sources += gnome.compile_resources('vanana-resources',
   dependencies: blueprints
 )
 
-
+add_project_arguments('-g', '--save-temps', language: 'vala')
 
 executable('vanana', vanana_sources,
   dependencies: vanana_deps,

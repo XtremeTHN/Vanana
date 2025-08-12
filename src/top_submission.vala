@@ -1,3 +1,5 @@
+using Utils;
+
 [GtkTemplate (ui = "/com/github/XtremeTHN/Vanana/top-submission.ui")]
 public class TopSubmission : Adw.Bin {
     [GtkChild]

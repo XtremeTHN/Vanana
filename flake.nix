@@ -28,6 +28,8 @@
       packages = with pkgs; [
         vala-language-server
         vala-lint
+        gdb
+        gdbgui
       ];
     };
 

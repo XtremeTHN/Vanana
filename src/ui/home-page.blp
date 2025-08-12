@@ -17,7 +17,7 @@ template $HomePage: Adw.NavigationPage {
         content: Box {
             orientation: vertical;
 
-            SearchBar {
+            SearchBar search_bar {
                 child: SearchEntry search_entry {
                     search-delay: 800;
                     placeholder-text: _("Search submissions");
@@ -25,48 +25,52 @@ template $HomePage: Adw.NavigationPage {
                 };
             }
 
-            ScrolledWindow {
-                vexpand: true;
+            Stack stack {
+                styles [
+                    "box-10",
+                ]
 
-                child: Stack stack {
-                    styles [
-                        "box-10",
-                    ]
+                StackPage {
+                    name: "loading";
 
-                    StackPage {
-                        name: "loading";
+                    child: Adw.StatusPage loading_page {
+                        title: _("Loading");
+                        description: _("Fetching the results...");
+                    };
+                }
 
-                        child: Adw.StatusPage loading_page {
-                            title: _("Loading");
-                            description: _("Fetching the results...");
-                        };
-                    }
+                StackPage {
+                    name: "no-results";
 
-                    StackPage {
-                        name: "no-results";
+                    child: Adw.StatusPage {
+                        title: _("No results");
+                        description: _("Try a different search");
+                        icon-name: "edit-find-symbolic";
+                    };
+                }
 
-                        child: Adw.StatusPage {
-                            title: _("No results");
-                            description: _("Try a different search");
-                            icon-name: "edit-find-symbolic";
-                        };
-                    }
+                StackPage {
+                    name: "too-short";
 
-                    StackPage {
-                        name: "too-short";
+                    child: Adw.StatusPage {
+                        title: _("Too short");
+                        description: _("The search must be 3 characters or more");
+                        icon-name: "edit-find-symbolic";
+                    };
+                }
 
-                        child: Adw.StatusPage {
-                            title: _("Too short");
-                            description: _("The search must be 3 characters or more");
-                            icon-name: "edit-find-symbolic";
-                        };
-                    }
+                StackPage {
+                    name: "main";
 
-                    StackPage {
-                        name: "main";
+                    child: ScrolledWindow {
+                        vexpand: true;
 
                         child: Adw.Clamp {
                             child: Box {
+                                styles [
+                                    "box-10",
+                                ]
+
                                 orientation: vertical;
                                 spacing: 5;
 
@@ -97,8 +101,8 @@ template $HomePage: Adw.NavigationPage {
                                 }
                             };
                         };
-                    }
-                };
+                    };
+                }
             }
         };
     };

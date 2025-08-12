@@ -1,4 +1,5 @@
 using Soup;
+using Utils;
 
 public enum SubmissionType {
     MOD,
@@ -25,16 +26,20 @@ public enum SubmissionType {
 public enum SortType {
     NEW,
     DEFAULT,
-    UPDATED
-}
+    UPDATED;
 
-public string capitalize_first(string input) {
-    if (input.length == 0)
-        return input;
-
-    string inp = input.ascii_down ();
-
-    return inp.substring(0, 1).up() + inp.substring(1);
+    public string to_string () {
+        switch (this) {
+            case SortType.NEW:
+                return "new";
+            case SortType.DEFAULT:
+                return "default";
+            case SortType.UPDATED:
+                return "updated";
+            default:
+                return "default";
+        }
+    }
 }
 
 [SingleInstance]

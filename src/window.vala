@@ -15,10 +15,13 @@ public class Vanana.Window : Adw.ApplicationWindow {
 
         app.create_action ("toggle-sidebar").activate.connect (toggle_sidebar);
         app.create_action ("message", new VariantType ("s")).activate.connect (show_message);
+
+        var home = new HomePage ();
+        home.search_bar.set_key_capture_widget (this);
         
         split_view.set_sidebar (new Sidebar ());
 
-        navigation_view.add (new HomePage ());
+        navigation_view.add (home);
     }
 
     private void show_message (Variant? param) {
