@@ -1,9 +1,9 @@
 namespace Utils {
     public enum ImageQuality {
         MAX,
-        SIZE_220,
-        SIZE_530,
-        SIZE_100
+        MEDIUM,
+        HIGH,
+        LOW
     }
 
     public string capitalize_first (string input) {
@@ -39,27 +39,27 @@ namespace Utils {
     public string remove_html_tags (string html) {
         try {
             var reg = new Regex ("<[^>]+>", GLib.RegexCompileFlags.DEFAULT, GLib.RegexMatchFlags.DEFAULT);
-            return reg.replace (html, html.length, 0, "", GLib.RegexMatchFlags.DEFAULT);
+            return reg.replace (html, html.length, 0, "", GLib.RegexMatchFlags.DEFAULT).replace ("&", "&amp;");
         } catch (Error e) {
             warning ("Couldn't remove html tags from string.");
             return html;
         }
     }
 
-    public string build_image_url (Json.Object image_info, ImageQuality quality = ImageQuality.SIZE_220) {
+    public string build_image_url (Json.Object image_info, ImageQuality quality = ImageQuality.MEDIUM) {
         string file = "";
         string default_file = image_info.get_string_member ("_sFile");
         switch (quality) {
             case ImageQuality.MAX:
                 file = default_file;
                 break;
-            case ImageQuality.SIZE_530:
+            case ImageQuality.HIGH:
                 file = image_info.get_string_member_with_default ("_sFile530", default_file);
                 break;
-            case ImageQuality.SIZE_220:
+            case ImageQuality.MEDIUM:
                 file = image_info.get_string_member_with_default ("_sFile220", default_file);
                 break;
-            case ImageQuality.SIZE_100:
+            case ImageQuality.LOW:
                 file = image_info.get_string_member_with_default ("_sFile100", default_file);
                 break;
         }

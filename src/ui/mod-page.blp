@@ -35,6 +35,7 @@ template $ModPage: Adw.NavigationPage {
         child: ScrolledWindow {
           child: Adw.Clamp {
             orientation: horizontal;
+            halign: center;
             maximum-size: 900;
 
             child: Box {
@@ -46,12 +47,11 @@ template $ModPage: Adw.NavigationPage {
               orientation: vertical;
 
               Box {
-                halign: center;
                 spacing: 20;
                 // Ugly fix to prevent the picture from growing too much
                 Frame {
-                  valign: start;
-
+                  valign: center;
+                  // halign: center;
                   child: Stack submission_icon_stack {
                     Adw.Spinner {
                       width-request: 20;
@@ -62,7 +62,7 @@ template $ModPage: Adw.NavigationPage {
                       name: "main";
 
                       child: Overlay {
-                        width-request: 150;
+                        width-request: 200;
                         height-request: 150;
 
                         [overlay]

@@ -59,8 +59,6 @@ public class ModPage : Adw.NavigationPage {
     public SubmissionType submission_type = SubmissionType.MOD;
     public int64 submission_id;
 
-    private int retries = 0;
-
     public ModPage (int64 id) {
         Object ();
         set_title ("Mod");
@@ -82,16 +80,9 @@ public class ModPage : Adw.NavigationPage {
                 
                 handle_info (info);
             } catch (Error e) {
-                if (e.message == "Socket I/O timed out") {
-                    if (retries == 3) {
-                        activate_action ("navigation.pop", null);
-                        return;
-                    }
+                if (e.message == "Socket I/O timed out")
+                    activate_action ("navigation.pop", null);
 
-                    retries += 1;
-                    request_info ();
-                    return;
-                }
                 warning ("Error while obtaining submission info: %s", e.message);
             }
         });
@@ -126,9 +117,89 @@ public class ModPage : Adw.NavigationPage {
         views.set_label (INT64_FMT.printf (info.get_int_member ("_nViewCount")));
         downloads.set_label (INT64_FMT.printf (info.get_int_member ("_nDownloadCount")));
 
-        stack.set_visible_child_name ("main");
+        populate_credits (info.get_array_member ("_aCredits"));
+        populate_updates.begin ((_, res) => {
+            populate_updates.end (res);
 
-        populate_images (info.get_object_member ("_aPreviewMedia"));
+            stack.set_visible_child_name ("main");
+            populate_images (info.get_object_member ("_aPreviewMedia"));
+        });
+
+
+    }
+
+    private void populate_credits (Json.Array? credits) {
+        return_if_fail (credits != null);
+
+        if (credits.get_length () == 0) {
+            var row = new Adw.ActionRow ();
+            row.set_title ("No updates");
+            credits_group.add (row);
+            return;
+        }
+
+        foreach (var item in credits.get_elements ()) {
+            var credit = item.get_object ();
+
+            string group_name = remove_html_tags (credit.get_string_member_with_default ("_sGroupName", "Unknown group"));
+            var expander = new Adw.ExpanderRow ();
+            expander.set_title (group_name);
+            credits_group.add (expander);
+
+            foreach (var a_item in credit.get_array_member ("_aAuthors").get_elements ()) {
+                var author = a_item.get_object ();
+
+                var row = new Adw.ActionRow ();
+                row.add_css_class ("property");
+                row.set_title (remove_html_tags (author.get_string_member ("_sRole")));
+                row.set_subtitle (remove_html_tags (author.get_string_member ("_sName")));
+
+                expander.add_row (row);
+            }
+        }
+    }
+
+    private async void populate_updates () {
+        try {
+            var response = yield api.get_updates (SubmissionType.MOD, submission_id);
+
+            foreach (var update_array in response) {
+                if (update_array.get_length () == 0) {
+                    var row = new Adw.ActionRow ();
+                    row.set_title ("No updates");
+                    updates_group.add (row);
+                    return;
+                }
+                
+                foreach (var item in update_array.get_elements ()) {
+                    var update = item.get_object ();
+
+                    var name = remove_html_tags (update.get_string_member ("_sName"));
+                    var text = remove_html_tags (update.get_string_member ("_sText"));
+
+                    if (update.has_member ("_aChangeLog") == false) {
+                        var row = new Adw.ActionRow ();
+                        row.set_title (name);
+                        row.set_subtitle (text);
+                        updates_group.add (row);
+                        continue;
+                    }
+
+                    var changelog = update.get_array_member ("_aChangeLog");
+                    foreach (var c_item in changelog.get_elements ()) {
+                        var change = c_item.get_object ();
+                        var row = new Adw.ActionRow ();
+                        
+                        row.set_title (remove_html_tags (change.get_string_member ("cat")));
+                        row.set_subtitle (remove_html_tags (change.get_string_member ("text")));
+                        
+                        updates_group.add (row);
+                    }
+                }
+            }
+        } catch (Error e) {
+            warning ("Couldn't populate updates group: %s", e.message);
+        }
     }
 
     private void populate_images (Json.Object? preview_info) {
@@ -145,13 +216,13 @@ public class ModPage : Adw.NavigationPage {
         }
 
         var sub_img = images.get_element (0).get_object ();
-        Vanana.cache_download (Utils.build_image_url (sub_img, Utils.ImageQuality.SIZE_220), set_submission_icon);
+        Vanana.cache_download (Utils.build_image_url (sub_img, Utils.ImageQuality.MEDIUM), set_submission_icon);
 
         foreach (var item in images.get_elements ()) {
             var img = item.get_object ();
             var screen = new Screenshot ();
             screenshots_carousel.append (screen);
-            Vanana.cache_download (Utils.build_image_url (img, Utils.ImageQuality.SIZE_530), screen.set_file);
+            Vanana.cache_download (Utils.build_image_url (img, Utils.ImageQuality.HIGH), screen.set_file);
         }
     }
 

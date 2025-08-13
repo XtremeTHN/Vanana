@@ -67,14 +67,31 @@ class Gamebanana.Submissions : Object {
         s_session = new Session.with_options ("max_conns", 30, "timeout", 5);
     }
 
-    private async Json.Node _get (string url) throws Error {
-        var msg = new Soup.Message ("GET", GB_API + url);
+    private async Json.Node request (Soup.Message msg) throws Error {
         var stream = yield s_session.send_async (msg, Priority.DEFAULT, null);
-
         var parser = new Json.Parser ();
         yield parser.load_from_stream_async (stream, null);
 
         return parser.get_root ();
+    }
+
+    private async Json.Node _get (string url) throws Error {
+        int retries = 0;
+
+        try {
+            return yield request (new Soup.Message ("GET", GB_API + url));
+        } catch (Error e) {
+            if (e.message == "Socket I/O timed out") {
+                if (retries != 3) {
+                    retries += 1;
+                    return yield request (new Soup.Message ("GET", GB_API + url));
+                }
+                warning ("max retries reached");
+            }
+
+            throw e;
+        }
+
     }
 
     public async Json.Object? search (string query, SortType sort, int page = 1) throws Error {
@@ -101,13 +118,13 @@ class Gamebanana.Submissions : Object {
         return obj;
     }
 
-    public async List<Json.Array> get_updates(SubmissionType type, int id) throws Error {
+    public async List<Json.Array> get_updates(SubmissionType type, int64 id) throws Error {
         var _results = new List<Json.Array> ();
         int page = 1;
 
         while (true) {
-            string method = "/%s/%i/ProfilePage";
-            var json = yield _get (method.printf(type.to_string(), page));
+            string method = "/%s/%"+ int64.FORMAT +"/Updates?_nPage=%i&_nPerpage=10";
+            var json = yield _get (method.printf(type.to_string (), id, page));
             var obj = json.get_object ();
 
             assert_nonnull (obj);
@@ -120,10 +137,8 @@ class Gamebanana.Submissions : Object {
             var meta = obj.get_object_member ("_aMetadata");
             bool completed = meta.get_boolean_member ("_bIsComplete");
 
-            message ("hi");
             if (obj.has_member ("_aRecords"))
                 _results.append (obj.get_array_member ("_aRecords"));
-            message ("bye");
 
             if (completed)
                 break;
