@@ -43,7 +43,10 @@ public class TopSubmission : Adw.Bin {
         submission_submitter.set_tooltip_text (sub_info.get_string_member ("_sName"));
         submission_feature_type.set_label (capitalize_first (get_formatted_period (period)));
         submission_name.set_label (info.get_string_member ("_sName"));
-        submission_caption.set_label (info.get_string_member ("_sDescription"));
+        if (info.has_member ("_sDescription"))
+            submission_caption.set_label (info.get_string_member ("_sDescription"));
+        else
+            submission_caption.set_visible (false);
 
         submission_type = SubmissionType.from_string (info.get_string_member ("_sModelName"));
 

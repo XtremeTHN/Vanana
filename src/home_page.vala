@@ -21,12 +21,14 @@ public class HomePage : Adw.NavigationPage {
     [GtkChild]
     private unowned Gtk.Button load_btt;
 
+    private Adw.NavigationView nav_view;
     private Gamebanana.Submissions api;
     public int current_page = 1;
 
-    public HomePage () {
+    public HomePage (Adw.NavigationView view) {
         Object ();
 
+        nav_view = view;
         var spin = new Adw.SpinnerPaintable (loading_page);
         loading_page.set_paintable (spin);
         api = new Gamebanana.Submissions ();
@@ -115,6 +117,23 @@ public class HomePage : Adw.NavigationPage {
         } else { // normal mode
             request_featured_submissions (false);
         }
+    }
+
+    [GtkCallback]
+    private void on_row_activate (Gtk.ListBox box, Gtk.ListBoxRow row) {
+        var item = (SubmissionItem) row;
+        Adw.NavigationPage page;
+
+        switch (item.type) {
+            case SubmissionType.MOD:
+                page = new ModPage (item.submission_id);
+                break;
+            default:
+                warning ("<%"+ int64.FORMAT + ">Not supported submission: %s", item.submission_id, item.type.to_string ());
+                return;
+        }
+
+        nav_view.push (page);
     }
 
     private void populate_search (Json.Object? response, bool remove_all) {

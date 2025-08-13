@@ -11,7 +11,7 @@ public class Vanana.Window : Adw.ApplicationWindow {
 
     public Window (Vanana.Application app) {
         Object ();
-        var home = new HomePage ();
+        var home = new HomePage (navigation_view);
 
         app.create_action ("toggle-sidebar").activate.connect (toggle_sidebar);
         app.create_action ("toggle-search").activate.connect (home.toggle_searchbar);

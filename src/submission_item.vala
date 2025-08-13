@@ -37,8 +37,8 @@ public class SubmissionItem : Gtk.ListBoxRow {
         submission_name.set_label (info.get_string_member ("_sName"));
         submission_type.set_label (info.get_string_member ("_sModelName"));
 
-        submission_upload_date.set_label (format_relative_time (info.get_int_member ("_tsDateAdded")));
-        submission_update_date.set_label (format_relative_time (info.get_int_member ("_tsDateModified")));
+        submission_upload_date.set_label (Utils.format_relative_time (info.get_int_member ("_tsDateAdded")));
+        submission_update_date.set_label (Utils.format_relative_time (info.get_int_member ("_tsDateModified")));
         submission_likes.set_label (fmt.printf (info.get_int_member_with_default ("_nLikeCount", 0)));
         submission_views.set_label (fmt.printf (info.get_int_member ("_nViewCount")));
 
@@ -48,30 +48,7 @@ public class SubmissionItem : Gtk.ListBoxRow {
 
             var first_image = images.get_element (0).get_object ();
 
-            string url = first_image.get_string_member ("_sBaseUrl")+ "/" +first_image.get_string_member ("_sFile220");
-
-            Vanana.cache_download (url, set_preview_icon);
-        }
-    }
-
-    string format_relative_time (int64 timestamp) {
-        var date = new DateTime.now_utc ();
-
-        int64 now = date.to_unix ();
-        int64 diff = now - timestamp;
-
-        if (diff < 60) {
-            return "%ds".printf ( (int) diff); // seconds
-        } else if (diff < 3600) {
-            return "%dm".printf ( (int) (diff / 60)); // minutes
-        } else if (diff < 86400) {
-            return "%dh".printf ( (int) (diff / 3600)); // hours
-        } else if (diff < 2592000) {
-            return "%dd".printf ( (int) (diff / 86400)); // days
-        } else if (diff < 31536000) {
-            return "%dm".printf ((int) (diff / 2592000)); // months
-        } else {
-            return "%dy".printf ((int) (diff / 31536000)); // years
+            Vanana.cache_download (Utils.build_image_url (first_image, Utils.ImageQuality.SIZE_220), set_preview_icon);
         }
     }
 

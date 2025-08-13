@@ -18,7 +18,7 @@
     buildInputs = with pkgs; [
       gtk4
       glib
-      gxml
+      libxml2
       libsoup_3
       json-glib
       libadwaita

@@ -1,0 +1,269 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $ModPage: Adw.NavigationPage {
+  child: Adw.ToolbarView {
+    [top]
+    Adw.HeaderBar {}
+
+    content: Stack stack {
+      transition-type: slide_left_right;
+      margin-bottom: 10;
+      margin-top: 10;
+
+      StackPage {
+        name: "loading";
+
+        child: Adw.StatusPage loading_status {
+          title: _("Loading");
+          description: _("Loading mod information...");
+        };
+      }
+
+      StackPage {
+        name: "trashed";
+
+        child: Adw.StatusPage trashed_status {
+          title: _("Trashed");
+          icon-name: "user-trash-symbolic";
+        };
+      }
+
+      StackPage {
+        name: "main";
+
+        child: ScrolledWindow {
+          child: Adw.Clamp {
+            orientation: horizontal;
+            maximum-size: 900;
+
+            child: Box {
+              styles [
+                "box-10",
+              ]
+
+              spacing: 20;
+              orientation: vertical;
+
+              Box {
+                halign: center;
+                spacing: 20;
+                // Ugly fix to prevent the picture from growing too much
+                Frame {
+                  valign: start;
+
+                  child: Stack submission_icon_stack {
+                    Adw.Spinner {
+                      width-request: 20;
+                      height-request: 20;
+                    }
+
+                    StackPage {
+                      name: "main";
+
+                      child: Overlay {
+                        width-request: 150;
+                        height-request: 150;
+
+                        [overlay]
+                        Picture submission_icon {
+                          content-fit: cover;
+                        }
+                      };
+                    }
+                  };
+                }
+
+                Box {
+                  orientation: vertical;
+                  valign: center;
+                  hexpand: true;
+                  spacing: 20;
+
+                  Box {
+                    orientation: vertical;
+
+                    Label submission_title {
+                      styles [
+                        "title-1",
+                      ]
+
+                      xalign: 0;
+                      wrap-mode: word_char;
+                      wrap: true;
+                    }
+
+                    Label submission_caption {
+                      styles [
+                        "caption",
+                      ]
+
+                      xalign: 0;
+                      opacity: 0.8;
+                    }
+                  }
+
+                  Adw.WrapBox {
+                    child-spacing: 5;
+                    line-spacing: 5;
+
+                    Box {
+                      styles [
+                        "card",
+                        "sub-data",
+                      ]
+
+                      spacing: 5;
+
+                      Image {
+                        icon-name: "clock-alt-symbolic";
+                        pixel-size: 11;
+                      }
+
+                      Label upload_date {
+                        styles [
+                          "caption",
+                        ]
+                      }
+                    }
+
+                    Box {
+                      styles [
+                        "card",
+                        "sub-data",
+                      ]
+
+                      spacing: 5;
+
+                      Image {
+                        icon-name: "update-symbolic";
+                        pixel-size: 11;
+                      }
+
+                      Label update_date {
+                        styles [
+                          "caption",
+                        ]
+                      }
+                    }
+
+                    Box {
+                      styles [
+                        "card",
+                        "sub-data",
+                      ]
+
+                      spacing: 5;
+
+                      Image {
+                        icon-name: "heart-filled-symbolic";
+                        pixel-size: 11;
+                      }
+
+                      Label likes {
+                        styles [
+                          "caption",
+                        ]
+                      }
+                    }
+
+                    Box {
+                      styles [
+                        "card",
+                        "sub-data",
+                      ]
+
+                      spacing: 5;
+
+                      Image {
+                        icon-name: "views-symbolic";
+                        pixel-size: 11;
+                      }
+
+                      Label views {
+                        styles [
+                          "caption",
+                        ]
+                      }
+                    }
+
+                    Box {
+                      styles [
+                        "card",
+                        "sub-data",
+                      ]
+
+                      spacing: 5;
+
+                      Image {
+                        icon-name: "folder-download-symbolic";
+                        pixel-size: 11;
+                      }
+
+                      Label downloads {
+                        styles [
+                          "caption",
+                        ]
+                      }
+                    }
+                  }
+
+                  Button {
+                    styles [
+                      "pill",
+                      "suggested-action",
+                    ]
+
+                    halign: start;
+                    clicked => $on_download_clicked();
+
+                    child: Adw.ButtonContent {
+                      icon-name: "download-symbolic";
+                      label: _("Download");
+                    };
+                  }
+                }
+              }
+
+              ScrolledWindow scrolled_html {
+                vscrollbar-policy: never;
+                hscrollbar-policy: automatic;
+              }
+
+              Adw.Clamp {
+                orientation: vertical;
+                maximum-size: 250;
+
+                child: Adw.Carousel screenshots_carousel {
+                  styles [
+                    "boxed-list",
+                  ]
+
+                  height-request: 250;
+                  spacing: 10;
+                };
+              }
+
+              Adw.CarouselIndicatorDots {
+                carousel: screenshots_carousel;
+              }
+
+              Box {
+                orientation: vertical;
+                spacing: 10;
+
+                Adw.PreferencesGroup updates_group {
+                  title: _("Updates");
+                }
+
+                Adw.PreferencesGroup credits_group {
+                  title: _("Credits");
+                }
+              }
+            };
+          };
+        };
+      }
+    };
+  };
+}

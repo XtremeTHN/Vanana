@@ -95,6 +95,9 @@ template $HomePage: Adw.NavigationPage {
                                     styles [
                                         "boxed-list-separate",
                                     ]
+
+                                    selection-mode: browse;
+                                    row-activated => $on_row_activate();
                                 }
 
                                 Button load_btt {

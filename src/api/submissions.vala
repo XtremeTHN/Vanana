@@ -21,6 +21,21 @@ public enum SubmissionType {
                 return null;
         }
     }
+
+    public string? to_string () {
+        switch (this) {
+            case MOD:
+                return "Mod";
+            case NEWS:
+                return "News";
+            case WIP:
+                return "Wip";
+            case TOOL:
+                return "Tool";
+            default:
+                return null;
+        }
+    }
 }
 
 public enum SortType {
@@ -49,7 +64,7 @@ class Gamebanana.Submissions : Object {
     public Submissions () {
         Object ();
 
-        s_session = new Session ();
+        s_session = new Session.with_options ("max_conns", 30, "timeout", 5);
     }
 
     private async Json.Node _get (string url) throws Error {
@@ -72,35 +87,46 @@ class Gamebanana.Submissions : Object {
         return obj;
     }
 
-    public async Json.Object? get_info (SubmissionType type, int id) throws Error {
-        string method = "/%s/%i/ProfilePage".printf (capitalize_first (type.to_string()), id);
+    public async Json.Object? get_info (SubmissionType type, int64 id) throws Error {
+        string method = ("/%s/%" + int64.FORMAT + "/ProfilePage").printf (type.to_string(), id);
         var json = yield _get (method);
         var obj = json.get_object ();
 
         warn_if_fail (obj != null);
 
+        if (obj.has_member ("_sErrorMessage")) {
+            throw new Error (Quark.from_string (obj.get_string_member ("_sErrorCode")), 1, obj.get_string_member ("_sErrorMessage"));
+        }
+
         return obj;
     }
 
-    public async PtrArray get_updates(SubmissionType type, int id) throws Error {
-        var _results = new PtrArray ();
+    public async List<Json.Array> get_updates(SubmissionType type, int id) throws Error {
+        var _results = new List<Json.Array> ();
         int page = 1;
 
         while (true) {
             string method = "/%s/%i/ProfilePage";
-            var json = yield _get (method.printf(capitalize_first (type.to_string()), page));
+            var json = yield _get (method.printf(type.to_string(), page));
             var obj = json.get_object ();
 
             assert_nonnull (obj);
 
+            if (obj.has_member ("_sErrorMessage")) {
+                warning ("Error recieved from api: %s", obj.get_string_member ("_sErrorMessage"));
+                return _results;
+            }
+
             var meta = obj.get_object_member ("_aMetadata");
             bool completed = meta.get_boolean_member ("_bIsComplete");
 
-            if (completed) {
-                break;
-            };
+            message ("hi");
+            if (obj.has_member ("_aRecords"))
+                _results.append (obj.get_array_member ("_aRecords"));
+            message ("bye");
 
-            _results.add (obj.get_array_member ("_aRecords"));
+            if (completed)
+                break;
 
             page += 1;
         }

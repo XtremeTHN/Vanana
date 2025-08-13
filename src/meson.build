@@ -9,6 +9,8 @@ vanana_sources = [
   'cache.vala',
   'submission_item.vala',
   'home_page.vala',
+  'mod_page.vala',
+  'screenshot.vala',
   'window.vala'
 ]
 

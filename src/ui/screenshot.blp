@@ -1,0 +1,21 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $Screenshot: Frame {
+  hexpand: true;
+
+  child: Stack stack {
+    Adw.Spinner {
+      width-request: 20;
+      height-request: 20;
+    }
+
+    StackPage {
+      name: "main";
+
+      child: Picture pic {
+        content-fit: cover;
+      };
+    }
+  };
+}

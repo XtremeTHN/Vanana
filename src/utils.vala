@@ -1,4 +1,11 @@
 namespace Utils {
+    public enum ImageQuality {
+        MAX,
+        SIZE_220,
+        SIZE_530,
+        SIZE_100
+    }
+
     public string capitalize_first (string input) {
         if (input.length == 0)
             return input;
@@ -8,34 +15,55 @@ namespace Utils {
         return inp.substring (0, 1).up () + inp.substring (1);
     }
 
-    public void dump_json_obj (Json.Object obj) {
-        foreach (var item in obj.get_members ()) {
-            var s = obj.get_member (item);
+    string format_relative_time (int64 timestamp) {
+        var date = new DateTime.now_utc ();
 
-            switch (s.get_node_type ()) {
-                case Json.NodeType.OBJECT:
-                    dump_json_obj (s.get_object ());
-                    break;
-                case Json.NodeType.VALUE:
-                    switch (s.get_value_type ()) {
-                        case GLib.Type.STRING:
-                            message ("%s: %s", item, s.get_string ());
-                            break;
-                        case GLib.Type.BOOLEAN:
-                            message ("%s: %b", item, s.get_boolean ());
-                            break;
-                        case GLib.Type.INT64:
-                            message ("%s: %" + int64.FORMAT, item, s.get_int ());
-                            break;
-                        default:
-                            message (item);
-                            break;
-                    }
-                    break;
-                case Json.NodeType.ARRAY:
-                    message (item);
-                    break;
-            }
+        int64 now = date.to_unix ();
+        int64 diff = now - timestamp;
+
+        if (diff < 60) {
+            return "%ds".printf ( (int) diff); // seconds
+        } else if (diff < 3600) {
+            return "%dm".printf ( (int) (diff / 60)); // minutes
+        } else if (diff < 86400) {
+            return "%dh".printf ( (int) (diff / 3600)); // hours
+        } else if (diff < 2592000) {
+            return "%dd".printf ( (int) (diff / 86400)); // days
+        } else if (diff < 31536000) {
+            return "%dm".printf ((int) (diff / 2592000)); // months
+        } else {
+            return "%dy".printf ((int) (diff / 31536000)); // years
         }
+    }
+
+    public string remove_html_tags (string html) {
+        try {
+            var reg = new Regex ("<[^>]+>", GLib.RegexCompileFlags.DEFAULT, GLib.RegexMatchFlags.DEFAULT);
+            return reg.replace (html, html.length, 0, "", GLib.RegexMatchFlags.DEFAULT);
+        } catch (Error e) {
+            warning ("Couldn't remove html tags from string.");
+            return html;
+        }
+    }
+
+    public string build_image_url (Json.Object image_info, ImageQuality quality = ImageQuality.SIZE_220) {
+        string file = "";
+        string default_file = image_info.get_string_member ("_sFile");
+        switch (quality) {
+            case ImageQuality.MAX:
+                file = default_file;
+                break;
+            case ImageQuality.SIZE_530:
+                file = image_info.get_string_member_with_default ("_sFile530", default_file);
+                break;
+            case ImageQuality.SIZE_220:
+                file = image_info.get_string_member_with_default ("_sFile220", default_file);
+                break;
+            case ImageQuality.SIZE_100:
+                file = image_info.get_string_member_with_default ("_sFile100", default_file);
+                break;
+        }
+
+        return image_info.get_string_member ("_sBaseUrl") + "/" + file;
     }
 }
