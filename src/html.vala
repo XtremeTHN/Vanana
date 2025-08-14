@@ -4,7 +4,7 @@ class Vanana.HtmlView : Gtk.TextView {
     private Gdk.RGBA green_adw;
     private Gdk.RGBA accent;
 
-    public HtmlView () {
+    public HtmlView (bool background_visible = false) {
         Object (editable: false,  cursor_visible: false, wrap_mode: Gtk.WrapMode.WORD_CHAR);
 
         var manager = Adw.StyleManager.get_default ();
@@ -13,8 +13,77 @@ class Vanana.HtmlView : Gtk.TextView {
         red_adw.parse ("#e62d42");
         green_adw.parse ("#3a944a");
 
-        set_css_classes ({});
+        var click_controller = new Gtk.GestureClick ();
+        var motion_controller = new Gtk.EventControllerMotion ();
+
+        click_controller.released.connect (on_released);
+        motion_controller.motion.connect (on_motion);
+
+        add_controller (click_controller);
+        add_controller (motion_controller);
+
+        if (background_visible == false)
+            set_css_classes ({});
     }
+
+    public void set_html (string html) {
+        Gtk.TextBuffer buff = get_formatted_buffer (html);
+        set_buffer (buff);
+    }
+
+    public void set_margins (int margin) {
+        set_top_margin (margin);
+        set_bottom_margin (margin);
+        set_left_margin (margin);
+        set_right_margin (margin);
+    }
+
+    private void on_motion (Gtk.EventControllerMotion _, double dx, double dy) {
+        int tx, ty;
+        int x = (int) dx;
+        int y = (int) dy;
+
+        Gtk.TextIter iter;
+
+        window_to_buffer_coords (Gtk.TextWindowType.WIDGET,  x, y, out tx, out ty);
+
+        if (get_iter_at_location (out iter, x, y) == false)
+            return;
+
+        foreach (var tag in iter.get_tags ()) {
+            string? url = tag.get_data<string?> ("url");
+            if (url != null)
+                set_cursor_from_name ("pointer");
+                return;
+        }
+        set_cursor_from_name ("text");
+    }
+
+    private void on_released (Gtk.GestureClick gesture, int n_press, double dx, double dy) {
+        Gtk.TextIter iter;
+        int tx, ty;
+        int x = (int) dx;
+        int y = (int) dy;
+         
+        if (gesture.get_button () > 1)
+            return;
+        
+        window_to_buffer_coords (Gtk.TextWindowType.WIDGET, x, y, out tx, out ty);
+        
+        if (buffer == null)
+            return;
+        
+        if (get_iter_at_location (out iter, tx, ty) == false)
+            return;
+
+        foreach (var tag in iter.get_tags ()) {
+            string? url = tag.get_data<string?> ("url");
+            if (url != null) {
+                AppInfo.launch_default_for_uri_async.begin (url, null, null);
+            }
+        }
+    }
+
 
     private void insert_with_tags (Gtk.TextBuffer buff, string text, ref Gtk.TextIter iter, List<Gtk.TextTag> tags) {
         int offset = iter.get_offset ();
