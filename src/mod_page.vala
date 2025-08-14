@@ -159,7 +159,10 @@ public class ModPage : Adw.NavigationPage {
 
                 var row = new Adw.ActionRow ();
                 row.add_css_class ("property");
-                row.set_title (remove_html_tags (author.get_string_member ("_sRole")));
+                
+                if (author.has_member ("_sRole"))
+                    row.set_title (remove_html_tags (author.get_string_member ("_sRole")));
+
                 row.set_subtitle (remove_html_tags (author.get_string_member ("_sName")));
 
                 expander.add_row (row);
