@@ -18,6 +18,7 @@
     buildInputs = with pkgs; [
       gtk4
       glib
+      libgee
       libxml2
       libsoup_3
       json-glib

@@ -53,6 +53,8 @@ public class ModPage : Adw.NavigationPage {
     [GtkChild]
     private unowned Adw.StatusPage trashed_status;
 
+    private Vanana.HtmlView html_view;
+
     private Gamebanana.Submissions api;
     public Json.Object? info;
 
@@ -65,10 +67,13 @@ public class ModPage : Adw.NavigationPage {
         
         submission_id = id;
 
+        html_view = new Vanana.HtmlView ();
         api = new Gamebanana.Submissions ();
 
         var spinner = new Adw.SpinnerPaintable (loading_status);
         loading_status.set_paintable (spinner);
+
+        scrolled_html.set_child (html_view);
 
         request_info ();
     }
@@ -110,6 +115,9 @@ public class ModPage : Adw.NavigationPage {
             set_title ("%s - Mod".printf (name));
             submission_caption.set_label (name);
         }
+
+        html_view.set_buffer(html_view.get_formatted_buffer (info.get_string_member ("_sText")));
+
         
         upload_date.set_label (Utils.format_relative_time (info.get_int_member ("_tsDateAdded")));
         update_date.set_label (Utils.format_relative_time (info.get_int_member ("_tsDateModified")));

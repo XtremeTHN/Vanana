@@ -4,6 +4,7 @@ vanana_sources = [
   'utils.vala',
   'api/gamebanana.vala',
   'api/submissions.vala',
+  'html.vala',
   'sidebar.vala',
   'top_submission.vala',
   'cache.vala',
@@ -11,7 +12,7 @@ vanana_sources = [
   'home_page.vala',
   'mod_page.vala',
   'screenshot.vala',
-  'window.vala'
+  'window.vala',
 ]
 
 vanana_deps = [
@@ -19,6 +20,8 @@ vanana_deps = [
   dependency('gio-2.0'),
   dependency('libsoup-3.0'),
   dependency('json-glib-1.0'),
+  dependency('gee-0.8'),
+  dependency('libxml-2.0'),
   dependency('libadwaita-1', version: '>= 1.4'),
   dependency('gtk4'),
 
