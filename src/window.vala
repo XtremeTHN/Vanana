@@ -7,7 +7,7 @@ public class Vanana.Window : Adw.ApplicationWindow {
     private unowned Adw.OverlaySplitView split_view;
 
     [GtkChild]
-    private unowned Adw.NavigationView navigation_view;
+    public unowned Adw.NavigationView navigation_view;
 
     public Window (Vanana.Application app) {
         Object ();
