@@ -39,18 +39,7 @@ public class HomePage : Adw.NavigationPage {
 
         api = new Gamebanana.Submissions ();
 
-        api.get_top.begin ((obj, res) => {
-            try {
-                var subs = api.get_top.end (res);
-                populate_carousel (subs);
-                start_auto_scroll ();
-            } catch (Error e) {
-                warning ("Couldn't populate the submission carousel: %s", e.message);
-                Utils.show_toast (this, e.message);
-            }
-        });
-
-        request_featured_submissions (false);
+        populate ();
     }
 
     public void toggle_search_bar () {
@@ -102,6 +91,7 @@ public class HomePage : Adw.NavigationPage {
                 return_if_fail (subs.has_member ("_aRecords"));
 
                 populate_submission_list (subs);
+                stack.set_visible_child_name ("main");
             } catch (Error e) {
                 warning ("Couldn't populate the submission list: %s", e.message);
                 Utils.show_toast (this, e.message);
@@ -183,6 +173,27 @@ public class HomePage : Adw.NavigationPage {
         nav_view.push (page);
     }
 
+    [GtkCallback]
+    private void populate () {
+        stack.set_visible_child_name ("loading");
+
+        api.get_top.begin ((obj, res) => {
+            try {
+                var subs = api.get_top.end (res);
+                populate_carousel (subs);
+                start_auto_scroll ();
+            } catch (Error e) {
+                if (e is ResolverError.NOT_FOUND)
+                    stack.set_visible_child_name ("network-error");
+
+                warning ("Couldn't populate the submission carousel: %s", e.message);
+                Utils.show_toast (this, e.message);
+            }
+        });
+
+        request_featured_submissions (false);
+    }
+
     private void populate_search (Json.Object? response, bool remove_all) {
         if (response == null) {
             warning ("query response is null");
@@ -221,8 +232,6 @@ public class HomePage : Adw.NavigationPage {
             var top = new TopSubmission (sub.get_object ());
             top_submissions.append (top);
         }
-
-        stack.set_visible_child_name ("main");
     }
 
     private void populate_submission_list (Json.Object? response) {

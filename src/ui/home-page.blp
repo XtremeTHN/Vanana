@@ -48,6 +48,31 @@ template $HomePage: Adw.NavigationPage {
                 }
 
                 StackPage {
+                    name: "network-error";
+
+                    child: Adw.StatusPage {
+                        icon-name: "error-outline-symbolic";
+                        title: _("Network error");
+                        description: _("Couldn't connect to the gamebanana servers. Check your internet connection.");
+
+                        child: Button {
+                            styles [
+                                "pill",
+                                "suggested-action",
+                            ]
+
+                            halign: center;
+                            clicked => $populate();
+
+                            child: Adw.ButtonContent {
+                                icon-name: "load-symbolic";
+                                label: _("Retry");
+                            };
+                        };
+                    };
+                }
+
+                StackPage {
                     name: "no-results";
 
                     child: Adw.StatusPage {

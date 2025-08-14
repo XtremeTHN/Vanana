@@ -4,6 +4,7 @@ blueprints = custom_target('blueprints',
     'sidebar.blp',
     'mod-page.blp',
     'screenshot.blp',
+    'downloads-dialog.blp',
     'submission-item.blp',
     'top-submission.blp',
     'window.blp'

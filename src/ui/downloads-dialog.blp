@@ -1,0 +1,19 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $DownloadsDialog: Adw.Dialog {
+    child: Adw.ToolbarView {
+        [top]
+        Adw.HeaderBar {}
+
+        content: Box {
+            Adw.PreferencesGroup files_group {
+                title: _("Files");
+            }
+
+            Adw.PreferencesGroup alt_files_group {
+                title: _("Alternate files");
+            }
+        };
+    };
+}
