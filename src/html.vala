@@ -122,6 +122,30 @@ class Vanana.HtmlView : Gtk.TextView {
             return;
         }
 
+        if (name == "img") {
+            // the user must define src right?, that's why they wrote an image tag 
+            string? src = null;
+            string alt = "Image";
+
+            for (Xml.Attr* attr = node->properties; attr != null; attr = attr->next) {
+                if (attr->name == "src") {
+                    src = attr->children->content;
+                }
+
+                if (attr->name == "alt") {
+                    alt = attr->children->content;
+                }
+            }
+
+            var new_stack = new List<Gtk.TextTag> ();
+            tag_stack.foreach ((j) => {new_stack.append(j);});
+
+            var link_tag = get_link_tag (buffer, src);
+            new_stack.append (link_tag);
+
+            insert_with_tags (buffer, alt, ref iter, new_stack);
+        }
+
         if (name == "a") {
             string? href = null;
             for (Xml.Attr* attr = node->properties; attr != null; attr = attr->next) {
