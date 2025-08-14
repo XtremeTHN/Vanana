@@ -6,6 +6,18 @@ public class Screenshot : Gtk.Frame {
     [GtkChild]
     private unowned Gtk.Picture pic;
 
+    public bool blur;
+
+    protected override void snapshot (Gtk.Snapshot snap) {
+        if (blur)
+            snap.push_blur (10);
+            
+        base.snapshot (snap);
+
+        if (blur)
+            snap.pop ();
+    }
+
     public Screenshot () {
         Object ();
     }

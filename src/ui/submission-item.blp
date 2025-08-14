@@ -12,27 +12,9 @@ template $SubmissionItem: ListBoxRow {
         spacing: 10;
         hexpand: true;
 
-        Overlay {
+        Overlay cover_overlay {
             height-request: 80;
             width-request: 100;
-
-            [overlay]
-            Frame {
-                Stack stack {
-                    Adw.Spinner {
-                        width-request: 20;
-                        height-request: 20;
-                    }
-
-                    StackPage {
-                        name: "main";
-
-                        child: Picture submission_icon {
-                            content-fit: cover;
-                        };
-                    }
-                }
-            }
         }
 
         Box {

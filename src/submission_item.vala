@@ -1,9 +1,6 @@
 [GtkTemplate (ui = "/com/github/XtremeTHN/Vanana/submission-item.ui")]
 public class SubmissionItem : Gtk.ListBoxRow {
     [GtkChild]
-    private unowned Gtk.Picture submission_icon;
-
-    [GtkChild]
     private unowned Gtk.Label submission_name;
 
     [GtkChild]
@@ -22,13 +19,16 @@ public class SubmissionItem : Gtk.ListBoxRow {
     private unowned Gtk.Label submission_views;
 
     [GtkChild]
-    private unowned Gtk.Stack stack;
+    private unowned Gtk.Overlay cover_overlay;
 
     public int64 submission_id;
     public SubmissionType? type;
 
     public SubmissionItem (Json.Object info) {
         Object ();
+
+        var cover = new Screenshot ();
+        cover_overlay.add_overlay (cover);
 
         var fmt = "%" + int64.FORMAT;
         submission_id = info.get_int_member ("_idRow");
@@ -44,18 +44,14 @@ public class SubmissionItem : Gtk.ListBoxRow {
 
         var preview = info.get_object_member ("_aPreviewMedia");
         if (preview.has_member ("_aImages")) {
+            if (info.get_string_member ("_sInitialVisibility") != "show")
+                cover.blur = true;
+                
             var images = preview.get_array_member ("_aImages");
 
             var first_image = images.get_element (0).get_object ();
 
-            Vanana.cache_download (Utils.build_image_url (first_image, Utils.ImageQuality.MEDIUM), set_preview_icon);
+            Vanana.cache_download (Utils.build_image_url (first_image, Utils.ImageQuality.MEDIUM), cover.set_file);
         }
-    }
-
-    private void set_preview_icon (File? prev) {
-        return_if_fail (prev != null);
-
-        stack.set_visible_child_name ("main");
-        submission_icon.set_file (prev);
     }
 }
