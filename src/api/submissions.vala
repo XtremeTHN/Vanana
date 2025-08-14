@@ -5,24 +5,25 @@ public enum SubmissionType {
     MOD,
     NEWS,
     WIP,
-    TOOL;
+    TOOL,
+    UNKNOWN;
 
     public static SubmissionType? from_string (string value) {
-        switch (value.ascii_up ()) {
-            case "MOD":
+        switch (value.ascii_down ()) {
+            case "mod":
                 return SubmissionType.MOD;
-            case "NEWS":
+            case "news":
                 return SubmissionType.NEWS;
-            case "WIP":
+            case "wip":
                 return SubmissionType.WIP;
-            case "TOOL":
+            case "tool":
                 return SubmissionType.TOOL;
             default:
-                return null;
+                return SubmissionType.UNKNOWN;
         }
     }
 
-    public string? to_string () {
+    public string to_string () {
         switch (this) {
             case MOD:
                 return "Mod";
@@ -33,7 +34,7 @@ public enum SubmissionType {
             case TOOL:
                 return "Tool";
             default:
-                return null;
+                return "Unknown";
         }
     }
 }
