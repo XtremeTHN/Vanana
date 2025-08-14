@@ -21,6 +21,7 @@ public class HomePage : Adw.NavigationPage {
     [GtkChild]
     private unowned Gtk.Button load_btt;
 
+    private bool auto_scroll_running;
     private Adw.NavigationView nav_view;
     private Gamebanana.Submissions api;
     public int current_page = 1;
@@ -31,12 +32,18 @@ public class HomePage : Adw.NavigationPage {
         nav_view = view;
         var spin = new Adw.SpinnerPaintable (loading_page);
         loading_page.set_paintable (spin);
+
+        var click_controller = new Gtk.GestureClick ();
+        click_controller.released.connect (on_carousel_released);
+        top_submissions.add_controller (click_controller);
+
         api = new Gamebanana.Submissions ();
 
         api.get_top.begin ((obj, res) => {
             try {
                 var subs = api.get_top.end (res);
                 populate_carousel (subs);
+                start_auto_scroll ();
             } catch (Error e) {
                 warning ("Couldn't populate the submission carousel: %s", e.message);
                 Utils.show_toast (this, e.message);
@@ -46,6 +53,34 @@ public class HomePage : Adw.NavigationPage {
 
     public void toggle_searchbar () {
         search_bar.set_search_mode (!search_bar.search_mode_enabled);
+    }
+
+    private void on_carousel_released (Gtk.GestureClick gesture, int n, double x, double y) {
+        if (gesture.get_button () > 1)
+            return;
+        
+        auto_scroll_running = false;
+    }
+
+    private void start_auto_scroll () {
+        var current = top_submissions.get_first_child ();
+        auto_scroll_running = true;
+
+        Timeout.add_seconds (5, () => {
+            if (auto_scroll_running == false)
+                return Source.REMOVE;
+                
+            current = current.get_next_sibling ();
+            if (current == null) {
+                current = top_submissions.get_first_child ();
+                top_submissions.scroll_to (current, true);
+                return Source.CONTINUE;
+            }
+            top_submissions.scroll_to (current, true);
+
+            return Source.CONTINUE;
+        }, Priority.LOW);
+
     }
 
     private void request_featured_submissions (bool remove_all = true) {
