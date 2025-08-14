@@ -24,3 +24,4 @@ A fnf gamebanana client. Rewriting in vala
 ## Preview
 ![preview](./assets/preview1.png)
 ![search](./assets/preview2.png)
+![mod](./assets/preview3.png)
