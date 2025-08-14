@@ -14,7 +14,7 @@ public class Vanana.Window : Adw.ApplicationWindow {
         var home = new HomePage (navigation_view);
 
         app.create_action ("toggle-sidebar").activate.connect (toggle_sidebar);
-        app.create_action ("toggle-search").activate.connect (home.toggle_searchbar);
+        app.create_action ("toggle-search").activate.connect (home.toggle_search_bar);
 
         home.search_bar.set_key_capture_widget (this);
 

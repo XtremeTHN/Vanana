@@ -28,6 +28,8 @@ template $HomePage: Adw.NavigationPage {
                     search-delay: 800;
                     placeholder-text: _("Search submissions");
                     search-changed => $on_search_changed();
+                    stop-search => $stop_search();
+                    // search-changed => $on_search_changed();
                 };
             }
 

@@ -49,10 +49,17 @@ public class HomePage : Adw.NavigationPage {
                 Utils.show_toast (this, e.message);
             }
         });
+
+        request_featured_submissions (false);
     }
 
-    public void toggle_searchbar () {
-        search_bar.set_search_mode (!search_bar.search_mode_enabled);
+    public void toggle_search_bar () {
+        var cond = !search_bar.search_mode_enabled;
+        if (cond == false) {
+            stop_search ();
+        }
+
+        search_bar.set_search_mode (cond);
     }
 
     private void on_carousel_released (Gtk.GestureClick gesture, int n, double x, double y) {
@@ -69,7 +76,7 @@ public class HomePage : Adw.NavigationPage {
         Timeout.add_seconds (5, () => {
             if (auto_scroll_running == false)
                 return Source.REMOVE;
-                
+
             current = current.get_next_sibling ();
             if (current == null) {
                 current = top_submissions.get_first_child ();
@@ -121,16 +128,8 @@ public class HomePage : Adw.NavigationPage {
     private void on_search_changed () {
         var query = search_entry.get_text ();
 
-        if (query.length == 0) {
-            current_page = 1;
-            if (stack.get_visible_child_name () != "main") {
-                stack.set_visible_child_name ("main");
-            }
-
-            top_submissions.set_visible (true);
-            request_featured_submissions ();
+        if (query.length == 0)
             return;
-        }
 
         if (query.length > 0) {
             top_submissions.set_visible (false);
@@ -145,6 +144,13 @@ public class HomePage : Adw.NavigationPage {
         stack.set_visible_child_name ("loading");
         search (query);
     }
+
+    [GtkCallback]
+    private void stop_search () {
+        request_featured_submissions (true);
+        top_submissions.set_visible (true);
+        stack.set_visible_child_name ("main");
+    } 
 
     [GtkCallback]
     private void on_load_clicked () {
