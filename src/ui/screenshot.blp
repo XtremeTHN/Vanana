@@ -11,6 +11,18 @@ template $Screenshot: Frame {
     }
 
     StackPage {
+      name: "no-preview";
+
+      child: Label {
+        styles [
+          "caption",
+        ]
+
+        label: _("No preview");
+      };
+    }
+
+    StackPage {
       name: "main";
 
       child: Picture pic {

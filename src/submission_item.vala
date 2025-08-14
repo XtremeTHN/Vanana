@@ -46,12 +46,14 @@ public class SubmissionItem : Gtk.ListBoxRow {
         if (preview.has_member ("_aImages")) {
             if (info.get_string_member ("_sInitialVisibility") != "show")
                 cover.blur = true;
-                
+
             var images = preview.get_array_member ("_aImages");
 
             var first_image = images.get_element (0).get_object ();
 
             Vanana.cache_download (Utils.build_image_url (first_image, Utils.ImageQuality.MEDIUM), cover.set_file);
+        } else {
+            cover.set_no_preview ();
         }
     }
 }

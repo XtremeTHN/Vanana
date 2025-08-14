@@ -22,15 +22,16 @@ public class Screenshot : Gtk.Frame {
         Object ();
     }
 
+    public void set_no_preview () {
+        stack.set_visible_child_name ("no-preview");
+    }
+
     public void set_file (File? img) {
         if (img == null) {
             warning ("screenshot file object is null");
             return;
         }
-        Idle.add (() => {
-            pic.set_file (img);
-            return false;
-        }, Priority.DEFAULT);
+        pic.set_file (img);
         stack.set_visible_child_name ("main");
     }
 }
