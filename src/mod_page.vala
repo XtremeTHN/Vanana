@@ -88,6 +88,7 @@ public class ModPage : Adw.NavigationPage {
                 if (e.message == "Socket I/O timed out")
                     activate_action ("navigation.pop", null);
 
+                Utils.show_toast (this, e.message);
                 warning ("Error while obtaining submission info: %s", e.message);
             }
         });

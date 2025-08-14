@@ -15,7 +15,6 @@ public class Vanana.Window : Adw.ApplicationWindow {
 
         app.create_action ("toggle-sidebar").activate.connect (toggle_sidebar);
         app.create_action ("toggle-search").activate.connect (home.toggle_searchbar);
-        app.create_action ("message", new VariantType ("s")).activate.connect (show_message);
 
         home.search_bar.set_key_capture_widget (this);
 
@@ -24,8 +23,8 @@ public class Vanana.Window : Adw.ApplicationWindow {
         navigation_view.add (home);
     }
 
-    private void show_message (Variant? param) {
-        var toast = new Adw.Toast (param.get_string ());
+    public void show_message (string msg) {
+        var toast = new Adw.Toast (msg);
         toast_ovr.add_toast (toast);
     }
 

@@ -39,6 +39,7 @@ public class HomePage : Adw.NavigationPage {
                 populate_carousel (subs);
             } catch (Error e) {
                 warning ("Couldn't populate the submission carousel: %s", e.message);
+                Utils.show_toast (this, e.message);
             }
         });
     }
@@ -61,6 +62,7 @@ public class HomePage : Adw.NavigationPage {
                 populate_submission_list (subs);
             } catch (Error e) {
                 warning ("Couldn't populate the submission list: %s", e.message);
+                Utils.show_toast (this, e.message);
             }
         });
     }
@@ -73,6 +75,9 @@ public class HomePage : Adw.NavigationPage {
 
             } catch (Error e) {
                 warning ("Error while querying submissions: %s", e.message);
+                Utils.show_toast (this, e.message);
+                
+                load_btt.set_sensitive (true);
             }
         });
     }
@@ -130,6 +135,7 @@ public class HomePage : Adw.NavigationPage {
                 break;
             default:
                 warning ("<%"+ int64.FORMAT + ">Not supported submission: %s", item.submission_id, item.type.to_string ());
+                Utils.show_toast (this, "\"%s\" submissions are not supported".printf (item.type.to_string ()));
                 return;
         }
 

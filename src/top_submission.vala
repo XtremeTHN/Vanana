@@ -82,6 +82,7 @@ public class TopSubmission : Adw.Bin {
                 break;
             default:
                 warning ("<%s>: Submission type not implemented: %s", submission_id.to_string (), submission_type.to_string ());
+                Utils.show_toast (this, "\"%s\" submissions are not supported".printf (submission_type.to_string ()));
                 return;
         }
 

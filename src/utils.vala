@@ -66,4 +66,19 @@ namespace Utils {
 
         return image_info.get_string_member ("_sBaseUrl") + "/" + file;
     }
+
+    public void warn (Gtk.Widget self, string message) {
+        show_toast (self, message);
+        warning (message);
+    }
+
+    public void show_toast (Gtk.Widget self, string message) {
+        var root = (Vanana.Window) self.get_root ();
+        if (root == null) {
+            warning ("root is null, append self to some widget");
+            return;
+        }
+        
+        root.show_message (message);
+    }
 }
