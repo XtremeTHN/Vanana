@@ -144,8 +144,9 @@ public class ModPage : Adw.NavigationPage {
         }
 
         var submitter = info.get_object_member ("_aSubmitter");
-        submission_title.set_label (info.get_string_member ("_sName"));
-        set_title ("%s - Mod".printf (name));
+        var sub_name = info.get_string_member ("_sName");
+        submission_title.set_label (sub_name);
+        set_title ("%s - Mod".printf (sub_name));
 
         if (submitter.has_member ("_sName")) {
             var name = submitter.get_string_member ("_sName");
