@@ -159,7 +159,6 @@ public class HomePage : Adw.NavigationPage {
     private void on_row_activate (Gtk.ListBox box, Gtk.ListBoxRow row) {
         var item = (SubmissionItem) row;
 
-        message (item.type.to_string ());
         show_submission_page (item.type, item.submission_id);
     }
 
