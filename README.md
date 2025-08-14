@@ -8,6 +8,8 @@ A fnf gamebanana client. Rewriting in vala
 - [ ] Fix occasional soup socket timeout errors
 - [ ] Make the downloads page
 - [ ] Add a full screen screenshot preview
+- [ ] Add android support
+- [ ] Add windows support
 
 - [ ] Support this submissions:
     - [x] Mod
