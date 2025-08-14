@@ -56,6 +56,20 @@ public class ModPage : Adw.NavigationPage {
     [GtkChild]
     private unowned Gtk.Frame license_frame;
 
+    [GtkChild]
+    private unowned Gtk.Button open_gb_btt;
+
+    private string _url;
+    public string gb_url {
+        get {
+            return _url;
+        }
+        set {
+            open_gb_btt.sensitive = value.length > 0;
+            _url = value;
+        }
+    }
+
     private Vanana.HtmlView submission_description;
     private Vanana.HtmlView submission_license;
 
@@ -105,8 +119,21 @@ public class ModPage : Adw.NavigationPage {
     [GtkCallback]
     private void on_download_clicked () {}
 
+    [GtkCallback]
+    private void open_gb_page () {
+        var s = new Gtk.UriLauncher (gb_url);
+        var root = get_root ();
+
+        if (root != null)
+            s.launch.begin ((Vanana.Window) root, null);
+        else
+            Utils.warn (this, "Couldn't launch uri (root was null).");
+    }
+
     private void handle_info (Json.Object info) {
         const string INT64_FMT = "%" + int64.FORMAT;
+
+        gb_url = info.get_string_member ("_sProfileUrl");
 
         if (info.get_boolean_member ("_bIsTrashed")) {
             var trash_info = info.get_object_member ("_aTrashInfo");
@@ -118,10 +145,10 @@ public class ModPage : Adw.NavigationPage {
 
         var submitter = info.get_object_member ("_aSubmitter");
         submission_title.set_label (info.get_string_member ("_sName"));
+        set_title ("%s - Mod".printf (name));
 
         if (submitter.has_member ("_sName")) {
             var name = submitter.get_string_member ("_sName");
-            set_title ("%s - Mod".printf (name));
             submission_caption.set_label (name);
         }
 
