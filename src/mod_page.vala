@@ -59,6 +59,9 @@ public class ModPage : Adw.NavigationPage {
     [GtkChild]
     private unowned Gtk.Button open_gb_btt;
 
+    [GtkChild]
+    private unowned Adw.StatusPage rating_status;
+
     private string _url;
     public string gb_url {
         get {
@@ -166,11 +169,39 @@ public class ModPage : Adw.NavigationPage {
         populate_updates.begin ((_, res) => {
             populate_updates.end (res);
 
-            stack.set_visible_child_name ("main");
+            show_main (info);
             populate_images (info.get_object_member ("_aPreviewMedia"));
         });
 
 
+    }
+
+    [GtkCallback]
+    private void on_continue_clicked () {
+        stack.set_visible_child_name ("main");
+    }
+
+    private void populate_ratings_warning (Json.Object ratings) {
+        string label = rating_status.get_description ();
+        foreach (var member in ratings.get_members ()) {
+            var rating = ratings.get_string_member (member);
+            label += rating + "\n";
+        }
+
+        label = label.replace ("&", "&amp;");
+        rating_status.set_description (label.printf (SubmissionType.MOD.to_string ()));
+    }
+
+    private void show_main (Json.Object info) {
+        var visibility = info.get_string_member ("_sInitialVisibility");
+
+        if (visibility != "warn") {
+            stack.set_visible_child_name ("main");
+            return;
+        }
+
+        populate_ratings_warning (info.get_object_member ("_aContentRatings"));
+        stack.set_visible_child_name ("rating-warning");
     }
 
     private void populate_credits (Json.Array? credits) {

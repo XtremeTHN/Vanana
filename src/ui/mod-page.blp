@@ -37,6 +37,27 @@ template $ModPage: Adw.NavigationPage {
       }
 
       StackPage {
+        name: "rating-warning";
+
+        child: Adw.StatusPage rating_status {
+          title: _("Sensitive content");
+          icon-name: "warning-symbolic";
+          description: _("This %s contains sensitive content that may offend or be inappropriate for some users. See the ratings below:\n\n");
+
+          child: Button {
+            styles [
+              "warning",
+              "pill",
+            ]
+
+            halign: center;
+            clicked => $on_continue_clicked();
+            label: "Continue";
+          };
+        };
+      }
+
+      StackPage {
         name: "main";
 
         child: ScrolledWindow {
