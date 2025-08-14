@@ -5,5 +5,8 @@
     },
     "[blueprint-gtk]": {
         "editor.formatOnSave": true
-    }
+    },
+    "cSpell.words": [
+        "gamebanana"
+    ]
 }
