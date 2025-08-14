@@ -20,11 +20,10 @@ class Vanana.HtmlView : Gtk.TextView {
         int offset = iter.get_offset ();
         Gtk.TextIter start;
 
-        buff.insert(ref iter, text, -1); // Insert text first
+        buff.insert(ref iter, text, -1);
 
         buff.get_iter_at_offset (out start, offset);
 
-        // Apply tags manually to the inserted range
         foreach (var tag in tags) {
             buff.apply_tag(tag, start, iter);
         }
@@ -37,7 +36,6 @@ class Vanana.HtmlView : Gtk.TextView {
             string text = (string) node->content;
             if (text.strip () != "") {
                 insert_with_tags (buffer, text,  ref iter, tag_stack);
-                //  buffer.insert(ref iter, text, -1);
             }
             return;
         }
@@ -113,7 +111,6 @@ class Vanana.HtmlView : Gtk.TextView {
             if (x_iter->name == "html")
                 continue;
             
-            //  insert_node (x_iter, iter, stack, buff);
             walk_node (x_iter, ref iter, stack, buff);
         }
 

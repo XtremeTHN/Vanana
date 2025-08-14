@@ -183,8 +183,8 @@ public class HomePage : Adw.NavigationPage {
 
         var submissions = response.get_array_member ("_aRecords");
         foreach (var sub in submissions.get_elements ()) {
-            var top = new SubmissionItem (sub.get_object ());
-            submission_list.append (top);
+            var item = new SubmissionItem (sub.get_object ());
+            submission_list.append (item);
         }
         load_btt.set_sensitive (!metadata.get_boolean_member_with_default ("_bIsComplete", true));
     }
