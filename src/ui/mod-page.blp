@@ -252,6 +252,17 @@ template $ModPage: Adw.NavigationPage {
                 orientation: vertical;
                 spacing: 10;
 
+                Label {
+                  styles [
+                    "heading",
+                  ]
+
+                  xalign: 0;
+                  label: _("License");
+                }
+
+                Frame license_frame {}
+
                 Adw.PreferencesGroup updates_group {
                   title: _("Updates");
                 }

@@ -53,7 +53,11 @@ public class ModPage : Adw.NavigationPage {
     [GtkChild]
     private unowned Adw.StatusPage trashed_status;
 
-    private Vanana.HtmlView html_view;
+    [GtkChild]
+    private unowned Gtk.Frame license_frame;
+
+    private Vanana.HtmlView submission_description;
+    private Vanana.HtmlView submission_license;
 
     private Gamebanana.Submissions api;
     public Json.Object? info;
@@ -67,13 +71,17 @@ public class ModPage : Adw.NavigationPage {
         
         submission_id = id;
 
-        html_view = new Vanana.HtmlView ();
+        submission_description = new Vanana.HtmlView ();
+        submission_license = new Vanana.HtmlView (true);
+        submission_license.set_margins (10);
+
         api = new Gamebanana.Submissions ();
 
         var spinner = new Adw.SpinnerPaintable (loading_status);
         loading_status.set_paintable (spinner);
 
-        scrolled_html.set_child (html_view);
+        scrolled_html.set_child (submission_description);
+        license_frame.set_child (submission_license);
 
         request_info ();
     }
@@ -117,8 +125,8 @@ public class ModPage : Adw.NavigationPage {
             submission_caption.set_label (name);
         }
 
-        html_view.set_buffer(html_view.get_formatted_buffer (info.get_string_member ("_sText")));
-
+        submission_description.set_html (info.get_string_member_with_default("_sText", "No description"));
+        submission_license.set_html (info.get_string_member_with_default ("_sLicense", "No license"));
         
         upload_date.set_label (Utils.format_relative_time (info.get_int_member ("_tsDateAdded")));
         update_date.set_label (Utils.format_relative_time (info.get_int_member ("_tsDateModified")));
