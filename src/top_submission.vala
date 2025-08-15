@@ -26,10 +26,17 @@ public class TopSubmission : Adw.Bin {
     public int64 submission_id;
     public SubmissionType? submission_type;
 
+    private Cancellable cancellable = new Cancellable ();
+
+    private void on_destroy () {
+        cancellable.cancel ();
+    }
+
 
     public TopSubmission (Json.Object info) {
         Object ();
-
+        destroy.connect (on_destroy);
+        
         var motion = new Gtk.EventControllerMotion ();
         motion.enter.connect (on_hover);
         motion.leave.connect (on_hover_lost);
@@ -62,8 +69,8 @@ public class TopSubmission : Adw.Bin {
                 break;
         }
 
-        Vanana.cache_download (info.get_string_member ("_sImageUrl"), set_cover);
-        Vanana.cache_download (sub_info.get_string_member ("_sAvatarUrl"), set_submitter_pfp);
+        Vanana.cache_download (info.get_string_member ("_sImageUrl"), set_cover, cancellable);
+        Vanana.cache_download (sub_info.get_string_member ("_sAvatarUrl"), set_submitter_pfp, cancellable);
     }
 
     [GtkCallback]

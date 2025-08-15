@@ -32,15 +32,66 @@ template $VananaSidebar: Adw.NavigationPage {
                     ]
 
                     icon-name: "folder-download-symbolic";
-                    title: _("No active downloads");
-                    description: _("Active downloads will appear here");
+                    title: _("No downloads");
+                    description: _("Active/finished downloads will appear here");
                 };
             }
 
             StackPage {
                 name: "main";
 
-                child: Gtk.ListBox downloads_box {};
+                child: Box {
+                    styles [
+                        "box-10",
+                    ]
+
+                    orientation: vertical;
+                    spacing: 10;
+
+                    Box active_group {
+                        orientation: vertical;
+                        spacing: 5;
+
+                        Label {
+                            styles [
+                                "heading",
+                            ]
+
+                            xalign: 0;
+                            label: _("Active downloads");
+                        }
+
+                        Gtk.ListBox downloads_box {
+                            styles [
+                                "boxed-list",
+                            ]
+
+                            selection-mode: none;
+                        }
+                    }
+
+                    Box finished_group {
+                        orientation: vertical;
+                        spacing: 5;
+
+                        Label {
+                            styles [
+                                "heading",
+                            ]
+
+                            xalign: 0;
+                            label: _("Finished downloads");
+                        }
+
+                        Gtk.ListBox finished_downloads_box {
+                            styles [
+                                "boxed-list",
+                            ]
+
+                            selection-mode: none;
+                        }
+                    }
+                };
             }
         };
     };

@@ -21,11 +21,17 @@ public class SubmissionItem : Gtk.ListBoxRow {
     [GtkChild]
     private unowned Gtk.Overlay cover_overlay;
 
+    private Cancellable cancellable = new Cancellable ();
     public int64 submission_id;
     public SubmissionType? type;
 
+    private void on_destroy () {
+        cancellable.cancel ();
+    }
+
     public SubmissionItem (Json.Object info) {
         Object ();
+        destroy.connect (on_destroy);
 
         var cover = new Screenshot ();
         cover_overlay.add_overlay (cover);
@@ -51,7 +57,7 @@ public class SubmissionItem : Gtk.ListBoxRow {
 
             var first_image = images.get_element (0).get_object ();
 
-            Vanana.cache_download (Utils.build_image_url (first_image, Utils.ImageQuality.MEDIUM), cover.set_file);
+            Vanana.cache_download (Utils.build_image_url (first_image, Utils.ImageQuality.MEDIUM), cover.set_file, cancellable);
         } else {
             cover.set_no_preview ();
         }

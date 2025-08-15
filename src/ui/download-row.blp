@@ -1,0 +1,109 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $DownloadRow: ListBoxRow {
+    child: Box {
+        styles [
+            "box-10",
+        ]
+
+        spacing: 10;
+        orientation: vertical;
+
+        Box {
+            spacing: 5;
+
+            Box {
+                orientation: vertical;
+                hexpand: true;
+
+                Label file_title {
+                    styles [
+                        "heading",
+                    ]
+
+                    ellipsize: end;
+                    xalign: 0;
+                }
+
+                Label file_name {
+                    styles [
+                        "caption",
+                    ]
+
+                    ellipsize: end;
+                    opacity: 0.6;
+                    xalign: 0;
+                }
+            }
+
+            Box {
+                orientation: vertical;
+
+                Label progress_string {
+                    styles [
+                        "caption",
+                    ]
+
+                    xalign: 1;
+                }
+
+                Label speed {
+                    styles [
+                        "caption",
+                    ]
+
+                    xalign: 1;
+                }
+            }
+
+            Button stop_btt {
+                styles [
+                    "circular",
+                ]
+
+                clicked => $stop_download();
+                icon-name: "media-playback-stop-symbolic";
+            }
+        }
+
+        Box {
+            orientation: vertical;
+            spacing: 5;
+
+            ProgressBar progress_bar {
+                fraction: 0.3;
+            }
+
+            Button open_btt {
+                visible: false;
+                clicked => $open_file();
+
+                child: Adw.ButtonContent {
+                    icon-name: "folder-open-symbolic";
+                    label: _("Open");
+                };
+            }
+
+            Box error_box {
+                styles [
+                    "error",
+                ]
+
+                visible: false;
+                spacing: 5;
+
+                Image {
+                    icon-name: "error-outline-symbolic";
+                }
+
+                Label error_label {
+                    styles [
+                        "caption",
+                        "monospace",
+                    ]
+                }
+            }
+        }
+    };
+}

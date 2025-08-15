@@ -60,6 +60,9 @@ public class ModPage : Adw.NavigationPage {
     private unowned Gtk.Button open_gb_btt;
 
     [GtkChild]
+    private unowned Gtk.Button download_btt;
+
+    [GtkChild]
     private unowned Adw.StatusPage rating_status;
 
     private string _url;
@@ -76,16 +79,24 @@ public class ModPage : Adw.NavigationPage {
     private Vanana.HtmlView submission_description;
     private Vanana.HtmlView submission_license;
 
+    public Cancellable cancellable;
+
     private Gamebanana.Submissions api;
-    public Json.Object? info;
+    public Json.Array? files;
+    public Json.Array? alt_files;
+    public Json.Array? archived_files;
+
+    public string submission_name;
 
     public SubmissionType submission_type = SubmissionType.MOD;
     public int64 submission_id;
 
     public ModPage (int64 id) {
         Object ();
+        destroy.connect (on_destroy);
         set_title ("Mod");
         
+        cancellable = new Cancellable ();
         submission_id = id;
 
         submission_description = new Vanana.HtmlView ();
@@ -101,6 +112,10 @@ public class ModPage : Adw.NavigationPage {
         license_frame.set_child (submission_license);
 
         request_info ();
+    }
+
+    private void on_destroy () {
+        cancellable.cancel ();
     }
 
     private void request_info () {
@@ -120,7 +135,12 @@ public class ModPage : Adw.NavigationPage {
     }
 
     [GtkCallback]
-    private void on_download_clicked () {}
+    private void on_download_clicked () {
+        var window = (Vanana.Window) get_root();
+        var dialog = new DownloadDialog (submission_name, files, alt_files, archived_files);
+
+        dialog.present (window);
+    }
 
     [GtkCallback]
     private void open_gb_page () {
@@ -147,9 +167,9 @@ public class ModPage : Adw.NavigationPage {
         }
 
         var submitter = info.get_object_member ("_aSubmitter");
-        var sub_name = info.get_string_member ("_sName");
-        submission_title.set_label (sub_name);
-        set_title ("%s - Mod".printf (sub_name));
+        submission_name = info.get_string_member ("_sName");
+        submission_title.set_label (submission_name);
+        set_title ("%s - Mod".printf (submission_name));
 
         if (submitter.has_member ("_sName")) {
             var name = submitter.get_string_member ("_sName");
@@ -173,7 +193,17 @@ public class ModPage : Adw.NavigationPage {
             populate_images (info.get_object_member ("_aPreviewMedia"));
         });
 
+        if (info.has_member ("_aFiles"))
+            files = info.get_array_member ("_aFiles");
 
+        if (info.has_member ("_aAlternateFileSources"))
+            alt_files = info.get_array_member ("_aAlternateFileSources");
+
+        if (info.has_member ("_aArchivedFiles"))
+            archived_files = info.get_array_member ("_aArchivedFiles");
+
+        if (files == null && alt_files == null && archived_files == null)
+            download_btt.set_sensitive (false);
     }
 
     [GtkCallback]
@@ -295,13 +325,13 @@ public class ModPage : Adw.NavigationPage {
         }
 
         var sub_img = images.get_element (0).get_object ();
-        Vanana.cache_download (Utils.build_image_url (sub_img, Utils.ImageQuality.MEDIUM), set_submission_icon);
+        Vanana.cache_download (Utils.build_image_url (sub_img, Utils.ImageQuality.MEDIUM), set_submission_icon, cancellable);
 
         foreach (var item in images.get_elements ()) {
             var img = item.get_object ();
             var screen = new Screenshot ();
             screenshots_carousel.append (screen);
-            Vanana.cache_download (Utils.build_image_url (img, Utils.ImageQuality.HIGH), screen.set_file);
+            Vanana.cache_download (Utils.build_image_url (img, Utils.ImageQuality.HIGH), screen.set_file, cancellable);
         }
     }
 

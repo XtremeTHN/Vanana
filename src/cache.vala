@@ -15,7 +15,7 @@ namespace Vanana {
         }
     }
 
-    void cache_download (string url, CacheCallback callback) {
+    void cache_download (string url, CacheCallback callback, Cancellable cancel) {
         string cache_dir = Path.build_filename (Environment.get_user_cache_dir (), "vanana");
 
         string[] splitted = url.split ("/");
@@ -29,14 +29,19 @@ namespace Vanana {
         }
 
         var src = File.new_for_uri (url);
-        src.copy_async.begin (dest, GLib.FileCopyFlags.NONE, Priority.DEFAULT, null, null, (obj, res) => {
+
+        src.copy_async.begin (dest, GLib.FileCopyFlags.NONE, Priority.DEFAULT, cancel, null, (obj, res) => {
             try {
                 src.copy_async.end (res);
                 callback (dest);
             } catch (Error e) {
+                if (e is IOError.CANCELLED)
+                    return;
+
                 callback (null);
                 warning ("Error while caching image: %s", e.message);
             }
         });
+
     }
 }

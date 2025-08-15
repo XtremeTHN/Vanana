@@ -1,0 +1,36 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $DownloadDialog: Adw.Dialog {
+    title: _("Available downloads");
+
+    child: Adw.ToolbarView {
+        [top]
+        Adw.HeaderBar {}
+
+        content: Box {
+            styles [
+                "box-10",
+            ]
+
+            width-request: 350;
+            orientation: vertical;
+            spacing: 10;
+
+            Adw.PreferencesGroup files_group {
+                visible: false;
+                title: _("Files");
+            }
+
+            Adw.PreferencesGroup alt_files_group {
+                visible: false;
+                title: _("Alternate files");
+            }
+
+            Adw.PreferencesGroup archived_files_group {
+                title: _("Archived files");
+                visible: false;
+            }
+        };
+    };
+}
