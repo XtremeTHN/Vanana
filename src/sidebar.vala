@@ -49,8 +49,8 @@ public class DownloadRow : Gtk.ListBoxRow {
 
     [GtkCallback]
     private void open_file () {
-        var launcher = new Gtk.FileLauncher (dest);
-        launcher.open_containing_folder.begin ((Vanana.Window) get_root (), null);
+        var uri = "file://" + dest.get_path ();
+        AppInfo.launch_default_for_uri_async.begin (uri, null, null);
     }
 
     private void copy_callback (int64 current_bytes, int64 total) {
@@ -63,7 +63,8 @@ public class DownloadRow : Gtk.ListBoxRow {
         speed.set_label (format_size ((current_bytes / (now.to_unix () - start_time)), FormatSizeFlags.DEFAULT));
     }
 
-    public void start_download (File dest) {
+    public void start_download (File _file) {
+        dest = _file;
         var src = File.new_for_uri (url);
 
         src.copy_async.begin (dest, FileCopyFlags.OVERWRITE, Priority.DEFAULT, cancellable, copy_callback, (_, res) => {
@@ -91,6 +92,8 @@ public class DownloadRow : Gtk.ListBoxRow {
         progress_bar.set_visible (false);
         progress_string.set_visible (false);
         speed.set_visible (false);
+
+        stop_btt.set_visible (false);
 
         finish ();
     }
