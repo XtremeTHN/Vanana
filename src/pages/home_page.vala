@@ -159,21 +159,7 @@ public class HomePage : Adw.NavigationPage {
     private void on_row_activate (Gtk.ListBox box, Gtk.ListBoxRow row) {
         var item = (SubmissionItem) row;
 
-        show_submission_page (item.type, item.submission_id);
-    }
-
-    private void show_submission_page (SubmissionType? _type, int64 submission_id) {
-        Adw.NavigationPage page;
-        switch (_type) {
-            case SubmissionType.MOD:
-                page = new ModPage (submission_id);
-                break;
-            default:
-                warning ("<%"+ int64.FORMAT + "> Not supported submission: %s", submission_id, _type.to_string ());
-                Utils.show_toast (this, "\"%s\" submissions are not supported".printf (_type.to_string ()));
-                return;
-        }
-        nav_view.push (page);
+        Utils.show_submission_page (this, item.type, item.submission_id);
     }
 
     [GtkCallback]

@@ -75,25 +75,7 @@ public class TopSubmission : Adw.Bin {
 
     [GtkCallback]
     private void show_submission_page () {
-        // TODO
-        if (submission_type == null) {
-            warning ("<%s>: Unknown submission type", submission_id.to_string ());
-            return;
-        }
-
-        Vanana.Window win = (Vanana.Window) get_root ();
-        Adw.NavigationPage page;
-        switch (submission_type) {
-            case SubmissionType.MOD:
-                page = new ModPage (submission_id);
-                break;
-            default:
-                warning ("<%s>: Submission type not implemented: %s", submission_id.to_string (), submission_type.to_string ());
-                Utils.show_toast (this, "\"%s\" submissions are not supported".printf (submission_type.to_string ()));
-                return;
-        }
-
-        win.navigation_view.push (page);
+        Utils.show_submission_page (this, submission_type, submission_id);
     }
 
     private string get_formatted_period (string period) {

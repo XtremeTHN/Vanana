@@ -32,7 +32,7 @@ public abstract class SubmissionPage : Adw.NavigationPage {
     public Cancellable cancellable {get; set;}
     public Gamebanana.Submissions api {get; set;}
 
-    public abstract SubmissionType submission_type {get; set construct;}
+    public abstract SubmissionType? submission_type {get; set;}
 
     public string? submission_url {get; set;}
     public string submission_name {get; set;}
@@ -48,8 +48,10 @@ public abstract class SubmissionPage : Adw.NavigationPage {
      * You need to set submission_id and submission_type before calling this method;
      */
     public virtual void init () {
-        assert_nonnull ((void *) submission_type);
-        assert_true (submission_id > 0);
+        if (submission_type == null)
+            error ("submission type should not be null"); 
+        if (submission_id == 0)
+            error ("submission id should not be 0");
 
         set_title (submission_type.to_string ());
         cancellable = new Cancellable ();

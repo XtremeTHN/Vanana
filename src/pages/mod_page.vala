@@ -65,7 +65,7 @@ public class ModPage : SubmissionPage {
     private override Vanana.HtmlView submission_description {get; set;}
     private override Vanana.HtmlView submission_license {get; set;}
 
-    public override SubmissionType submission_type { get; set construct; }
+    public override SubmissionType? submission_type { get; set; }
 
     public Json.Array? files;
     public Json.Array? alt_files;

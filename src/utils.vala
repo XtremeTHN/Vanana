@@ -75,10 +75,33 @@ namespace Utils {
     public void show_toast (Gtk.Widget self, string message) {
         var root = (Vanana.Window) self.get_root ();
         if (root == null) {
+            warning (message);
             warning ("root is null, append self to some widget");
             return;
         }
         
         root.show_message (message);
+    }
+
+    public void show_submission_page (Gtk.Widget self, SubmissionType? type, int64 id) {
+        if (type == null) {
+            warning ("<%s>: Unknown submission type", id.to_string ());
+            return;
+        }
+
+        Vanana.Window win = (Vanana.Window) self.get_root ();
+        Adw.NavigationPage page;
+
+        switch (type) {
+            case SubmissionType.MOD:
+                page = new ModPage (id);
+                break;
+            default:
+                warning ("<%s>: Submission type not implemented: %s", id.to_string (), type.to_string ());
+                Utils.show_toast (self, "\"%s\" submissions are not supported".printf (type.to_string ()));
+                return;
+        }
+
+        win.navigation_view.push (page);
     }
 }
