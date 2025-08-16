@@ -1,7 +1,7 @@
 using Utils;
 
-[GtkTemplate (ui = "/com/github/XtremeTHN/Vanana/mod-page.ui")]
-public class ModPage : DownloadableSubmissionPage {
+[GtkTemplate (ui = "/com/github/XtremeTHN/Vanana/downloadable-page.ui")]
+public class DownloadablePage : DownloadableSubmissionPage {
     [GtkChild]
     private override unowned Adw.PreferencesGroup updates_group {get;}
 
@@ -70,10 +70,10 @@ public class ModPage : DownloadableSubmissionPage {
 
     public override SubmissionType? submission_type { get; set; }
 
-    public ModPage (int64 id) {
+    public DownloadablePage (SubmissionType type, int64 id) {
         Object ();
 
-        submission_type = SubmissionType.MOD;
+        submission_type = type;
         submission_id = id;
 
         init ();    

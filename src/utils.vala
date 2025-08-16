@@ -93,8 +93,9 @@ namespace Utils {
         Adw.NavigationPage page;
 
         switch (type) {
+            case SubmissionType.TOOL:
             case SubmissionType.MOD:
-                page = new ModPage (id);
+                page = new DownloadablePage (type, id);
                 break;
             case SubmissionType.WIP:
                 page = new WipPage (id);
