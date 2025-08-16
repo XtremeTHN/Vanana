@@ -116,10 +116,11 @@ public class Vanana.HtmlView : Gtk.TextView {
         string name = node->name;
         var table = buffer.get_tag_table ();
 
-        // Special cases
         if (name == "br") {
-            if (node->next->name != "ul" || node->next->name != "ol")
-                buffer.insert (ref iter, "\n", -1);
+            if (node->next != null)
+                if (node->next->name == "ul" || node->next->name == "ol")
+                    return;
+            buffer.insert (ref iter, "\n", -1);
             return;
         }
 
