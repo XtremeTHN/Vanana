@@ -179,6 +179,20 @@ public class Vanana.HtmlView : Gtk.TextView {
             return;
         }
 
+        if (name == "ol") {
+            int count = 1;
+            for (Xml.Node* child = node->children; child != null; child = child->next) {
+                if (child->name == "li") {
+                    var text = "\n%i. %s".printf(count, child->children->content);
+                    buffer.insert_with_tags_by_name (ref iter, text, -1, "li");
+                    count += 1;
+                }
+            }
+            buffer.insert (ref iter, "\n", 1);
+
+            return;
+        }
+
         // Normal tag handling
         var new_stack = new List<Gtk.TextTag> ();
         tag_stack.foreach ((j) => {new_stack.append(j);});
