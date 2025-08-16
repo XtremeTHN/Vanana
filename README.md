@@ -15,7 +15,7 @@ A fnf gamebanana client. Rewriting in vala
     - [x] Mod
     - [x] WiPs
     - [ ] Questions
-    - [ ] Tools
+    - [x] Tools
     - [ ] Sounds
     - [ ] Concepts
     - [ ] Tutorials

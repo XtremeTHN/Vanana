@@ -202,6 +202,22 @@ public class Vanana.HtmlView : Gtk.TextView {
         if (tag != null) {
             new_stack.append (tag);
         }
+        
+        for (Xml.Attr* attr = node->properties; attr != null; attr = attr->next) {
+            if (attr->children == null)
+                continue;
+
+            if (attr->name == "class") {
+                foreach (var _class in attr->children->content.split (" ")) {
+                    var _tag = table.lookup (_class);
+
+                    if (_tag == null)
+                        continue;
+                    new_stack.append (_tag);
+                }
+                break;
+            }
+        }
 
         for (Xml.Node* child = node->children; child != null; child = child->next) {
             walk_node (child, ref iter, new_stack, buffer);
