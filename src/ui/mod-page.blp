@@ -1,7 +1,7 @@
 using Gtk 4.0;
 using Adw 1;
 
-template $ModPage: $SubmissionPage {
+template $ModPage: $DownloadableSubmissionPage {
   child: Adw.ToolbarView {
     [top]
     Adw.HeaderBar {
@@ -241,7 +241,6 @@ template $ModPage: $SubmissionPage {
                     ]
 
                     halign: start;
-                    clicked => $on_download_clicked();
 
                     child: Adw.ButtonContent {
                       icon-name: "download-symbolic";

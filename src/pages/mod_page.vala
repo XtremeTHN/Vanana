@@ -1,7 +1,7 @@
 using Utils;
 
 [GtkTemplate (ui = "/com/github/XtremeTHN/Vanana/mod-page.ui")]
-public class ModPage : SubmissionPage {
+public class ModPage : DownloadableSubmissionPage {
     [GtkChild]
     private override unowned Adw.PreferencesGroup updates_group {get;}
 
@@ -45,7 +45,7 @@ public class ModPage : SubmissionPage {
     private override unowned Gtk.Button continue_btt {get;}
 
     [GtkChild]
-    private unowned Gtk.Label downloads;
+    private override unowned Gtk.Label downloads {get;}
 
     [GtkChild]
     private override unowned Adw.StatusPage loading_status {get;}
@@ -60,7 +60,7 @@ public class ModPage : SubmissionPage {
     private override unowned Gtk.Button open_gb_btt {get;}
 
     [GtkChild]
-    private unowned Gtk.Button download_btt;
+    private override unowned Gtk.Button download_btt {get;}
 
     [GtkChild]
     private override unowned Adw.StatusPage rating_status {get;}
@@ -70,10 +70,6 @@ public class ModPage : SubmissionPage {
 
     public override SubmissionType? submission_type { get; set; }
 
-    public Json.Array? files;
-    public Json.Array? alt_files;
-    public Json.Array? archived_files;
-
     public ModPage (int64 id) {
         Object ();
 
@@ -82,29 +78,4 @@ public class ModPage : SubmissionPage {
 
         init ();    
     }
-
-    [GtkCallback]
-    private void on_download_clicked () {
-        var window = (Vanana.Window) get_root();
-        var dialog = new DownloadDialog (submission_name, files, alt_files, archived_files);
-
-        dialog.present (window);
-    }
-    public override void populate_extra_widgets (Json.Object info) {
-        downloads.set_label (info.get_int_member ("_nDownloadCount").to_string ());
-
-        if (info.has_member ("_aFiles"))
-            files = info.get_array_member ("_aFiles");
-
-        if (info.has_member ("_aAlternateFileSources"))
-            alt_files = info.get_array_member ("_aAlternateFileSources");
-
-        if (info.has_member ("_aArchivedFiles"))
-            archived_files = info.get_array_member ("_aArchivedFiles");
-
-        if (files == null && alt_files == null && archived_files == null)
-            download_btt.set_sensitive (false);
-    }
-
-
 }

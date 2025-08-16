@@ -283,3 +283,43 @@ public abstract class SubmissionPage : Adw.NavigationPage {
         }
     }
 }
+
+public abstract class DownloadableSubmissionPage : SubmissionPage {
+    public Json.Array? files;
+    public Json.Array? alt_files;
+    public Json.Array? archived_files;
+
+    private abstract unowned Gtk.Label downloads {get;}
+    private abstract unowned Gtk.Button download_btt {get;}
+
+    public override void init () {
+        base.init ();
+
+        download_btt.clicked.connect (on_download_clicked);
+    }
+
+    private void on_download_clicked () {
+        var window = (Vanana.Window) get_root();
+        var dialog = new DownloadDialog (submission_name, files, alt_files, archived_files);
+
+        dialog.present (window);
+    }
+
+    public override void handle_info (Json.Object info) {
+        base.handle_info (info);
+
+        downloads.set_label (info.get_int_member ("_nDownloadCount").to_string ());
+
+        if (info.has_member ("_aFiles"))
+            files = info.get_array_member ("_aFiles");
+
+        if (info.has_member ("_aAlternateFileSources"))
+            alt_files = info.get_array_member ("_aAlternateFileSources");
+
+        if (info.has_member ("_aArchivedFiles"))
+            archived_files = info.get_array_member ("_aArchivedFiles");
+
+        if (files == null && alt_files == null && archived_files == null)
+            download_btt.set_sensitive (false);
+    }
+}
