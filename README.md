@@ -11,6 +11,8 @@ A fnf gamebanana client. Rewriting in vala
 - [ ] Add android support
 - [ ] Add windows support
 
+- [ ] Add gamebanana account logging support
+
 - [ ] Support this submissions:
     - [x] Mod
     - [x] WiPs
