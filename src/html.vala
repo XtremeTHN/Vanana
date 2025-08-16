@@ -171,7 +171,7 @@ public class Vanana.HtmlView : Gtk.TextView {
         if (name == "ul") {
             for (Xml.Node* child = node->children; child != null; child = child->next) {
                 if (child->name == "li") {
-                    var text = "\n- " + child->children->content;
+                    var text = "\n• " + child->children->content;
                     buffer.insert_with_tags_by_name (ref iter, text, -1, "li");
                 }
             }

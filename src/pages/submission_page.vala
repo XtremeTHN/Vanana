@@ -153,11 +153,11 @@ public abstract class SubmissionPage : Adw.NavigationPage {
         string label = rating_status.get_description ();
         foreach (var member in ratings.get_members ()) {
             var rating = ratings.get_string_member (member);
-            label += rating + "\n";
+            label += "• " + rating + "\n";
         }
 
         label = label.replace ("&", "&amp;");
-        rating_status.set_description (label.printf (SubmissionType.MOD.to_string ()));
+        rating_status.set_description (label.printf (submission_type.to_string ().ascii_down ()));
     }
 
     public virtual void show_main (Json.Object info) {
