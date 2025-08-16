@@ -9,7 +9,7 @@ A fnf gamebanana client. Rewriting in vala
 - [x] Make the downloads page
 - [ ] Add a full screen screenshot preview
 - [ ] Add android support
-- [ ] Add windows support
+- [x] Add windows support
 
 - [ ] Add gamebanana account logging support
 
