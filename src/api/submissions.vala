@@ -59,7 +59,7 @@ public enum SortType {
 }
 
 [SingleInstance]
-class Gamebanana.Submissions : Object {
+public class Gamebanana.Submissions : Object {
     Session s_session;
 
     public Submissions () {

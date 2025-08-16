@@ -1,5 +1,5 @@
 
-class Vanana.HtmlView : Gtk.TextView {
+public class Vanana.HtmlView : Gtk.TextView {
     private Gdk.RGBA red_adw;
     private Gdk.RGBA green_adw;
     private Gdk.RGBA accent;
