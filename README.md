@@ -13,7 +13,7 @@ A fnf gamebanana client. Rewriting in vala
 
 - [ ] Support this submissions:
     - [x] Mod
-    - [ ] WiPs
+    - [x] WiPs
     - [ ] Questions
     - [ ] Tools
     - [ ] Sounds
