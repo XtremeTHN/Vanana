@@ -102,7 +102,7 @@ public class Vanana.HtmlView : Gtk.TextView {
         if (node == null) return;
 
         if (node->type == Xml.ElementType.TEXT_NODE) {
-            string text = (string) node->content;
+            string text = node->content;
             if (text.strip () != "") {
                 insert_with_tags (buffer, text,  ref iter, tag_stack);
             }
@@ -118,7 +118,8 @@ public class Vanana.HtmlView : Gtk.TextView {
 
         // Special cases
         if (name == "br") {
-            buffer.insert (ref iter, "\n", -1);
+            if (node->next->name != "ul" || node->next->name != "ol")
+                buffer.insert (ref iter, "\n", -1);
             return;
         }
 
@@ -163,6 +164,18 @@ public class Vanana.HtmlView : Gtk.TextView {
             for (Xml.Node* child = node->children; child != null; child = child->next) {
                 walk_node (child, ref iter, new_stack, buffer);
             }
+            return;
+        }
+
+        if (name == "ul") {
+            for (Xml.Node* child = node->children; child != null; child = child->next) {
+                if (child->name == "li") {
+                    var text = "\n- " + child->children->content;
+                    buffer.insert_with_tags_by_name (ref iter, text, -1, "li");
+                }
+            }
+            buffer.insert (ref iter, "\n", 1);
+
             return;
         }
 
@@ -213,6 +226,7 @@ public class Vanana.HtmlView : Gtk.TextView {
 
     private void add_tags_to_buffer (Gtk.TextBuffer buff) {
         buff.create_tag ("strong", "weight", 700);
+        buff.create_tag ("b", "weight", 700);
 
         buff.create_tag ("u", "underline", Pango.Underline.SINGLE);
         buff.create_tag ("del", "strikethrough", true);
