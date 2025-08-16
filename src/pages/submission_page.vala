@@ -42,7 +42,15 @@ public abstract class SubmissionPage : Adw.NavigationPage {
         cancellable.cancel ();
     }
 
-    public virtual void init () {        
+    /**
+     * Sets required properties. Call this when constructing subclass
+     * 
+     * You need to set submission_id and submission_type before calling this method;
+     */
+    public virtual void init () {
+        assert_nonnull ((void *) submission_type);
+        assert_true (submission_id > 0);
+
         set_title (submission_type.to_string ());
         cancellable = new Cancellable ();
         destroy.connect (on_destroy);
@@ -59,7 +67,6 @@ public abstract class SubmissionPage : Adw.NavigationPage {
         scrolled_html.set_child (submission_description);
         license_frame.set_child (submission_license);
 
-        assert_true (submission_id > 0);
         request_info ();
     }
 
