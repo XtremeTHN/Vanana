@@ -15,6 +15,7 @@ vanana_sources = [
   'pages/submission_page.vala',
   'pages/home_page.vala',
   'pages/mod_page.vala',
+  'pages/wip_page.vala',
   'screenshot.vala',
   'window.vala',
 ]

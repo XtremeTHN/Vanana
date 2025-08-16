@@ -13,6 +13,9 @@ public abstract class SubmissionPage : Adw.NavigationPage {
     public abstract unowned Gtk.Stack stack {get;}
     public abstract unowned Gtk.Stack submission_icon_stack {get;}
 
+    public abstract unowned Gtk.Button continue_btt {get;}
+    public abstract unowned Gtk.Button open_gb_btt {get;}
+
     public abstract unowned Adw.Carousel screenshots_carousel {get;}
 
     public abstract Vanana.HtmlView submission_description {get; set;}
@@ -22,11 +25,9 @@ public abstract class SubmissionPage : Adw.NavigationPage {
     public abstract unowned Gtk.Label update_date {get;}
     public abstract unowned Gtk.Label likes {get;}
     public abstract unowned Gtk.Label views {get;}
-    public abstract unowned Gtk.Label? downloads {get;}
     public abstract unowned Adw.StatusPage loading_status {get;}
     public abstract unowned Adw.StatusPage trashed_status {get;}
     public abstract unowned Gtk.Frame license_frame {get;}
-    public abstract unowned Gtk.Button open_gb_btt {get;}
     public abstract unowned Adw.StatusPage rating_status {get;}
 
     public Cancellable cancellable {get; set;}
@@ -69,15 +70,44 @@ public abstract class SubmissionPage : Adw.NavigationPage {
         scrolled_html.set_child (submission_description);
         license_frame.set_child (submission_license);
 
+        open_gb_btt.clicked.connect (open_gb_page);
+        continue_btt.clicked.connect (on_continue_clicked);
+
         request_info ();
     }
 
-    public abstract void request_info ();
+    private void open_gb_page () {
+        var s = new Gtk.UriLauncher (submission_url);
+        var root = get_root ();
+
+        if (root != null)
+            s.launch.begin ((Vanana.Window) root, null);
+        else
+            Utils.warn (this, "Couldn't launch uri (root was null).");
+    }
+
+    private void on_continue_clicked () {
+        stack.set_visible_child_name ("main");
+    }
+
+    public virtual void request_info () {
+        api.get_info.begin (submission_type, submission_id, (obj, res) => {
+            try {
+                var info = api.get_info.end (res);
+                
+                handle_info (info);
+            } catch (Error e) {
+                if (e.message == "Socket I/O timed out")
+                    activate_action ("navigation.pop", null);
+
+                Utils.show_toast (this, e.message);
+                warning ("Error while obtaining submission info: %s", e.message);
+            }
+        });
+    }
     public virtual void populate_extra_widgets (Json.Object info) {}
     
     public virtual void handle_info (Json.Object info) {
-        const string INT64_FMT = "%" + int64.FORMAT;
-
         submission_url = info.get_string_member ("_sProfileUrl");
         open_gb_btt.sensitive = true;
 
@@ -104,9 +134,8 @@ public abstract class SubmissionPage : Adw.NavigationPage {
         
         upload_date.set_label (Utils.format_relative_time (info.get_int_member ("_tsDateAdded")));
         update_date.set_label (Utils.format_relative_time (info.get_int_member ("_tsDateModified")));
-        likes.set_label (INT64_FMT.printf (info.get_int_member ("_nLikeCount")));
-        views.set_label (INT64_FMT.printf (info.get_int_member ("_nViewCount")));
-        downloads.set_label (INT64_FMT.printf (info.get_int_member ("_nDownloadCount")));
+        likes.set_label (info.get_int_member ("_nLikeCount").to_string ());
+        views.set_label (info.get_int_member ("_nViewCount").to_string ());
 
         populate_credits (info.get_array_member ("_aCredits"));
         populate_updates.begin ((_, res) => {

@@ -8,6 +8,7 @@ blueprints = custom_target('blueprints',
     'download-row.blp',
     'submission-item.blp',
     'top-submission.blp',
+    'wip-page.blp',
     'window.blp'
   ),
   output: '.',

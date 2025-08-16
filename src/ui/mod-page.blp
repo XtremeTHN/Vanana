@@ -9,7 +9,6 @@ template $ModPage: $SubmissionPage {
       Button open_gb_btt {
         icon-name: "external-link-symbolic";
         sensitive: false;
-        clicked => $open_gb_page();
       }
     }
 
@@ -44,14 +43,13 @@ template $ModPage: $SubmissionPage {
           icon-name: "warning-symbolic";
           description: _("This %s contains sensitive content that may offend or be inappropriate for some users. See the ratings below:\n\n");
 
-          child: Button {
+          child: Button continue_btt {
             styles [
               "warning",
               "pill",
             ]
 
             halign: center;
-            clicked => $on_continue_clicked();
             label: "Continue";
           };
         };

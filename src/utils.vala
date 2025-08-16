@@ -96,6 +96,9 @@ namespace Utils {
             case SubmissionType.MOD:
                 page = new ModPage (id);
                 break;
+            case SubmissionType.WIP:
+                page = new WipPage (id);
+                break;
             default:
                 warning ("<%s>: Submission type not implemented: %s", id.to_string (), type.to_string ());
                 Utils.show_toast (self, "\"%s\" submissions are not supported".printf (type.to_string ()));
