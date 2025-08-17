@@ -7,6 +7,7 @@ public enum SubmissionType {
     WIP,
     TOOL,
     QUESTION,
+    QUESTIONS,
     UNKNOWN;
 
     public static SubmissionType? from_string (string value) {
@@ -38,6 +39,8 @@ public enum SubmissionType {
                 return "Tool";
             case QUESTION:
                 return "Question";
+            case QUESTIONS:
+                return "Questions";
             default:
                 return "Unknown";
         }
@@ -193,6 +196,28 @@ public class Gamebanana.Submissions : Object {
     public async Json.Object? get_posts_feed (SubmissionType type, int64 id, int page = 1, PostsFeedSort sort = PostsFeedSort.NEWEST) throws Error {
         string method = "/%s/%s/Posts?_nPage=%i&_nPerpage=5&_sSort=%s".printf(type.to_string (), id.to_string (), page, sort.to_string ());
 
+        var json = yield _get (method);
+        var obj = json.get_object ();
+        warn_if_fail (obj != null);
+
+        return obj;
+    }
+
+    /**
+     * Undocumented api method.
+     * Returns a paged response, with an array of post objects.
+     * Relevant members:
+     *  - _sText
+     *  - _tsDateAdded and _tsDateModified
+     *  - _nReplyCount
+     *  - _aPoster : GenericProfile (Banana type name)
+     *  - _aAccess : Json.Object
+     *      - Post_Trash
+     *      - Post_Edit
+     *      - Post_Reply
+     */
+    public async Json.Object get_post_replies (int64 post_id, int page = 1) throws Error {
+        string method = "/Post/%s/Posts?_nPage=%i&_nPerpage=5".printf (post_id.to_string (), page);
         var json = yield _get (method);
         var obj = json.get_object ();
         warn_if_fail (obj != null);

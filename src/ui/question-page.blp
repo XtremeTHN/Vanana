@@ -264,13 +264,13 @@ template $QuestionPage: $SubmissionPage {
                                 };
                             }
 
-                            Adw.CarouselIndicatorDots {
+                            Adw.CarouselIndicatorDots screenshots_carousel_dots {
                                 carousel: screenshots_carousel;
                             }
 
                             Box {
                                 orientation: vertical;
-                                spacing: 2;
+                                spacing: 10;
 
                                 Label {
                                     styles [
@@ -281,12 +281,37 @@ template $QuestionPage: $SubmissionPage {
                                     label: _("Comments");
                                 }
 
-                                ListBox comment_list {
-                                    styles [
-                                        "boxed-list",
-                                    ]
+                                Stack comments_stack {
+                                    Adw.Spinner {
+                                        width-request: 20;
+                                        height-request: 20;
+                                    }
 
-                                    selection-mode: none;
+                                    StackPage {
+                                        name: "main";
+
+                                        child: ListBox comment_list {
+                                            styles [
+                                                "boxed-list-separate",
+                                            ]
+
+                                            selection-mode: none;
+
+                                            ListBoxRow placeholder_row {
+                                                selectable: false;
+
+                                                child: Label {
+                                                    styles [
+                                                        "box-10",
+                                                    ]
+
+                                                    xalign: 0;
+                                                    halign: center;
+                                                    label: _("No comments");
+                                                };
+                                            }
+                                        };
+                                    }
                                 }
                             }
                         };

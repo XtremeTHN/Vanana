@@ -2,6 +2,7 @@ blueprints = custom_target('blueprints',
   input: files(
     'home-page.blp',
     'sidebar.blp',
+    'comment.blp',
     'downloadable-page.blp',
     'question-page.blp',
     'screenshot.blp',

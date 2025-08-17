@@ -98,11 +98,11 @@ public class Vanana.HtmlView : Gtk.TextView {
         }
     }
 
-    private void walk_node (Xml.Node* node, ref Gtk.TextIter iter, List<Gtk.TextTag> tag_stack, Gtk.TextBuffer buffer) {
+    private void walk_node (Xml.Node* node, ref Gtk.TextIter iter, List<Gtk.TextTag> tag_stack, Gtk.TextBuffer buffer, string suffix = "") {
         if (node == null) return;
 
         if (node->type == Xml.ElementType.TEXT_NODE) {
-            string text = node->content;
+            string text = node->content + suffix;
             if (text.strip () != "") {
                 insert_with_tags (buffer, text,  ref iter, tag_stack);
             }
@@ -180,6 +180,13 @@ public class Vanana.HtmlView : Gtk.TextView {
             return;
         }
 
+        //  if (name == "code") {
+        //      buffer.insert (ref iter, "\n", 1); 
+        //      message (node->next->name);
+        //      if (node->next != null && node->next->name != "code")
+        //          suffix = "\n";
+        //  }
+
         if (name == "ol") {
             int count = 1;
             for (Xml.Node* child = node->children; child != null; child = child->next) {
@@ -220,7 +227,7 @@ public class Vanana.HtmlView : Gtk.TextView {
         }
 
         for (Xml.Node* child = node->children; child != null; child = child->next) {
-            walk_node (child, ref iter, new_stack, buffer);
+            walk_node (child, ref iter, new_stack, buffer, suffix);
         }
 
         if (name.length == 2 && name[0] == 'h' && name[1].isdigit ()) {

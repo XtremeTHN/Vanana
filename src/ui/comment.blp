@@ -1,0 +1,96 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $Comment: ListBoxRow {
+    styles [
+        "box-10",
+    ]
+
+    width-request: 500;
+    activatable: false;
+
+    child: Box {
+        orientation: vertical;
+        spacing: 5;
+
+        Box {
+            spacing: 10;
+
+            Adw.Avatar poster_avatar {
+                size: 40;
+            }
+
+            Box {
+                orientation: vertical;
+                hexpand: true;
+
+                Label user_name {
+                    styles [
+                        "heading",
+                    ]
+
+                    xalign: 0;
+                }
+
+                Label user_title {
+                    styles [
+                        "caption",
+                    ]
+
+                    xalign: 0;
+                    visible: false;
+                }
+            }
+
+            Box {
+                orientation: vertical;
+
+                Label replying_to_label {
+                    styles [
+                        "caption",
+                    ]
+
+                    xalign: 1;
+                }
+
+                Label upload_date {
+                    styles [
+                        "caption",
+                    ]
+
+                    xalign: 1;
+                    opacity: 0.6;
+                }
+            }
+
+            Button edit_btt {
+                valign: center;
+                visible: false;
+                icon-name: "document-edit-symbolic";
+                clicked => $start_edit_comment();
+            }
+
+            Button trash_btt {
+                valign: center;
+                visible: false;
+                icon-name: "user-trash-symbolic";
+                clicked => $trash_comment();
+            }
+        }
+
+        ScrolledWindow scrolled_html {
+            styles [
+                "no-back",
+            ]
+
+            hscrollbar-policy: automatic;
+            vscrollbar-policy: never;
+        }
+
+        Button load_replies_btt {
+            visible: false;
+            label: _("Load replies");
+            clicked => $load_replies();
+        }
+    };
+}

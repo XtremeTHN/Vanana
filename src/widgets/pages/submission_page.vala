@@ -17,6 +17,7 @@ public abstract class SubmissionPage : Adw.NavigationPage {
     public abstract unowned Gtk.Button open_gb_btt {get;}
 
     public abstract unowned Adw.Carousel screenshots_carousel {get;}
+    public abstract unowned Adw.CarouselIndicatorDots screenshots_carousel_dots {get;}
 
     public abstract Vanana.HtmlView submission_description {get; set;}
     public virtual Vanana.HtmlView submission_license {get; set;}
@@ -167,7 +168,7 @@ public abstract class SubmissionPage : Adw.NavigationPage {
     public virtual void show_main (Json.Object info) {
         var visibility = info.get_string_member ("_sInitialVisibility");
 
-        if (visibility != "warn") {
+        if (visibility == "show") {
             stack.set_visible_child_name ("main");
             return;
         }
@@ -190,6 +191,7 @@ public abstract class SubmissionPage : Adw.NavigationPage {
         if (preview_info == null || preview_info.has_member ("_aImages") == false) {
             warning ("No preview media");
             screenshots_carousel.set_visible (false);
+            screenshots_carousel_dots.set_visible (false);
             set_submission_icon (null);
 
             return;

@@ -18,8 +18,7 @@ namespace Vanana {
     void cache_download (string url, CacheCallback callback, Cancellable cancel) {
         string cache_dir = Path.build_filename (Environment.get_user_cache_dir (), "vanana");
 
-        string[] splitted = url.split ("/");
-        string file_name = splitted[splitted.length - 1];
+        string file_name = Utils.get_url_file_basename (url);
 
         var dest = File.new_build_filename (cache_dir, file_name);
 

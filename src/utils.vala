@@ -46,6 +46,11 @@ namespace Utils {
         }
     }
 
+    public string get_url_file_basename (string url) {
+        string[] splitted = url.split ("/");
+        return splitted[splitted.length - 1];
+    }
+
     public string build_image_url (Json.Object image_info, ImageQuality quality = ImageQuality.MEDIUM) {
         string file = "";
         string default_file = image_info.get_string_member ("_sFile");
