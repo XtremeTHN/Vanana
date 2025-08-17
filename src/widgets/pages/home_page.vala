@@ -59,12 +59,13 @@ public class HomePage : Adw.NavigationPage {
     }
 
     private void start_auto_scroll () {
-        var current = top_submissions.get_first_child ();
         auto_scroll_running = true;
 
         Timeout.add_seconds (5, () => {
             if (auto_scroll_running == false)
                 return Source.REMOVE;
+            
+            var current = top_submissions.get_nth_page ((uint) top_submissions.get_position ());
 
             current = current.get_next_sibling ();
             if (current == null) {
