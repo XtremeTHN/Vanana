@@ -1,17 +1,17 @@
 using Utils;
 
 public abstract class SubmissionPage : Adw.NavigationPage {
-    public abstract unowned Adw.PreferencesGroup updates_group {get;}
-    public abstract unowned Adw.PreferencesGroup credits_group {get;}
+    public virtual unowned Adw.PreferencesGroup updates_group {get;}
+    public virtual unowned Adw.PreferencesGroup credits_group {get;}
 
-    public abstract unowned Gtk.Picture submission_icon {get;}
+    public virtual unowned Gtk.Picture submission_icon {get;}
     public abstract unowned Gtk.Label submission_title {get;}
     public abstract unowned Gtk.Label submission_caption {get;}
 
     public abstract unowned Gtk.ScrolledWindow scrolled_html {get;}
 
     public abstract unowned Gtk.Stack stack {get;}
-    public abstract unowned Gtk.Stack submission_icon_stack {get;}
+    public virtual unowned Gtk.Stack submission_icon_stack {get;}
 
     public abstract unowned Gtk.Button continue_btt {get;}
     public abstract unowned Gtk.Button open_gb_btt {get;}
@@ -19,7 +19,7 @@ public abstract class SubmissionPage : Adw.NavigationPage {
     public abstract unowned Adw.Carousel screenshots_carousel {get;}
 
     public abstract Vanana.HtmlView submission_description {get; set;}
-    public abstract Vanana.HtmlView submission_license {get; set;}
+    public virtual Vanana.HtmlView submission_license {get; set;}
     
     public abstract unowned Gtk.Label upload_date {get;}
     public abstract unowned Gtk.Label update_date {get;}
@@ -27,7 +27,9 @@ public abstract class SubmissionPage : Adw.NavigationPage {
     public abstract unowned Gtk.Label views {get;}
     public abstract unowned Adw.StatusPage loading_status {get;}
     public abstract unowned Adw.StatusPage trashed_status {get;}
-    public abstract unowned Gtk.Frame license_frame {get;}
+
+    public virtual unowned Gtk.Frame license_frame {get;}
+
     public abstract unowned Adw.StatusPage rating_status {get;}
 
     public Cancellable cancellable {get; set;}
@@ -59,8 +61,6 @@ public abstract class SubmissionPage : Adw.NavigationPage {
         destroy.connect (on_destroy);
 
         submission_description = new Vanana.HtmlView ();
-        submission_license = new Vanana.HtmlView (true);
-        submission_license.set_margins (10);
 
         api = new Gamebanana.Submissions ();
 
@@ -68,8 +68,13 @@ public abstract class SubmissionPage : Adw.NavigationPage {
         loading_status.set_paintable (spinner);
 
         scrolled_html.set_child (submission_description);
-        license_frame.set_child (submission_license);
 
+        if (license_frame != null) {
+            submission_license = new Vanana.HtmlView (true);
+            submission_license.set_margins (10);
+            license_frame.set_child (submission_license);
+        }
+        
         open_gb_btt.clicked.connect (open_gb_page);
         continue_btt.clicked.connect (on_continue_clicked);
 
@@ -94,8 +99,9 @@ public abstract class SubmissionPage : Adw.NavigationPage {
         api.get_info.begin (submission_type, submission_id, (obj, res) => {
             try {
                 var info = api.get_info.end (res);
-                
+
                 handle_info (info);
+                populate (info);
             } catch (Error e) {
                 if (e.message == "Socket I/O timed out")
                     activate_action ("navigation.pop", null);
@@ -108,35 +114,15 @@ public abstract class SubmissionPage : Adw.NavigationPage {
     public virtual void populate_extra_widgets (Json.Object info) {}
     
     public virtual void handle_info (Json.Object info) {
+        submission_name = info.get_string_member ("_sName");
         submission_url = info.get_string_member ("_sProfileUrl");
         open_gb_btt.sensitive = true;
 
-        if (info.get_boolean_member ("_bIsTrashed")) {
-            var trash_info = info.get_object_member ("_aTrashInfo");
-
-            trashed_status.set_description ("This mod was trashed: %s".printf(trash_info.get_string_member ("_sReason")));
-            stack.set_visible_child_name ("trashed");
-            return;
-        }
-
-        var submitter = info.get_object_member ("_aSubmitter");
-        submission_name = info.get_string_member ("_sName");
-        submission_title.set_label (submission_name);
         set_title ("%s - %s".printf (submission_name, submission_type.to_string ()));
+    }
 
-        if (submitter.has_member ("_sName")) {
-            var name = submitter.get_string_member ("_sName");
-            submission_caption.set_label (name);
-        }
-
-        submission_description.set_html (info.get_string_member_with_default("_sText", "No description"));
-        submission_license.set_html (info.get_string_member_with_default ("_sLicense", "No license"));
-        
-        upload_date.set_label (Utils.format_relative_time (info.get_int_member ("_tsDateAdded")));
-        update_date.set_label (Utils.format_relative_time (info.get_int_member ("_tsDateModified")));
-        likes.set_label (info.get_int_member ("_nLikeCount").to_string ());
-        views.set_label (info.get_int_member ("_nViewCount").to_string ());
-
+    public virtual void populate (Json.Object info) {
+        populate_labels (info);
         populate_credits (info.get_array_member ("_aCredits"));
         populate_updates.begin ((_, res) => {
             populate_updates.end (res);
@@ -145,8 +131,26 @@ public abstract class SubmissionPage : Adw.NavigationPage {
             show_main (info);
             populate_images (info.get_object_member ("_aPreviewMedia"));
         });
+    }
 
-        
+    public virtual void populate_labels (Json.Object info) {
+        var submitter = info.get_object_member ("_aSubmitter");
+        submission_title.set_label (submission_name);
+
+        if (submitter.has_member ("_sName")) {
+            var name = submitter.get_string_member ("_sName");
+            submission_caption.set_label (name);
+        }
+
+        submission_description.set_html (info.get_string_member_with_default("_sText", "No description"));
+
+        if (submission_license != null)
+            submission_license.set_html (info.get_string_member_with_default ("_sLicense", "No license"));
+
+        upload_date.set_label (Utils.format_relative_time (info.get_int_member ("_tsDateAdded")));
+        update_date.set_label (Utils.format_relative_time (info.get_int_member ("_tsDateModified")));
+        likes.set_label (info.get_int_member ("_nLikeCount").to_string ());
+        views.set_label (info.get_int_member ("_nViewCount").to_string ());
     }
 
     public virtual void populate_ratings_warning (Json.Object ratings) {
@@ -174,7 +178,7 @@ public abstract class SubmissionPage : Adw.NavigationPage {
 
     public virtual void set_submission_icon (File? img) {
         if (img == null) {
-            warning ("submission icon image object is null");
+            submission_icon_stack.set_visible_child_name ("no-preview");
             return;
         }
 
@@ -183,8 +187,11 @@ public abstract class SubmissionPage : Adw.NavigationPage {
     }
 
     public virtual void populate_images (Json.Object? preview_info) {
-        if (preview_info == null) {
+        if (preview_info == null || preview_info.has_member ("_aImages") == false) {
             warning ("No preview media");
+            screenshots_carousel.set_visible (false);
+            set_submission_icon (null);
+
             return;
         }
 
@@ -196,7 +203,9 @@ public abstract class SubmissionPage : Adw.NavigationPage {
         }
 
         var sub_img = images.get_element (0).get_object ();
-        Vanana.cache_download (build_image_url (sub_img, Utils.ImageQuality.MEDIUM), set_submission_icon, cancellable);
+        
+        if (submission_icon != null)
+            Vanana.cache_download (build_image_url (sub_img, Utils.ImageQuality.MEDIUM), set_submission_icon, cancellable);
 
         foreach (var item in images.get_elements ()) {
             var img = item.get_object ();
@@ -207,6 +216,9 @@ public abstract class SubmissionPage : Adw.NavigationPage {
     }
 
     public virtual async void populate_updates () {
+        if (updates_group == null)
+            return;
+
         try {
             var response = yield api.get_updates (submission_type, submission_id);
 
@@ -251,6 +263,8 @@ public abstract class SubmissionPage : Adw.NavigationPage {
 
     public virtual void populate_credits (Json.Array? credits) {
         return_if_fail (credits != null);
+        if (credits_group == null)
+            return;
 
         if (credits.get_length () == 0) {
             var row = new Adw.ActionRow ();

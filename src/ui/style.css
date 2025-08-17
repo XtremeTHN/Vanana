@@ -14,3 +14,15 @@
     border-radius: 8px;
     padding: 10px;
 }
+
+.green {
+    color: var(--accent-green);
+}
+
+.blue {
+    color: var(--accent-blue);
+}
+
+.red {
+    color: var(--accent-red);
+}

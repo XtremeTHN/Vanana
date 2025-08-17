@@ -6,6 +6,7 @@ public enum SubmissionType {
     NEWS,
     WIP,
     TOOL,
+    QUESTION,
     UNKNOWN;
 
     public static SubmissionType? from_string (string value) {
@@ -18,6 +19,8 @@ public enum SubmissionType {
                 return SubmissionType.WIP;
             case "tool":
                 return SubmissionType.TOOL;
+            case "question":
+                return SubmissionType.QUESTION;
             default:
                 return SubmissionType.UNKNOWN;
         }
@@ -33,6 +36,8 @@ public enum SubmissionType {
                 return "Wip";
             case TOOL:
                 return "Tool";
+            case QUESTION:
+                return "Question";
             default:
                 return "Unknown";
         }
@@ -54,6 +59,22 @@ public enum SortType {
                 return "updated";
             default:
                 return "default";
+        }
+    }
+}
+
+public enum PostsFeedSort {
+    POPULAR,
+    NEWEST;
+
+    public string? to_string () {
+        switch (this) {
+            case POPULAR:
+                return "popular";
+            case NEWEST:
+                return "newest";
+            default:
+                return null;
         }
     }
 }
@@ -164,6 +185,16 @@ public class Gamebanana.Submissions : Object {
         var json = yield _get (method);
         var obj = json.get_object ();
 
+        warn_if_fail (obj != null);
+
+        return obj;
+    }
+
+    public async Json.Object? get_posts_feed (SubmissionType type, int64 id, int page = 1, PostsFeedSort sort = PostsFeedSort.NEWEST) throws Error {
+        string method = "/%s/%s/Posts?_nPage=%i&_nPerpage=5&_sSort=%s".printf(type.to_string (), id.to_string (), page, sort.to_string ());
+
+        var json = yield _get (method);
+        var obj = json.get_object ();
         warn_if_fail (obj != null);
 
         return obj;

@@ -1,7 +1,7 @@
 using Gtk 4.0;
 using Adw 1;
 
-template $WipPage: $SubmissionPage {
+template $QuestionPage: $SubmissionPage {
     child: Adw.ToolbarView {
         [top]
         Adw.HeaderBar {
@@ -22,7 +22,7 @@ template $WipPage: $SubmissionPage {
 
                 child: Adw.StatusPage loading_status {
                     title: _("Loading");
-                    description: _("Loading wip information...");
+                    description: _("Loading question information...");
                 };
             }
 
@@ -74,14 +74,22 @@ template $WipPage: $SubmissionPage {
 
                             Box {
                                 spacing: 20;
-                                // Ugly fix to prevent the picture from growing too much
+
                                 Frame {
                                     valign: center;
-                                    // halign: center;
+
                                     child: Stack submission_icon_stack {
                                         Adw.Spinner {
                                             width-request: 20;
                                             height-request: 20;
+                                        }
+
+                                        StackPage {
+                                            name: "no-preview";
+
+                                            child: Label {
+                                                label: _("No preview");
+                                            };
                                         }
 
                                         StackPage {
@@ -214,15 +222,25 @@ template $WipPage: $SubmissionPage {
                                         }
                                     }
 
-                                    Box {
-                                        orientation: vertical;
-                                        spacing: 5;
+                                    CenterBox question_state_box {
+                                        styles [
+                                            "card",
+                                            "box-10",
+                                        ]
 
-                                        Label completed_progress_label {}
+                                        center-widget: Box {
+                                            spacing: 5;
 
-                                        LevelBar completed_progress {
-                                            max-value: 100;
-                                        }
+                                            Image {
+                                                icon-name: "emblem-ok-symbolic";
+                                            }
+
+                                            Label question_state {
+                                                styles [
+                                                    "title-3",
+                                                ]
+                                            }
+                                        };
                                     }
                                 }
                             }
@@ -252,7 +270,7 @@ template $WipPage: $SubmissionPage {
 
                             Box {
                                 orientation: vertical;
-                                spacing: 10;
+                                spacing: 2;
 
                                 Label {
                                     styles [
@@ -260,17 +278,15 @@ template $WipPage: $SubmissionPage {
                                     ]
 
                                     xalign: 0;
-                                    label: _("License");
+                                    label: _("Comments");
                                 }
 
-                                Frame license_frame {}
+                                ListBox comment_list {
+                                    styles [
+                                        "boxed-list",
+                                    ]
 
-                                Adw.PreferencesGroup updates_group {
-                                    title: _("Updates");
-                                }
-
-                                Adw.PreferencesGroup credits_group {
-                                    title: _("Credits");
+                                    selection-mode: none;
                                 }
                             }
                         };

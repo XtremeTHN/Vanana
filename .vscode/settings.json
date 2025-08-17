@@ -10,6 +10,12 @@
         "activatable",
         "gamebanana",
         "halign",
-        "Vanana"
+        "hexpand",
+        "hscrollbar",
+        "Paintable",
+        "Vanana",
+        "vscrollbar",
+        "xalign",
+        "Xtreme"
     ]
 }
