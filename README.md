@@ -10,7 +10,7 @@ A fnf gamebanana client. Rewriting in vala
 - [ ] Add a full screen screenshot preview
 - [ ] Add android support
 - [x] Add windows support
-- [ ] Add submission comments
+- [x] Add submission comments
 
 - [ ] Add gamebanana account support
     - [ ] Add a like button to submissions pages
