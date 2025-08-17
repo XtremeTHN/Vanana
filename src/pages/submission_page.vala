@@ -208,7 +208,7 @@ public abstract class SubmissionPage : Adw.NavigationPage {
 
     public virtual async void populate_updates () {
         try {
-            var response = yield api.get_updates (SubmissionType.MOD, submission_id);
+            var response = yield api.get_updates (submission_type, submission_id);
 
             foreach (var update_array in response) {
                 if (update_array.get_length () == 0) {
