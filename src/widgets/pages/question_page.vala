@@ -86,13 +86,14 @@ public class QuestionPage : SubmissionPage {
     [GtkChild]
     private override unowned Gtk.Stack comments_stack {get;}
 
+    [GtkChild]
+    private override unowned Gtk.Button load_more_comments_btt {get;}
+
     private override Vanana.HtmlView submission_description {get; set;}
 
     private override Vanana.HtmlView submission_license {get; set;}
 
     public override SubmissionType? submission_type { get; set; }
-
-    private int current_comments_page = 1;
 
     private QuestionState state;
 

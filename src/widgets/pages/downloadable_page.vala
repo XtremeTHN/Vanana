@@ -77,6 +77,9 @@ public class DownloadablePage : DownloadableSubmissionPage {
     [GtkChild]
     private override unowned Gtk.ListBox comment_list {get;}
 
+    [GtkChild]
+    private override unowned Gtk.Button load_more_comments_btt {get;}
+
     private override Vanana.HtmlView submission_description {get; set;}
     private override Vanana.HtmlView submission_license {get; set;}
 

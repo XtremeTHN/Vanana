@@ -290,24 +290,36 @@ template $QuestionPage: $SubmissionPage {
                                     StackPage {
                                         name: "main";
 
-                                        child: ListBox comment_list {
-                                            styles [
-                                                "boxed-list-separate",
-                                            ]
+                                        child: Box {
+                                            orientation: vertical;
+                                            spacing: 10;
 
-                                            selection-mode: none;
+                                            ListBox comment_list {
+                                                styles [
+                                                    "boxed-list-separate",
+                                                ]
 
-                                            ListBoxRow comments_placeholder_row {
-                                                selectable: false;
+                                                selection-mode: none;
 
-                                                child: Label {
-                                                    styles [
-                                                        "box-10",
-                                                    ]
+                                                ListBoxRow comments_placeholder_row {
+                                                    selectable: false;
 
-                                                    xalign: 0;
-                                                    halign: center;
-                                                    label: _("No comments");
+                                                    child: Label {
+                                                        styles [
+                                                            "box-10",
+                                                        ]
+
+                                                        xalign: 0;
+                                                        halign: center;
+                                                        label: _("No comments");
+                                                    };
+                                                }
+                                            }
+
+                                            Button load_more_comments_btt {
+                                                child: Adw.ButtonContent {
+                                                    label: _("Load more");
+                                                    icon-name: "load-symbolic";
                                                 };
                                             }
                                         };

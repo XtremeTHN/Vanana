@@ -36,7 +36,7 @@ public abstract class SubmissionPage : Adw.NavigationPage {
     private abstract unowned Gtk.ListBoxRow comments_placeholder_row {get;}
     private abstract unowned Gtk.ListBox comment_list {get;}
     private abstract unowned Gtk.Stack comments_stack {get;}
-
+    private abstract unowned Gtk.Button load_more_comments_btt {get;}
 
     public Cancellable cancellable {get; set;}
     public Gamebanana.Submissions api {get; set;}
@@ -46,6 +46,8 @@ public abstract class SubmissionPage : Adw.NavigationPage {
     public string? submission_url {get; set;}
     public string submission_name {get; set;}
     public int64 submission_id {get; set;}
+
+    private int current_comments_page = 1;
 
     private void on_destroy () {
         cancellable.cancel ();
@@ -83,6 +85,7 @@ public abstract class SubmissionPage : Adw.NavigationPage {
         
         open_gb_btt.clicked.connect (open_gb_page);
         continue_btt.clicked.connect (on_continue_clicked);
+        load_more_comments_btt.clicked.connect (request_comments);
 
         request_info ();
     }
@@ -117,6 +120,25 @@ public abstract class SubmissionPage : Adw.NavigationPage {
             }
         });
     }
+
+    private void request_comments () { 
+        load_more_comments_btt.set_sensitive (false);
+        api.get_posts_feed.begin (submission_type, submission_id, current_comments_page, PostsFeedSort.POPULAR, (_, res) => {
+            try {
+                var response = api.get_posts_feed.end (res);
+                var metadata = response.get_object_member ("_aMetadata");
+
+                load_more_comments_btt.set_sensitive (!metadata.get_boolean_member ("_bIsComplete"));
+
+                populate_comments (response);
+
+                current_comments_page += 1;
+            } catch (Error e) {
+                Utils.warn (this, "Couldn't populate comments: " + e.message);
+            }
+        });
+    }
+
     public virtual void populate_extra_widgets (Json.Object info) {}
     
     public virtual void handle_info (Json.Object info) {
@@ -136,15 +158,7 @@ public abstract class SubmissionPage : Adw.NavigationPage {
             populate_extra_widgets (info);
             show_main (info);
             populate_images (info.get_object_member ("_aPreviewMedia"));
-            
-            api.get_posts_feed.begin (submission_type, submission_id, 1, PostsFeedSort.POPULAR, (_, res) => {
-                try {
-                    var response = api.get_posts_feed.end (res);
-                    populate_comments (response);
-                } catch (Error e) {
-                    Utils.warn (this, "Couldn't populate comments: " + e.message);
-                }
-            });
+            request_comments ();
         });
     }
 
