@@ -66,10 +66,21 @@ public class WipPage : SubmissionPage {
     [GtkChild]
     private unowned Gtk.LevelBar completed_progress;
 
+    [GtkChild]
+    private override unowned Gtk.Stack comments_stack {get;}
+
+    [GtkChild]
+    private override unowned Gtk.ListBoxRow comments_placeholder_row {get;} 
+    
+    [GtkChild]
+    private override unowned Gtk.ListBox comment_list {get;}
+
     private override Vanana.HtmlView submission_description {get; set;}
     private override Vanana.HtmlView submission_license {get; set;}
 
     public override SubmissionType? submission_type { get; set; }
+
+
 
     public WipPage (int64 id) {
         submission_type = SubmissionType.WIP;

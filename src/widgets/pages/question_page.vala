@@ -75,16 +75,16 @@ public class QuestionPage : SubmissionPage {
     private unowned Gtk.Label question_state;
 
     [GtkChild]
-    private unowned Gtk.ListBoxRow placeholder_row; // TODO: move this to SubmissionPage when ready to implement comment to all submissions 
+    private override unowned Gtk.ListBoxRow comments_placeholder_row {get;} 
 
     [GtkChild]
-    private unowned Gtk.ListBox comment_list; // TODO: move this to SubmissionPage when ready to implement comment to all submissions 
+    private override unowned Gtk.ListBox comment_list {get;}
 
     [GtkChild]
     private unowned Gtk.CenterBox question_state_box;
 
     [GtkChild]
-    private unowned Gtk.Stack comments_stack; // TODO: move this to SubmissionPage when ready to implement comment to all submissions 
+    private override unowned Gtk.Stack comments_stack {get;}
 
     private override Vanana.HtmlView submission_description {get; set;}
 
@@ -104,41 +104,8 @@ public class QuestionPage : SubmissionPage {
         init ();
     }
 
-    public override void populate (Json.Object info) {
-        populate_labels (info);
-
+    public override void populate_extra_widgets (Json.Object info) {
         set_question_data (info);
-        show_main (info);
-
-        populate_images (info.get_object_member ("_aPreviewMedia"));
-
-        api.get_posts_feed.begin (SubmissionType.QUESTION, submission_id, 1, PostsFeedSort.POPULAR, (_, res) => {
-            try {
-                var response = api.get_posts_feed.end (res);
-                populate_comments (response);
-                //  if (response)
-            } catch (Error e) {}
-        }); // TODO: move this to SubmissionPage when ready to implement comment to all submissions 
-    }
-
-    // TODO: move this to SubmissionPage when ready to implement comments to all submissions 
-    private void populate_comments (Json.Object? response) {
-        return_if_fail (response != null);
-
-        var records = response.get_array_member ("_aRecords");
-        
-        if (records.get_length () != 0) {
-            placeholder_row.set_visible (false);
-
-            foreach (var item in records.get_elements ()) {
-                var post = item.get_object ();
-
-                var post_widget = new Comment (post, false);
-                comment_list.append (post_widget);
-            }
-        }
-
-        comments_stack.set_visible_child_name ("main");
     }
 
     private void set_question_data (Json.Object info) {

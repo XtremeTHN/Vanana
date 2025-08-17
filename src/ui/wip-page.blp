@@ -273,6 +273,53 @@ template $WipPage: $SubmissionPage {
                                     title: _("Credits");
                                 }
                             }
+
+                            Box {
+                                orientation: vertical;
+                                spacing: 10;
+
+                                Label {
+                                    styles [
+                                        "heading",
+                                    ]
+
+                                    xalign: 0;
+                                    label: _("Comments");
+                                }
+
+                                Stack comments_stack {
+                                    Adw.Spinner {
+                                        width-request: 20;
+                                        height-request: 20;
+                                    }
+
+                                    StackPage {
+                                        name: "main";
+
+                                        child: ListBox comment_list {
+                                            styles [
+                                                "boxed-list-separate",
+                                            ]
+
+                                            selection-mode: none;
+
+                                            ListBoxRow comments_placeholder_row {
+                                                selectable: false;
+
+                                                child: Label {
+                                                    styles [
+                                                        "box-10",
+                                                    ]
+
+                                                    xalign: 0;
+                                                    halign: center;
+                                                    label: _("No comments");
+                                                };
+                                            }
+                                        };
+                                    }
+                                }
+                            }
                         };
                     };
                 };

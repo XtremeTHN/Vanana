@@ -33,6 +33,11 @@ public abstract class SubmissionPage : Adw.NavigationPage {
 
     public abstract unowned Adw.StatusPage rating_status {get;}
 
+    private abstract unowned Gtk.ListBoxRow comments_placeholder_row {get;}
+    private abstract unowned Gtk.ListBox comment_list {get;}
+    private abstract unowned Gtk.Stack comments_stack {get;}
+
+
     public Cancellable cancellable {get; set;}
     public Gamebanana.Submissions api {get; set;}
 
@@ -131,6 +136,15 @@ public abstract class SubmissionPage : Adw.NavigationPage {
             populate_extra_widgets (info);
             show_main (info);
             populate_images (info.get_object_member ("_aPreviewMedia"));
+            
+            api.get_posts_feed.begin (submission_type, submission_id, 1, PostsFeedSort.POPULAR, (_, res) => {
+                try {
+                    var response = api.get_posts_feed.end (res);
+                    populate_comments (response);
+                } catch (Error e) {
+                    Utils.warn (this, "Couldn't populate comments: " + e.message);
+                }
+            });
         });
     }
 
@@ -154,7 +168,7 @@ public abstract class SubmissionPage : Adw.NavigationPage {
         views.set_label (info.get_int_member ("_nViewCount").to_string ());
     }
 
-    public virtual void populate_ratings_warning (Json.Object ratings) {
+    public void populate_ratings_warning (Json.Object ratings) {
         string label = rating_status.get_description ();
         foreach (var member in ratings.get_members ()) {
             var rating = ratings.get_string_member (member);
@@ -165,7 +179,7 @@ public abstract class SubmissionPage : Adw.NavigationPage {
         rating_status.set_description (label.printf (submission_type.to_string ().ascii_down ()));
     }
 
-    public virtual void show_main (Json.Object info) {
+    public void show_main (Json.Object info) {
         var visibility = info.get_string_member ("_sInitialVisibility");
 
         if (visibility == "show") {
@@ -177,7 +191,7 @@ public abstract class SubmissionPage : Adw.NavigationPage {
         stack.set_visible_child_name ("rating-warning");
     }
 
-    public virtual void set_submission_icon (File? img) {
+    public void set_submission_icon (File? img) {
         if (img == null) {
             submission_icon_stack.set_visible_child_name ("no-preview");
             return;
@@ -187,7 +201,7 @@ public abstract class SubmissionPage : Adw.NavigationPage {
         submission_icon_stack.set_visible_child_name ("main");
     }
 
-    public virtual void populate_images (Json.Object? preview_info) {
+    public void populate_images (Json.Object? preview_info) {
         if (preview_info == null || preview_info.has_member ("_aImages") == false) {
             warning ("No preview media");
             screenshots_carousel.set_visible (false);
@@ -217,7 +231,7 @@ public abstract class SubmissionPage : Adw.NavigationPage {
         }
     }
 
-    public virtual async void populate_updates () {
+    public async void populate_updates () {
         if (updates_group == null)
             return;
 
@@ -263,7 +277,7 @@ public abstract class SubmissionPage : Adw.NavigationPage {
         }
     }
 
-    public virtual void populate_credits (Json.Array? credits) {
+    public void populate_credits (Json.Array? credits) {
         return_if_fail (credits != null);
         if (credits_group == null)
             return;
@@ -297,6 +311,25 @@ public abstract class SubmissionPage : Adw.NavigationPage {
                 expander.add_row (row);
             }
         }
+    }
+
+    public virtual void populate_comments (Json.Object? response) {
+        return_if_fail (response != null);
+
+        var records = response.get_array_member ("_aRecords");
+        
+        if (records.get_length () != 0) {
+            comments_placeholder_row.set_visible (false);
+
+            foreach (var item in records.get_elements ()) {
+                var post = item.get_object ();
+
+                var post_widget = new Comment (post, false);
+                comment_list.append (post_widget);
+            }
+        }
+
+        comments_stack.set_visible_child_name ("main");
     }
 }
 

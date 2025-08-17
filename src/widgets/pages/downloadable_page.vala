@@ -68,6 +68,15 @@ public class DownloadablePage : DownloadableSubmissionPage {
     [GtkChild]
     private override unowned Adw.StatusPage rating_status {get;}
 
+    [GtkChild]
+    private override unowned Gtk.Stack comments_stack {get;}
+
+    [GtkChild]
+    private override unowned Gtk.ListBoxRow comments_placeholder_row {get;} 
+    
+    [GtkChild]
+    private override unowned Gtk.ListBox comment_list {get;}
+
     private override Vanana.HtmlView submission_description {get; set;}
     private override Vanana.HtmlView submission_license {get; set;}
 
