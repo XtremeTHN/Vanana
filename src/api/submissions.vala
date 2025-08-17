@@ -143,13 +143,13 @@ public class Gamebanana.Submissions : Object {
         return obj;
     }
 
-    public async List<Json.Array> get_updates(SubmissionType type, int64 id) throws Error {
+    private async List<Json.Array> get_all_pages (string method) throws Error {
         var _results = new List<Json.Array> ();
         int page = 1;
 
         while (true) {
-            string method = "/%s/%"+ int64.FORMAT +"/Updates?_nPage=%i&_nPerpage=10";
-            var json = yield _get (method.printf(type.to_string (), id, page));
+            string _method = method.printf (page);
+            var json = yield _get (_method);
             var obj = json.get_object ();
 
             assert_nonnull (obj);
@@ -170,8 +170,13 @@ public class Gamebanana.Submissions : Object {
 
             page += 1;
         }
-
         return _results;
+    }
+
+    public async List<Json.Array> get_updates(SubmissionType type, int64 id) throws Error {
+        string method = "/" + type.to_string () + "/" + id.to_string () + "/Updates?_nPage=%i_nPerpage=10";
+
+        return yield get_all_pages (method);
     }
 
     public async Json.Array? get_top () throws Error {
@@ -216,12 +221,8 @@ public class Gamebanana.Submissions : Object {
      *      - Post_Edit
      *      - Post_Reply
      */
-    public async Json.Object get_post_replies (int64 post_id, int page = 1) throws Error {
-        string method = "/Post/%s/Posts?_nPage=%i&_nPerpage=5".printf (post_id.to_string (), page);
-        var json = yield _get (method);
-        var obj = json.get_object ();
-        warn_if_fail (obj != null);
-
-        return obj;
+    public async List<Json.Array> get_post_replies (int64 post_id, int page = 1) throws Error {
+        string method = "/Post/" + post_id.to_string () + "/Posts?_nPage=%i&_nPerpage=5";
+        return yield get_all_pages (method);
     }
 }

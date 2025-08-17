@@ -10,6 +10,9 @@ public class Comment : Gtk.ListBoxRow {
     private unowned Gtk.Label user_title;
 
     [GtkChild]
+    private unowned Gtk.Label replying_to_label;
+
+    [GtkChild]
     private unowned Gtk.Label upload_date;
 
     [GtkChild]
@@ -22,18 +25,23 @@ public class Comment : Gtk.ListBoxRow {
     private unowned Gtk.ScrolledWindow scrolled_html;
 
     [GtkChild]
-    private unowned Gtk.Button load_replies_btt;
+    public unowned Gtk.Button load_replies_btt;
 
     private Cancellable cancellable = new Cancellable ();
     public bool is_reply;
     private int64 post_id;
+    public bool has_replies = false;
+    private int current_replies_page = 1;
+    private int? index;
 
-    public Comment (Json.Object post_info, bool is_reply) {
+    public Comment (Json.Object post_info, bool is_reply, string parent_user_name = "") {
         Object ();
 
         var text = post_info.get_string_member ("_sText");
 
         var html_view = new Vanana.HtmlView (false);
+        html_view.set_size_request (-1, 20); // fixes textview not showing anything until scrolling 
+    
         scrolled_html.set_child (html_view);
 
         html_view.set_html (text);
@@ -46,7 +54,13 @@ public class Comment : Gtk.ListBoxRow {
         this.is_reply = is_reply;
         this.post_id = post_info.get_int_member ("_idRow");
 
-        load_replies_btt.set_visible (post_info.get_int_member ("_nReplyCount") > 0);
+        if (is_reply) {
+            replying_to_label.visible = true;
+            replying_to_label.set_label (replying_to_label.label.printf (parent_user_name));
+        }
+
+        has_replies = post_info.get_int_member ("_nReplyCount") > 0;
+        load_replies_btt.set_visible (has_replies);
         
         var poster = post_info.get_object_member ("_aPoster");
 
@@ -83,9 +97,41 @@ public class Comment : Gtk.ListBoxRow {
         warning ("trash not implemented");
     }
 
-    [GtkCallback] // TODO
+    [GtkCallback]
     private void load_replies () {
-        warning ("load not implemented");
+        set_sensitive (false);
+
+        if (index == null)
+            index = get_index ();
+
+        Gtk.ListBox box = (Gtk.ListBox) get_parent ();
+        var api = new Gamebanana.Submissions ();
+
+        api.get_post_replies.begin (post_id, current_replies_page, (_, res) => {
+            try {
+                var response = api.get_post_replies.end (res);
+                
+                foreach (var records in response) {
+                    if (records.get_length () == 0)
+                        continue;
+
+                    foreach (var item in records.get_elements ()) {
+                        var post = item.get_object ();
+
+                        var post_widget = new Comment (post, true, user_name.get_text ());
+
+                        index += 1;
+                        box.insert (post_widget, index);
+                    }
+                }
+
+                load_replies_btt.set_visible (false);
+            } catch (Error e) {
+                Utils.warn (this, "Couldn't get post replies: " + e.message);
+            } finally {
+                set_sensitive (true);
+            }
+        });
     }
 
     private void on_destroy () {

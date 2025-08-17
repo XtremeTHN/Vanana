@@ -132,14 +132,14 @@ public class QuestionPage : SubmissionPage {
 
             foreach (var item in records.get_elements ()) {
                 var post = item.get_object ();
-                var post_widget = new Comment (post, false);
 
+                var post_widget = new Comment (post, false);
                 comment_list.append (post_widget);
             }
         }
 
         comments_stack.set_visible_child_name ("main");
-    } 
+    }
 
     private void set_question_data (Json.Object info) {
         state = QuestionState.from_string (info.get_string_member ("_sState"));

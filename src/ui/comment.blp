@@ -3,6 +3,7 @@ using Adw 1;
 
 template $Comment: ListBoxRow {
     styles [
+        "card",
         "box-10",
     ]
 
@@ -50,6 +51,8 @@ template $Comment: ListBoxRow {
                         "caption",
                     ]
 
+                    visible: false;
+                    label: _("Replying to: %s");
                     xalign: 1;
                 }
 
@@ -79,12 +82,8 @@ template $Comment: ListBoxRow {
         }
 
         ScrolledWindow scrolled_html {
-            styles [
-                "no-back",
-            ]
-
-            hscrollbar-policy: automatic;
             vscrollbar-policy: never;
+            hscrollbar-policy: automatic;
         }
 
         Button load_replies_btt {
