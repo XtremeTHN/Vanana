@@ -101,6 +101,7 @@ public class QuestionPage : SubmissionPage {
         cancellable = new Cancellable ();
         submission_type = SubmissionType.QUESTION;
         submission_id = id;
+        has_updates = false;
 
         init ();
     }

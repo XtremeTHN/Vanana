@@ -43,6 +43,8 @@ public abstract class SubmissionPage : Adw.NavigationPage {
 
     public abstract SubmissionType? submission_type {get; set;}
 
+    public virtual bool has_updates {get; set;}
+
     public string? submission_url {get; set;}
     public string submission_name {get; set;}
     public int64 submission_id {get; set;}
@@ -110,7 +112,7 @@ public abstract class SubmissionPage : Adw.NavigationPage {
                 var info = api.get_info.end (res);
 
                 handle_info (info);
-                populate (info);
+                populate.begin (info);
             } catch (Error e) {
                 if (e.message == "Socket I/O timed out")
                     activate_action ("navigation.pop", null);
@@ -149,17 +151,19 @@ public abstract class SubmissionPage : Adw.NavigationPage {
         set_title ("%s - %s".printf (submission_name, submission_type.to_string ()));
     }
 
-    public virtual void populate (Json.Object info) {
+    public virtual async void populate (Json.Object info) {
         populate_labels (info);
-        populate_credits (info.get_array_member ("_aCredits"));
-        populate_updates.begin ((_, res) => {
-            populate_updates.end (res);
+        
+        if (info.has_member ("_aCredits"))
+            populate_credits (info.get_array_member ("_aCredits"));
 
-            populate_extra_widgets (info);
-            show_main (info);
-            populate_images (info.get_object_member ("_aPreviewMedia"));
-            request_comments ();
-        });
+        if (has_updates)
+            yield populate_updates ();
+
+        populate_extra_widgets (info);
+        show_main (info);
+        populate_images (info.get_object_member ("_aPreviewMedia"));
+        request_comments ();
     }
 
     public virtual void populate_labels (Json.Object info) {
@@ -246,9 +250,6 @@ public abstract class SubmissionPage : Adw.NavigationPage {
     }
 
     public async void populate_updates () {
-        if (updates_group == null)
-            return;
-
         try {
             var response = yield api.get_updates (submission_type, submission_id);
 
@@ -293,7 +294,7 @@ public abstract class SubmissionPage : Adw.NavigationPage {
 
     public void populate_credits (Json.Array? credits) {
         return_if_fail (credits != null);
-        if (credits_group == null)
+        if (credits_group is Adw.PreferencesGroup)
             return;
 
         if (credits.get_length () == 0) {
