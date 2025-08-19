@@ -49,8 +49,8 @@ public class DownloadRow : Gtk.ListBoxRow {
 
     [GtkCallback]
     private void open_file () {
-        var uri = "file://" + dest.get_path ();
-        AppInfo.launch_default_for_uri_async.begin (uri, null, null);
+        var launcher = new Gtk.FileLauncher (dest);
+        launcher.open_containing_folder.begin ((Vanana.Window) get_root (), null);
     }
 
     private void copy_callback (int64 current_bytes, int64 total) {
