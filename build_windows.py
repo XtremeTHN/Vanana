@@ -18,11 +18,11 @@ def get_arg_with_default(name, default=None, required=False):
             return default
         return arg_type(sys.argv[pos])
     except ValueError:
-        if default is None:
-            return False
         if required:
             print('Argument', name, "is required. See -h")
             sys.exit(3)
+        if default is None:
+            return False
         return default
 
 RECONFIGURE = get_arg_with_default("-r")
@@ -31,7 +31,7 @@ DRY_RUN = get_arg_with_default("--dry-run")
 NO_TEST = get_arg_with_default("--no-test")
 NO_COMPILE = get_arg_with_default("--no-compile")
 
-VANANA_BUILD_DEST_DIR = get_arg_with_default("--dest-dir", default="", required=True)
+VANANA_BUILD_DEST_DIR = get_arg_with_default("--dest-dir", required=True)
 PREFIX = get_arg_with_default("-p", "/clang64/")
 
 BIN_DIR = join(VANANA_BUILD_DEST_DIR, "bin")
