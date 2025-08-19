@@ -90,6 +90,8 @@ public class DownloadablePage : DownloadableSubmissionPage {
 
         submission_type = type;
         submission_id = id;
+        has_updates = true;
+        has_license = true;
 
         init ();    
     }

@@ -44,6 +44,7 @@ public abstract class SubmissionPage : Adw.NavigationPage {
     public abstract SubmissionType? submission_type {get; set;}
 
     public virtual bool has_updates {get; set;}
+    public virtual bool has_license {get; set;}
 
     public string? submission_url {get; set;}
     public string submission_name {get; set;}
@@ -79,7 +80,7 @@ public abstract class SubmissionPage : Adw.NavigationPage {
 
         scrolled_html.set_child (submission_description);
 
-        if (license_frame != null) {
+        if (has_license) {
             submission_license = new Vanana.HtmlView (true);
             submission_license.set_margins (10);
             license_frame.set_child (submission_license);
@@ -177,7 +178,7 @@ public abstract class SubmissionPage : Adw.NavigationPage {
 
         submission_description.set_html (info.get_string_member_with_default("_sText", "No description"));
 
-        if (submission_license != null)
+        if (has_license)
             submission_license.set_html (info.get_string_member_with_default ("_sLicense", "No license"));
 
         upload_date.set_label (Utils.format_relative_time (info.get_int_member ("_tsDateAdded")));
@@ -293,13 +294,9 @@ public abstract class SubmissionPage : Adw.NavigationPage {
     }
 
     public void populate_credits (Json.Array? credits) {
-        return_if_fail (credits != null);
-        if (credits_group is Adw.PreferencesGroup)
-            return;
-
         if (credits.get_length () == 0) {
             var row = new Adw.ActionRow ();
-            row.set_title ("No updates");
+            row.set_title ("No credits");
             credits_group.add (row);
             return;
         }

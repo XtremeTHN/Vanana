@@ -180,17 +180,12 @@ public class Vanana.HtmlView : Gtk.TextView {
             return;
         }
 
-        //  if (name == "code") {
-        //      buffer.insert (ref iter, "\n", 1); 
-        //      message (node->next->name);
-        //      if (node->next != null && node->next->name != "code")
-        //          suffix = "\n";
-        //  }
-
         if (name == "ol") {
             int count = 1;
             for (Xml.Node* child = node->children; child != null; child = child->next) {
                 if (child->name == "li") {
+                    if (child->children == null)
+                        continue;
                     var text = "\n%i. %s".printf(count, child->children->content);
                     buffer.insert_with_tags_by_name (ref iter, text, -1, "li");
                     count += 1;

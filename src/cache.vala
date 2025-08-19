@@ -36,6 +36,10 @@ namespace Vanana {
             } catch (Error e) {
                 if (e is IOError.CANCELLED)
                     return;
+                else if (e is IOError.EXISTS) {
+                    callback (dest);
+                    return;
+                }
 
                 callback (null);
                 warning ("Error while caching image: %s", e.message);

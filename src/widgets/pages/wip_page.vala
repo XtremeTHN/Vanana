@@ -49,7 +49,7 @@ public class WipPage : SubmissionPage {
     private override unowned Adw.StatusPage trashed_status {get;}
 
     [GtkChild]
-    private new unowned Gtk.Frame license_frame {get;}
+    private override unowned Gtk.Frame license_frame {get;}
 
     [GtkChild]
     private override unowned Gtk.Button open_gb_btt {get;}
@@ -88,6 +88,8 @@ public class WipPage : SubmissionPage {
     public WipPage (int64 id) {
         submission_type = SubmissionType.WIP;
         submission_id = id;
+        has_updates = true;
+        has_license = true;
 
         init ();
     }

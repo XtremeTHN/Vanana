@@ -91,8 +91,6 @@ public class QuestionPage : SubmissionPage {
 
     private override Vanana.HtmlView submission_description {get; set;}
 
-    private override Vanana.HtmlView submission_license {get; set;}
-
     public override SubmissionType? submission_type { get; set; }
 
     private QuestionState state;
@@ -102,6 +100,7 @@ public class QuestionPage : SubmissionPage {
         submission_type = SubmissionType.QUESTION;
         submission_id = id;
         has_updates = false;
+        has_license = false;
 
         init ();
     }
