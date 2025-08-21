@@ -8,7 +8,7 @@ public abstract class SubmissionPage : Adw.NavigationPage {
     public abstract unowned Gtk.Label submission_title {get;}
     public abstract unowned Gtk.Label submission_caption {get;}
 
-    public abstract unowned Gtk.ScrolledWindow scrolled_html {get;}
+    public abstract unowned Gtk.Box scrolled_box {get;}
 
     public abstract unowned Gtk.Stack stack {get;}
     public virtual unowned Gtk.Stack submission_icon_stack {get;}
@@ -19,7 +19,8 @@ public abstract class SubmissionPage : Adw.NavigationPage {
     public abstract unowned Adw.Carousel screenshots_carousel {get;}
     public abstract unowned Adw.CarouselIndicatorDots screenshots_carousel_dots {get;}
 
-    public abstract Vanana.HtmlView submission_description {get; set;}
+    public virtual Gtk.Label submission_description {get;}
+    public abstract Vanana.HtmlView submission_text {get; set;}
     public virtual Vanana.HtmlView submission_license {get; set;}
     
     public abstract unowned Gtk.Label upload_date {get;}
@@ -71,14 +72,14 @@ public abstract class SubmissionPage : Adw.NavigationPage {
         cancellable = new Cancellable ();
         destroy.connect (on_destroy);
 
-        submission_description = new Vanana.HtmlView ();
+        submission_text = new Vanana.HtmlView ();
 
         api = new Gamebanana.Submissions ();
 
         var spinner = new Adw.SpinnerPaintable (loading_status);
         loading_status.set_paintable (spinner);
 
-        scrolled_html.set_child (submission_description);
+        scrolled_box.append (submission_text);
 
         if (has_license) {
             submission_license = new Vanana.HtmlView (true);
@@ -176,7 +177,14 @@ public abstract class SubmissionPage : Adw.NavigationPage {
             submission_caption.set_label (name);
         }
 
-        submission_description.set_html (info.get_string_member_with_default("_sText", "No description"));
+        if (info.has_member ("_sDescription")) {
+            submission_description.set_label (info.get_string_member ("_sDescription"));
+            submission_description.set_visible (true);
+            var sep = submission_description.get_next_sibling ();
+            sep.set_visible (true);
+        }
+
+        submission_text.set_html (info.get_string_member_with_default("_sText", "No description"));
 
         if (has_license)
             submission_license.set_html (info.get_string_member_with_default ("_sLicense", "No license"));

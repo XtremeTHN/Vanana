@@ -8,6 +8,7 @@ public enum SubmissionType {
     TOOL,
     QUESTION,
     QUESTIONS,
+    TUTORIAL,
     UNKNOWN;
 
     public static SubmissionType? from_string (string value) {
@@ -22,6 +23,8 @@ public enum SubmissionType {
                 return SubmissionType.TOOL;
             case "question":
                 return SubmissionType.QUESTION;
+            case "tutorial":
+                return SubmissionType.TUTORIAL;
             default:
                 return SubmissionType.UNKNOWN;
         }
@@ -41,6 +44,8 @@ public enum SubmissionType {
                 return "Question";
             case QUESTIONS:
                 return "Questions";
+            case TUTORIAL:
+                return "Tutorial";
             default:
                 return "Unknown";
         }

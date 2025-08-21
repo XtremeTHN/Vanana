@@ -108,6 +108,9 @@ namespace Utils {
             case SubmissionType.QUESTION:
                 page = new QuestionPage (id);
                 break;
+            case SubmissionType.TUTORIAL:
+                page = new TutorialPage (id);
+                break;
             default:
                 warning ("<%s>: Submission type not implemented: %s", id.to_string (), type.to_string ());
                 Utils.show_toast (self, "\"%s\" submissions are not supported".printf (type.to_string ()));

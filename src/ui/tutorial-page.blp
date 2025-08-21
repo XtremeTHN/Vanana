@@ -1,7 +1,7 @@
 using Gtk 4.0;
 using Adw 1;
 
-template $QuestionPage: $SubmissionPage {
+template $TutorialPage: $SubmissionPage {
     child: Adw.ToolbarView {
         [top]
         Adw.HeaderBar {
@@ -22,7 +22,7 @@ template $QuestionPage: $SubmissionPage {
 
                 child: Adw.StatusPage loading_status {
                     title: _("Loading");
-                    description: _("Loading question information...");
+                    description: _("Loading tutorial information...");
                 };
             }
 
@@ -222,25 +222,12 @@ template $QuestionPage: $SubmissionPage {
                                         }
                                     }
 
-                                    CenterBox question_state_box {
+                                    Label difficulty_label {
                                         styles [
                                             "card",
                                             "box-10",
+                                            "title-3",
                                         ]
-
-                                        center-widget: Box {
-                                            spacing: 5;
-
-                                            Image {
-                                                icon-name: "emblem-ok-symbolic";
-                                            }
-
-                                            Label question_state {
-                                                styles [
-                                                    "title-3",
-                                                ]
-                                            }
-                                        };
                                     }
                                 }
                             }
@@ -288,6 +275,30 @@ template $QuestionPage: $SubmissionPage {
 
                             Adw.CarouselIndicatorDots screenshots_carousel_dots {
                                 carousel: screenshots_carousel;
+                            }
+
+                            Box {
+                                orientation: vertical;
+                                spacing: 10;
+
+                                Label {
+                                    styles [
+                                        "heading",
+                                    ]
+
+                                    xalign: 0;
+                                    label: _("License");
+                                }
+
+                                Frame license_frame {}
+
+                                Adw.PreferencesGroup updates_group {
+                                    title: _("Updates");
+                                }
+
+                                Adw.PreferencesGroup credits_group {
+                                    title: _("Credits");
+                                }
                             }
 
                             Box {

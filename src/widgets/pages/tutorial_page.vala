@@ -1,27 +1,40 @@
 
-enum QuestionState {
-    ANSWERED,
-    SOLVED,
-    UNANSWERED;
+enum DifficultyLevel {
+    BEGINNER,
+    INTERMEDIATE,
+    ADVANCED;
 
-    public static QuestionState? from_string (string state) {
+    public static DifficultyLevel? from_string (string state) {
         switch (state.ascii_down ()) {
-            case "answered":
-                return ANSWERED;
-            case "solved":
-                return SOLVED;
-            case "unanswered":
-                return UNANSWERED;
+            case "beginner":
+                return BEGINNER;
+            case "intermediate":
+                return INTERMEDIATE;
+            case "advanced":
+                return ADVANCED;
             default:
+                message (state);
                 return null;
         }
     }
 }
 
-[GtkTemplate (ui = "/com/github/XtremeTHN/Vanana/question-page.ui")]
-public class QuestionPage : SubmissionPage {
+[GtkTemplate (ui = "/com/github/XtremeTHN/Vanana/tutorial-page.ui")]
+public class TutorialPage : SubmissionPage {
+    [GtkChild]
+    private override unowned Gtk.Frame license_frame { get; }
+
+    [GtkChild]
+    private override unowned Adw.PreferencesGroup updates_group {get;}
+
+    [GtkChild]
+    private override unowned Adw.PreferencesGroup credits_group {get;}
+
     [GtkChild]
     private override unowned Gtk.Label submission_title {get;}
+
+    [GtkChild]
+    private unowned Gtk.Label submission_description {get;}
 
     [GtkChild]
     private override unowned Gtk.Label submission_caption {get;}
@@ -72,16 +85,13 @@ public class QuestionPage : SubmissionPage {
     private override unowned Adw.CarouselIndicatorDots screenshots_carousel_dots {get;}
 
     [GtkChild]
-    private unowned Gtk.Label question_state;
-
-    [GtkChild]
     private override unowned Gtk.ListBoxRow comments_placeholder_row {get;} 
 
     [GtkChild]
     private override unowned Gtk.ListBox comment_list {get;}
 
     [GtkChild]
-    private unowned Gtk.CenterBox question_state_box;
+    private unowned Gtk.Label difficulty_label;
 
     [GtkChild]
     private override unowned Gtk.Stack comments_stack {get;}
@@ -89,41 +99,49 @@ public class QuestionPage : SubmissionPage {
     [GtkChild]
     private override unowned Gtk.Button load_more_comments_btt {get;}
 
+
     private override Vanana.HtmlView submission_text {get; set;}
 
     public override SubmissionType? submission_type { get; set; }
 
-    private QuestionState state;
-
-    public QuestionPage (int64 id) {
+    public TutorialPage (int64 id) {
         cancellable = new Cancellable ();
-        submission_type = SubmissionType.QUESTION;
+        submission_type = SubmissionType.TUTORIAL;
         submission_id = id;
-        has_updates = false;
-        has_license = false;
+        has_updates = true;
+        has_license = true;
 
         init ();
     }
 
     public override void populate_extra_widgets (Json.Object info) {
-        set_question_data (info);
+        set_difficulty_level (info);
+
+        if (info.has_member ("_sDescription")) {
+            submission_description.set_label (info.get_string_member ("_sDescription"));
+        }
     }
 
-    private void set_question_data (Json.Object info) {
-        state = QuestionState.from_string (info.get_string_member ("_sState"));
+    private void set_difficulty_level (Json.Object info) {
+        var difficulty = DifficultyLevel.from_string (info.get_string_member ("_akDifficultyLevel"));
+
+        if (difficulty == null) {
+            warning ("unknown difficulty");
+            return;
+        }
         
-        switch (state) {
-            case QuestionState.SOLVED:
-                question_state.set_label ("Solved");
-                question_state_box.add_css_class ("green");
+        switch (difficulty) {
+            case DifficultyLevel.BEGINNER:
+                difficulty_label.set_label ("Beginner");
+                difficulty_label.add_css_class ("green");
                 break;
-            case QuestionState.ANSWERED:
-                question_state.set_label ("Answered but unsolved");
-                question_state_box.add_css_class ("blue");
+            case DifficultyLevel.INTERMEDIATE:
+                difficulty_label.set_label ("Intermediate");
+                difficulty_label.add_css_class ("blue");
                 break;
-            case QuestionState.UNANSWERED:
-                question_state.set_label ("Unanswered");
-                question_state_box.add_css_class ("red");
+            case DifficultyLevel.ADVANCED:
+                difficulty_label.set_label ("Advanced");
+                difficulty_label.add_css_class ("red");
                 break;
         }
     }

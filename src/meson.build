@@ -10,6 +10,7 @@ vanana_sources = [
   'widgets/pages/home_page.vala',
   'widgets/pages/downloadable_page.vala',
   'widgets/pages/wip_page.vala',
+  'widgets/pages/tutorial_page.vala',
   'widgets/pages/question_page.vala',
   'widgets/html.vala',
   'widgets/comment.vala',

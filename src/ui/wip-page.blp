@@ -227,9 +227,31 @@ template $WipPage: $SubmissionPage {
                                 }
                             }
 
-                            ScrolledWindow scrolled_html {
+                            ScrolledWindow {
                                 vscrollbar-policy: never;
                                 hscrollbar-policy: automatic;
+
+                                child: Box scrolled_box {
+                                    orientation: vertical;
+                                    spacing: 5;
+
+                                    Label submission_description {
+                                        styles [
+                                            "caption",
+                                        ]
+
+                                        xalign: 0;
+                                        opacity: 0.6;
+                                        wrap: true;
+                                        wrap-mode: word_char;
+                                        visible: false;
+                                    }
+
+                                    Separator {
+                                        orientation: horizontal;
+                                        visible: false;
+                                    }
+                                };
                             }
 
                             Adw.Clamp {

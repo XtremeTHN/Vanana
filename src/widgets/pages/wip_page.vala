@@ -16,7 +16,7 @@ public class WipPage : SubmissionPage {
     private override unowned Gtk.Label submission_caption {get;}
 
     [GtkChild]
-    private override unowned Gtk.ScrolledWindow scrolled_html {get;}
+    private override unowned Gtk.Box scrolled_box {get;}
     
     [GtkChild]
     private override unowned Gtk.Stack stack {get;}
@@ -78,12 +78,13 @@ public class WipPage : SubmissionPage {
     [GtkChild]
     private override unowned Gtk.Button load_more_comments_btt {get;}
 
-    private override Vanana.HtmlView submission_description {get; set;}
+    [GtkChild]
+    private override unowned Gtk.Label submission_description {get;}
+
+    private override Vanana.HtmlView submission_text {get; set;}
     private override Vanana.HtmlView submission_license {get; set;}
 
     public override SubmissionType? submission_type { get; set; }
-
-
 
     public WipPage (int64 id) {
         submission_type = SubmissionType.WIP;
