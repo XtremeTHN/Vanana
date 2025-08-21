@@ -5,6 +5,7 @@ from os.path import join, exists
 
 ARG_LIST = []
 
+
 def get_arg_with_default(name, default=None, required=False):
     arg_type = type(default) if default is not None else bool
     ARG_LIST.append((name, arg_type, default))
@@ -13,17 +14,18 @@ def get_arg_with_default(name, default=None, required=False):
         pos = sys.argv.index(name) + 1
         if arg_type is bool:
             return True
-        
+
         if pos >= len(sys.argv):
             return default
         return arg_type(sys.argv[pos])
     except ValueError:
         if required:
-            print('Argument', name, "is required. See -h")
+            print("Argument", name, "is required. See -h")
             sys.exit(3)
         if default is None:
             return False
         return default
+
 
 RECONFIGURE = get_arg_with_default("-r")
 KEEP_TERMINAL = get_arg_with_default("--keep-term")
@@ -39,6 +41,7 @@ ETC_DIR = join(VANANA_BUILD_DEST_DIR, "etc")
 LIB_DIR = join(VANANA_BUILD_DEST_DIR, "lib")
 SHARE_DIR = join(VANANA_BUILD_DEST_DIR, "share")
 
+
 def c(*args, wd=None, output=False, force_exec=False):
     color = "\033[32m"
     if args[0] == "sudo":
@@ -47,7 +50,7 @@ def c(*args, wd=None, output=False, force_exec=False):
     print(f"{color}+\033[0m", *args)
     if force_exec is False and DRY_RUN is True:
         return
-    
+
     try:
         if output is False:
             subprocess.check_call(args, cwd=wd)
@@ -60,8 +63,10 @@ def c(*args, wd=None, output=False, force_exec=False):
         print(f"\033[31m{e.__class__.__name__}\033[0m: {e.args}")
         sys.exit(2)
 
+
 def mkdir(*dirs):
     c("mkdir", "-p", *dirs)
+
 
 if get_arg_with_default("-h"):
     print("Available commands:")
@@ -76,7 +81,7 @@ mkdir(BIN_DIR, ETC_DIR, LIB_DIR, SHARE_DIR)
 
 if RECONFIGURE:
     c("rm", "-rf", "build")
-    
+
 c("meson", "setup", "build")
 
 # fixes "libintl.h: No such file or directory" when compiling
@@ -101,8 +106,24 @@ if exists(COMPILED_PATH):
             continue
         c("cp", x, BIN_DIR)
 
-c('cp', join(PREFIX, "bin", "librsvg-2-2.dll"), BIN_DIR)
-c('cp', join("/usr/bin/msys-2.0.dll"), BIN_DIR)
+extra_dlls = [
+    "libtasn1-6.dll",
+    "libgnutls-30.dll",
+    "libnettle-8.dll",
+    "vulkan-1.dll",
+    "libpxbackend-1.0.dll",
+    "libhogweed-6.dll",
+    "libbrotlienc.dll",
+    "libproxy-1.dll",
+    "libgmp-10.dll",
+    "libp11-kit-0.dll",
+    "librsvg-2-2.dll",
+]
+
+for dll in extra_dlls:
+    c("cp", join(PREFIX, "bin", dll), BIN_DIR)
+
+c("cp", join("/usr/bin/msys-2.0.dll"), BIN_DIR)
 c("cp", join(PREFIX, "bin", "gdbus.exe"), BIN_DIR)
 
 if KEEP_TERMINAL is False:
@@ -123,7 +144,11 @@ SCHEMAS_DIR = ["glib-2.0", "schemas"]
 mkdir(join(SHARE_DIR, *SCHEMAS_DIR))
 print("INFO: Building share")
 c("sudo", "glib-compile-schemas", join(PREFIX, "share", *SCHEMAS_DIR))
-c("cp", join(PREFIX, "share", *SCHEMAS_DIR, "gschemas.compiled"), join(SHARE_DIR, *SCHEMAS_DIR))
+c(
+    "cp",
+    join(PREFIX, "share", *SCHEMAS_DIR, "gschemas.compiled"),
+    join(SHARE_DIR, *SCHEMAS_DIR),
+)
 
 mkdir(join(SHARE_DIR, "icons", "Adwaita"))
 c("cp", "-r", join(PREFIX, "share", "icons", "Adwaita"), join(SHARE_DIR, "icons"))
