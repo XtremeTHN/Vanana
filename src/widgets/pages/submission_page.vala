@@ -1,51 +1,150 @@
 using Utils;
 
+[GtkTemplate (ui = "/com/github/XtremeTHN/Vanana/submission-page.ui")]
 public abstract class SubmissionPage : Adw.NavigationPage {
-    public virtual unowned Adw.PreferencesGroup updates_group {get;}
-    public virtual unowned Adw.PreferencesGroup credits_group {get;}
+    [GtkChild]
+    public unowned Adw.PreferencesGroup? updates_group {get;}
 
-    public virtual unowned Gtk.Picture submission_icon {get;}
-    public abstract unowned Gtk.Label submission_title {get;}
-    public abstract unowned Gtk.Label submission_caption {get;}
+    [GtkChild]
+    public unowned Adw.PreferencesGroup? credits_group {get;}
 
-    public abstract unowned Gtk.Box scrolled_box {get;}
+    [GtkChild]
+    public unowned Adw.WrapBox wrap_box {get;}
 
-    public abstract unowned Gtk.Stack stack {get;}
-    public virtual unowned Gtk.Stack submission_icon_stack {get;}
+    private Gtk.Widget _extra_heading_widget;
+    public Gtk.Widget heading_widget {
+        get {
+            return _extra_heading_widget;
+        }
+        set {
+            if (_extra_heading_widget != null)
+                heading_box.remove (_extra_heading_widget);
 
-    public abstract unowned Gtk.Button continue_btt {get;}
-    public abstract unowned Gtk.Button open_gb_btt {get;}
+            _extra_heading_widget = value;
+            heading_box.append (_extra_heading_widget);
+        }
+    }
 
-    public abstract unowned Adw.Carousel screenshots_carousel {get;}
-    public abstract unowned Adw.CarouselIndicatorDots screenshots_carousel_dots {get;}
+    private Gtk.Box _extra_submission_data;
+    public Gtk.Box extra_submission_data {
+        get {
+            return _extra_submission_data;
+        }
+        set {
+            wrap_box.append (value);
+            _extra_submission_data = value;
+        }
+    }
 
-    public virtual Gtk.Label submission_description {get;}
-    public abstract Vanana.HtmlView submission_text {get; set;}
-    public virtual Vanana.HtmlView submission_license {get; set;}
+    [GtkChild]
+    private unowned Gtk.Box extra_data_box {get;}
+
+    [GtkChild]
+    private unowned Gtk.Box heading_box {get;}
+
+    [GtkChild]
+    public unowned Screenshot submission_icon {get;}
     
-    public abstract unowned Gtk.Label upload_date {get;}
-    public abstract unowned Gtk.Label update_date {get;}
-    public abstract unowned Gtk.Label likes {get;}
-    public abstract unowned Gtk.Label views {get;}
-    public abstract unowned Adw.StatusPage loading_status {get;}
-    public abstract unowned Adw.StatusPage trashed_status {get;}
+    [GtkChild]
+    public unowned Gtk.Label submission_title {get;}
+    
+    [GtkChild]
+    public unowned Gtk.Label submission_caption {get;}
+    
+    [GtkChild]
+    public unowned Gtk.Box scrolled_box {get;}
+    
+    [GtkChild]
+    public unowned Gtk.Stack stack {get;}
+    
+    [GtkChild]
+    public unowned Gtk.Button continue_btt {get;}
+    
+    [GtkChild]
+    public unowned Gtk.Button open_gb_btt {get;}
 
-    public virtual unowned Gtk.Frame license_frame {get;}
+    [GtkChild]
+    public unowned Adw.Clamp screenshots_clamp {get;}
 
-    public abstract unowned Adw.StatusPage rating_status {get;}
+    [GtkChild]
+    public unowned Adw.Carousel screenshots_carousel {get;}
+    
+    [GtkChild]
+    public unowned Adw.CarouselIndicatorDots screenshots_carousel_dots {get;}
+    
+    [GtkChild]
+    public unowned Gtk.Label submission_description {get;}
+    
+    public Vanana.HtmlView submission_text {get; set;}
+    
+    public Vanana.HtmlView submission_license {get; set;}
+    
+    [GtkChild]
+    public unowned Gtk.Label upload_date {get;}
+    
+    [GtkChild]
+    public unowned Gtk.Label update_date {get;}
+    
+    [GtkChild]
+    public unowned Gtk.Label likes {get;}
+    
+    [GtkChild]
+    public unowned Gtk.Label views {get;}
+    
+    [GtkChild]
+    public unowned Adw.StatusPage loading_status {get;}
+    
+    [GtkChild]
+    public unowned Adw.StatusPage trashed_status {get;}
+    
+    [GtkChild]
+    public unowned Gtk.Label license_label {get;}
 
-    private abstract unowned Gtk.ListBoxRow comments_placeholder_row {get;}
-    private abstract unowned Gtk.ListBox comment_list {get;}
-    private abstract unowned Gtk.Stack comments_stack {get;}
-    private abstract unowned Gtk.Button load_more_comments_btt {get;}
+    [GtkChild]
+    public unowned Gtk.Frame license_frame {get;}
+    
+    [GtkChild]
+    public unowned Adw.StatusPage rating_status {get;}
+    
+    [GtkChild]
+    private unowned Gtk.ListBoxRow comments_placeholder_row {get;}
+    
+    [GtkChild]
+    private unowned Gtk.ListBox comment_list {get;}
+    
+    [GtkChild]
+    private unowned Gtk.Stack comments_stack {get;}
+    
+    [GtkChild]
+    private unowned Gtk.Button load_more_comments_btt {get;}
 
     public Cancellable cancellable {get; set;}
     public Gamebanana.Submissions api {get; set;}
 
     public abstract SubmissionType? submission_type {get; set;}
 
-    public virtual bool has_updates {get; set;}
-    public virtual bool has_license {get; set;}
+    private bool _has_updates;
+    public bool has_updates {
+        get {
+            return _has_updates;
+        }
+        set {
+            updates_group.visible = value;
+            _has_updates = value;
+        }
+    }
+
+    private bool _has_license;
+    public bool has_license {
+        get {
+            return _has_license;
+        }
+        set {
+            license_label.visible = value;
+            license_frame.visible = value;
+            _has_license = value;
+        }
+    }
 
     public string? submission_url {get; set;}
     public string submission_name {get; set;}
@@ -75,9 +174,6 @@ public abstract class SubmissionPage : Adw.NavigationPage {
         submission_text = new Vanana.HtmlView ();
 
         api = new Gamebanana.Submissions ();
-
-        var spinner = new Adw.SpinnerPaintable (loading_status);
-        loading_status.set_paintable (spinner);
 
         scrolled_box.append (submission_text);
 
@@ -158,6 +254,8 @@ public abstract class SubmissionPage : Adw.NavigationPage {
         
         if (info.has_member ("_aCredits"))
             populate_credits (info.get_array_member ("_aCredits"));
+        else
+            credits_group.visible = false;
 
         if (has_updates)
             yield populate_updates ();
@@ -218,37 +316,28 @@ public abstract class SubmissionPage : Adw.NavigationPage {
         stack.set_visible_child_name ("rating-warning");
     }
 
-    public void set_submission_icon (File? img) {
-        if (img == null) {
-            submission_icon_stack.set_visible_child_name ("no-preview");
-            return;
-        }
-
-        submission_icon.set_file (img);
-        submission_icon_stack.set_visible_child_name ("main");
-    }
-
     public void populate_images (Json.Object? preview_info) {
         if (preview_info == null || preview_info.has_member ("_aImages") == false) {
             warning ("No preview media");
-            screenshots_carousel.set_visible (false);
-            screenshots_carousel_dots.set_visible (false);
-            set_submission_icon (null);
+            screenshots_clamp.visible = false;
+            screenshots_carousel_dots.visible = false;
+            submission_icon.set_no_preview ();
 
             return;
         }
 
         var images = preview_info.get_array_member ("_aImages");
 
-        if (images.get_length () == 0) {
-            warning ("No preview media");
-            return;
-        }
-
         var sub_img = images.get_element (0).get_object ();
         
-        if (submission_icon != null)
-            Vanana.cache_download (build_image_url (sub_img, Utils.ImageQuality.MEDIUM), set_submission_icon, cancellable);
+        Vanana.cache_download (build_image_url (sub_img, Utils.ImageQuality.MEDIUM), submission_icon.set_file, cancellable);
+        
+        if (images.get_length () == 1) {
+            screenshots_clamp.visible = false;
+            screenshots_carousel_dots.visible = false;
+
+            return;
+        }
 
         foreach (var item in images.get_elements ()) {
             var img = item.get_object ();
@@ -261,6 +350,7 @@ public abstract class SubmissionPage : Adw.NavigationPage {
     public async void populate_updates () {
         try {
             var response = yield api.get_updates (submission_type, submission_id);
+            message (response.length ().to_string ());
 
             foreach (var update_array in response) {
                 if (update_array.get_length () == 0) {

@@ -58,14 +58,13 @@ public class TopSubmission : Adw.Bin {
         submission_type = SubmissionType.from_string (info.get_string_member ("_sModelName"));
 
         switch (submission_type) {
-            case SubmissionType.NEWS:
-            case SubmissionType.WIP:
-                open_btt.set_icon_name ("external-link-symbolic");
-                break;
-
             case SubmissionType.MOD:
             case SubmissionType.TOOL:
                 open_btt.set_icon_name ("folder-download-symbolic");
+                break;
+            
+            default:
+                open_btt.set_icon_name ("external-link-symbolic");
                 break;
         }
 
