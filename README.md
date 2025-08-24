@@ -8,7 +8,6 @@ A fnf gamebanana client. Rewriting in vala
 - [ ] Fix occasional soup socket timeout errors (i think this error is from my internet connection xd)
 - [x] Make the downloads page
 - [ ] Add a full screen screenshot preview
-- [ ] Add android support
 - [x] Add windows support
 - [x] Add submission comments
 
@@ -23,7 +22,7 @@ A fnf gamebanana client. Rewriting in vala
     - [x] Tools
     - [ ] Sounds
     - [ ] Concepts
-    - [ ] Tutorials
+    - [x] Tutorials
     - [ ] Scripts
 
 ## Preview
