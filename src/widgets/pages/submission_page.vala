@@ -187,6 +187,9 @@ public abstract class SubmissionPage : Adw.NavigationPage {
         continue_btt.clicked.connect (on_continue_clicked);
         load_more_comments_btt.clicked.connect (request_comments);
 
+        loading_status.set_description (loading_status.description.printf (submission_type.to_string ()));
+        //  trashed_status.set_description (trashe)
+
         request_info ();
     }
 
@@ -209,8 +212,8 @@ public abstract class SubmissionPage : Adw.NavigationPage {
             try {
                 var info = api.get_info.end (res);
 
-                handle_info (info);
-                populate.begin (info);
+                if (handle_info (info)) 
+                    populate.begin (info);
             } catch (Error e) {
                 if (e.message == "Socket I/O timed out")
                     activate_action ("navigation.pop", null);
@@ -241,12 +244,38 @@ public abstract class SubmissionPage : Adw.NavigationPage {
 
     public virtual void populate_extra_widgets (Json.Object info) {}
     
-    public virtual void handle_info (Json.Object info) {
+    public virtual bool handle_info (Json.Object info) {
+        if (info.has_member ("_aTrashInfo")) {
+            populate_trash_status (info.get_object_member ("_aTrashInfo"));
+            stack.set_visible_child_name ("trashed");
+            return false;
+        }
+
         submission_name = info.get_string_member ("_sName");
         submission_url = info.get_string_member ("_sProfileUrl");
         open_gb_btt.sensitive = true;
 
         set_title ("%s - %s".printf (submission_name, submission_type.to_string ()));
+        return true;
+    }
+
+    public void populate_trash_status (Json.Object trash_info) {
+        string description = "This %s has been trashed ".printf (submission_type.to_string ()); // TODO: make translatable all strings
+        if (trash_info.get_boolean_member ("_bIsTrashedByOwner")) {
+            description += "by the owner." 
+            + "\nReason: " + trash_info.get_string_member ("_sReason");
+
+            if (trash_info.has_member ("_sDetails")) {
+                description += "\nDetails: " + remove_html_tags (trash_info.get_string_member ("_sDetails"));
+            }
+        } else {
+            var rule_info = trash_info.get_object_member ("_aRuleViolated");
+            description += "for a rule violation.\n"
+            + rule_info.get_string_member ("_sCode") + ": "
+            + remove_html_tags (rule_info.get_string_member ("_sText"));
+        }
+
+        trashed_status.set_description (description);
     }
 
     public virtual async void populate (Json.Object info) {
@@ -464,10 +493,9 @@ public abstract class DownloadableSubmissionPage : SubmissionPage {
         dialog.present (window);
     }
 
-    public override void handle_info (Json.Object info) {
-        base.handle_info (info);
-
-        downloads.set_label (info.get_int_member ("_nDownloadCount").to_string ());
+    public override bool handle_info (Json.Object info) {
+        if (info.has_member ("_nDownloadCount"))
+            downloads.set_label (info.get_int_member ("_nDownloadCount").to_string ());
 
         if (info.has_member ("_aFiles"))
             files = info.get_array_member ("_aFiles");
@@ -480,5 +508,7 @@ public abstract class DownloadableSubmissionPage : SubmissionPage {
 
         if (files == null && alt_files == null && archived_files == null)
             download_btt.set_sensitive (false);
+
+        return base.handle_info (info);
     }
 }
