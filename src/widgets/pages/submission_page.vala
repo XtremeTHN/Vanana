@@ -152,8 +152,9 @@ public abstract class SubmissionPage : Adw.NavigationPage {
 
     private int current_comments_page = 1;
 
-    private void on_destroy () {
+    private void on_hidden () {
         cancellable.cancel ();
+        message ("destroyed");
     }
 
     /**
@@ -169,7 +170,7 @@ public abstract class SubmissionPage : Adw.NavigationPage {
 
         set_title (submission_type.to_string ());
         cancellable = new Cancellable ();
-        destroy.connect (on_destroy);
+        hidden.connect (on_hidden);
 
         submission_text = new Vanana.HtmlView ();
 
@@ -208,7 +209,7 @@ public abstract class SubmissionPage : Adw.NavigationPage {
     }
 
     public virtual void request_info () {
-        api.get_info.begin (submission_type, submission_id, (obj, res) => {
+        api.get_info.begin (submission_type, submission_id, cancellable, (obj, res) => {
             try {
                 var info = api.get_info.end (res);
 
@@ -226,7 +227,7 @@ public abstract class SubmissionPage : Adw.NavigationPage {
 
     private void request_comments () { 
         load_more_comments_btt.set_sensitive (false);
-        api.get_posts_feed.begin (submission_type, submission_id, current_comments_page, PostsFeedSort.POPULAR, (_, res) => {
+        api.get_posts_feed.begin (submission_type, submission_id, current_comments_page, cancellable, PostsFeedSort.POPULAR, (_, res) => {
             try {
                 var response = api.get_posts_feed.end (res);
                 var metadata = response.get_object_member ("_aMetadata");
@@ -379,7 +380,6 @@ public abstract class SubmissionPage : Adw.NavigationPage {
     public async void populate_updates () {
         try {
             var response = yield api.get_updates (submission_type, submission_id);
-            message (response.length ().to_string ());
 
             foreach (var update_array in response) {
                 if (update_array.get_length () == 0) {

@@ -97,24 +97,24 @@ public class Gamebanana.Submissions : Object {
         s_session = new Session.with_options ("max_conns", 30, "timeout", 5);
     }
 
-    private async Json.Node request (Soup.Message msg) throws Error {
-        var stream = yield s_session.send_async (msg, Priority.DEFAULT, null);
+    private async Json.Node request (Soup.Message msg, Cancellable? cancellable) throws Error {
+        var stream = yield s_session.send_async (msg, Priority.DEFAULT, cancellable);
         var parser = new Json.Parser ();
-        yield parser.load_from_stream_async (stream, null);
+        yield parser.load_from_stream_async (stream, cancellable);
 
         return parser.get_root ();
     }
 
-    private async Json.Node _get (string url) throws Error {
+    private async Json.Node _get (string url, Cancellable? cancellable) throws Error {
         int retries = 0;
 
         try {
-            return yield request (new Soup.Message ("GET", GB_API + url));
+            return yield request (new Soup.Message ("GET", GB_API + url), cancellable);
         } catch (Error e) {
             if (e.message == "Socket I/O timed out") {
                 if (retries != 3) {
                     retries += 1;
-                    return yield request (new Soup.Message ("GET", GB_API + url));
+                    return yield request (new Soup.Message ("GET", GB_API + url), cancellable);
                 }
                 warning ("max retries reached");
             }
@@ -124,9 +124,9 @@ public class Gamebanana.Submissions : Object {
 
     }
 
-    public async Json.Object? search (string query, SortType sort, int page = 1) throws Error {
+    public async Json.Object? search (string query, SortType sort, int page = 1, Cancellable? cancellable = null) throws Error {
         string method = "/Game/%i/Subfeed?_nPage=%i&_sSort=%s&_sName=%s".printf (GAME_ID, page, sort.to_string().ascii_down (), query);
-        var json = yield _get(method);
+        var json = yield _get(method, cancellable);
         var obj = json.get_object ();
 
         warn_if_fail (obj != null); 
@@ -134,9 +134,9 @@ public class Gamebanana.Submissions : Object {
         return obj;
     }
 
-    public async Json.Object? get_info (SubmissionType type, int64 id) throws Error {
+    public async Json.Object? get_info (SubmissionType type, int64 id, Cancellable? cancellable = null) throws Error {
         string method = ("/%s/%" + int64.FORMAT + "/ProfilePage").printf (type.to_string(), id);
-        var json = yield _get (method);
+        var json = yield _get (method, cancellable);
         var obj = json.get_object ();
 
         warn_if_fail (obj != null);
@@ -148,13 +148,13 @@ public class Gamebanana.Submissions : Object {
         return obj;
     }
 
-    private async List<Json.Array> get_all_pages (string method) throws Error {
+    private async List<Json.Array> get_all_pages (string method, Cancellable? cancellable = null) throws Error {
         var _results = new List<Json.Array> ();
         int page = 1;
 
         while (true) {
             string _method = method.printf (page);
-            var json = yield _get (_method);
+            var json = yield _get (_method, cancellable);
             var obj = json.get_object ();
 
             assert_nonnull (obj);
@@ -178,24 +178,24 @@ public class Gamebanana.Submissions : Object {
         return _results;
     }
 
-    public async List<Json.Array> get_updates(SubmissionType type, int64 id) throws Error {
+    public async List<Json.Array> get_updates(SubmissionType type, int64 id, Cancellable? cancellable = null) throws Error {
         string method = "/" + type.to_string () + "/" + id.to_string () + "/Updates?_nPage=%i_nPerpage=10";
 
-        return yield get_all_pages (method);
+        return yield get_all_pages (method, cancellable);
     }
 
-    public async Json.Array? get_top () throws Error {
+    public async Json.Array? get_top (Cancellable? cancellable = null) throws Error {
         string method = "/Game/%i/TopSubs".printf (GAME_ID);
-        var json = yield _get (method);
+        var json = yield _get (method, cancellable);
         var obj = json.get_array ();
 
         warn_if_fail (obj != null);
         return obj;
     }
 
-    public async Json.Object? get_featured (int page = 1) throws Error {
+    public async Json.Object? get_featured (int page = 1, Cancellable? cancellable = null) throws Error {
         string method = "/Util/List/Featured?_nPage=%i&_idGameRow=%i".printf (page, GAME_ID);
-        var json = yield _get (method);
+        var json = yield _get (method, cancellable);
         var obj = json.get_object ();
 
         warn_if_fail (obj != null);
@@ -203,10 +203,10 @@ public class Gamebanana.Submissions : Object {
         return obj;
     }
 
-    public async Json.Object? get_posts_feed (SubmissionType type, int64 id, int page = 1, PostsFeedSort sort = PostsFeedSort.NEWEST) throws Error {
+    public async Json.Object? get_posts_feed (SubmissionType type, int64 id, int page = 1, Cancellable? cancellable = null, PostsFeedSort sort = PostsFeedSort.NEWEST) throws Error {
         string method = "/%s/%s/Posts?_nPage=%i&_nPerpage=5&_sSort=%s".printf(type.to_string (), id.to_string (), page, sort.to_string ());
 
-        var json = yield _get (method);
+        var json = yield _get (method, cancellable);
         var obj = json.get_object ();
         warn_if_fail (obj != null);
 
@@ -226,8 +226,8 @@ public class Gamebanana.Submissions : Object {
      *      - Post_Edit
      *      - Post_Reply
      */
-    public async List<Json.Array> get_post_replies (int64 post_id, int page = 1) throws Error {
+    public async List<Json.Array> get_post_replies (int64 post_id, int page = 1, Cancellable? cancellable = null) throws Error {
         string method = "/Post/" + post_id.to_string () + "/Posts?_nPage=%i&_nPerpage=5";
-        return yield get_all_pages (method);
+        return yield get_all_pages (method, cancellable);
     }
 }

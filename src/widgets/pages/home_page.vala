@@ -86,7 +86,7 @@ public class HomePage : Adw.NavigationPage {
             submission_list.remove_all ();
         }
 
-        api.get_featured.begin (current_page, (obj, res) => {
+        api.get_featured.begin (current_page, null, (obj, res) => {
             try {
                 var subs = api.get_featured.end (res);
                 return_if_fail (subs.has_member ("_aRecords"));
@@ -101,7 +101,7 @@ public class HomePage : Adw.NavigationPage {
     }
 
     private void search (string query, bool remove_all = true) {
-        api.search.begin (query, SortType.DEFAULT, current_page, (obj, res) => {
+        api.search.begin (query, SortType.DEFAULT, current_page, null, (obj, res) => {
             try {
                 var response = api.search.end (res);
                 populate_search (response, remove_all);
@@ -167,7 +167,7 @@ public class HomePage : Adw.NavigationPage {
     private void populate () {
         stack.set_visible_child_name ("loading");
 
-        api.get_top.begin ((obj, res) => {
+        api.get_top.begin (null, (obj, res) => {
             try {
                 var subs = api.get_top.end (res);
                 populate_carousel (subs);
