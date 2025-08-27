@@ -40,6 +40,16 @@ template $SubmissionPage: Adw.NavigationPage {
             }
 
             StackPage {
+                name: "private";
+
+                child: Adw.StatusPage private_status {
+                    title: _("Private");
+                    icon-name: "folder-private-symbolic";
+                    description: _("This %s has been made private by the owner and is unavailable for viewing or download.");
+                };
+            }
+
+            StackPage {
                 name: "rating-warning";
 
                 child: Adw.StatusPage rating_status {

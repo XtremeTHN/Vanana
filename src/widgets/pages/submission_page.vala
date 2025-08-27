@@ -96,6 +96,9 @@ public abstract class SubmissionPage : Adw.NavigationPage {
     
     [GtkChild]
     public unowned Adw.StatusPage trashed_status {get;}
+
+    [GtkChild]
+    public unowned Adw.StatusPage private_status {get;}
     
     [GtkChild]
     public unowned Gtk.Label license_label {get;}
@@ -249,6 +252,12 @@ public abstract class SubmissionPage : Adw.NavigationPage {
         if (info.has_member ("_aTrashInfo")) {
             populate_trash_status (info.get_object_member ("_aTrashInfo"));
             stack.set_visible_child_name ("trashed");
+            return false;
+        }
+
+        if (info.get_boolean_member_with_default ("_bIsPrivate", false)) {
+            private_status.set_description (private_status.description.printf (submission_type.to_string ()));
+            stack.set_visible_child_name ("private");
             return false;
         }
 
