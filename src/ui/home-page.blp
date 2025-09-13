@@ -14,6 +14,21 @@ template $HomePage: Adw.NavigationPage {
             }
 
             [end]
+            MenuButton {
+                icon-name: "folder-user-symbolic";
+
+                menu-model: menu account_menu {
+                    item (_("Login"), "app.show-login")
+                    item (_("Log out"), "app.logout")
+                };
+            }
+
+            // Button {
+            //     icon-name: "folder-user-symbolic";
+            //     action-name: "app.show-login"; // TODO: show a user page, instead of the login page
+            // }
+
+            [end]
             Button {
                 icon-name: "loupe-large-symbolic";
                 action-name: "app.toggle-search";

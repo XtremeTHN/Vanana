@@ -1,0 +1,172 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $LoginDialog: Adw.Dialog {
+    child: Adw.NavigationView {
+        Adw.NavigationPage {
+            title: "Login";
+
+            child: Adw.ToolbarView {
+                [top]
+                Adw.HeaderBar {
+                    title-widget: Adw.ViewSwitcher {
+                        stack: view_stack;
+                        policy: wide;
+                    };
+                }
+
+                content: Adw.ViewStack view_stack {
+                    styles [
+                        "box-10",
+                    ]
+
+                    Adw.ViewStackPage {
+                        title: _("Via user name");
+                        icon-name: "folder-user-symbolic";
+
+                        child: Adw.Clamp {
+                            maximum-size: 400;
+
+                            child: Box {
+                                orientation: vertical;
+                                spacing: 10;
+                                valign: center;
+
+                                ListBox {
+                                    valign: center;
+                                    selection-mode: none;
+
+                                    styles [
+                                        "boxed-list-separate",
+                                    ]
+
+                                    Adw.EntryRow username_entry {
+                                        title: _("Username");
+                                    }
+
+                                    Adw.PasswordEntryRow password_entry {
+                                        title: _("Password");
+                                    }
+
+                                    Adw.ButtonRow us_log_btt {
+                                        title: _("Login");
+                                        activated => $login_with_username();
+                                    }
+                                }
+
+                                Revealer error_revealer {
+                                    child: Label error_label {
+                                        styles [
+                                            "error",
+                                            "caption",
+                                        ]
+
+                                        wrap: true;
+                                        wrap-mode: word_char;
+                                    };
+                                }
+                            };
+                        };
+                    }
+
+                    Adw.ViewStackPage {
+                        title: "Via e-mail";
+                        icon-name: "mail-symbolic";
+
+                        child: Adw.Clamp {
+                            maximum-size: 400;
+
+                            child: ListBox {
+                                styles [
+                                    "boxed-list-separate",
+                                ]
+
+                                valign: center;
+                                selection-mode: none;
+
+                                Adw.EntryRow email_entry {
+                                    title: "E-mail";
+                                }
+
+                                Adw.ButtonRow {
+                                    start-icon-name: "send-symbolic";
+                                    title: _("Send verification code");
+                                    activated => $send_code();
+                                }
+                            };
+                        };
+                    }
+                };
+            };
+        }
+
+        Adw.NavigationPage {
+            tag: "code-sent";
+            title: _("Verification code");
+
+            child: Adw.ToolbarView {
+                [top]
+                Adw.HeaderBar {}
+
+                content: Adw.Clamp {
+                    child: Box {
+                        orientation: vertical;
+                        valign: center;
+                        spacing: 15;
+
+                        Label {
+                            wrap: true;
+                            wrap-mode: word_char;
+                            justify: center;
+                            label: _("A verification code was sent to \"%s\". If you don't recieve anything, check that you entered your email correctly.");
+                        }
+
+                        ListBox {
+                            styles [
+                                "boxed-list-separate",
+                            ]
+
+                            Adw.EntryRow code_row {
+                                title: _("Code");
+                                max-length: 6;
+                            }
+
+                            Adw.ButtonRow {
+                                title: _("Submit");
+                                activated => $submit_code();
+                            }
+                        }
+                    };
+                };
+            };
+        }
+
+        Adw.NavigationPage {
+            title: _("Success");
+            tag: "login-success";
+            can-pop: false;
+
+            child: Adw.ToolbarView {
+                [top]
+                Adw.HeaderBar {}
+
+                content: Adw.StatusPage {
+                    icon-name: "check-round-outline-symbolic";
+                    title: _("Login successful");
+                    description: _("You can continue now");
+
+                    child: Button {
+                        styles [
+                            "pill",
+                            "suggested-action",
+                        ]
+
+                        halign: center;
+                        label: _("Continue");
+                        clicked => $close_diag();
+                    };
+                };
+            };
+        }
+    };
+}

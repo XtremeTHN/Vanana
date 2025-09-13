@@ -12,6 +12,7 @@ vanana_sources = [
   'widgets/pages/wip_page.vala',
   'widgets/pages/tutorial_page.vala',
   'widgets/pages/question_page.vala',
+  'widgets/login_dialog.vala',
   'widgets/html.vala',
   'widgets/comment.vala',
   'widgets/sidebar.vala',

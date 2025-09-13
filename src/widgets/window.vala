@@ -15,12 +15,18 @@ public class Vanana.Window : Adw.ApplicationWindow {
 
         app.create_action ("toggle-sidebar").activate.connect (toggle_sidebar);
         app.create_action ("toggle-search").activate.connect (home.toggle_search_bar);
+        app.create_action ("show-login").activate.connect (show_login);
 
         home.search_bar.set_key_capture_widget (this);
 
         split_view.set_sidebar (new Sidebar ());
 
         navigation_view.add (home);
+    }
+
+    public void show_login () {
+        var page = new LoginDialog ();
+        page.present (this);
     }
 
     public void show_message (string msg) {

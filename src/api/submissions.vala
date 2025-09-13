@@ -89,20 +89,9 @@ public enum PostsFeedSort {
 
 [SingleInstance]
 public class Gamebanana.Submissions : Object {
-    Session s_session;
 
     public Submissions () {
         Object ();
-
-        s_session = new Session.with_options ("max_conns", 30, "timeout", 5);
-    }
-
-    private async Json.Node request (Soup.Message msg, Cancellable? cancellable) throws Error {
-        var stream = yield s_session.send_async (msg, Priority.DEFAULT, cancellable);
-        var parser = new Json.Parser ();
-        yield parser.load_from_stream_async (stream, cancellable);
-
-        return parser.get_root ();
     }
 
     private async Json.Node _get (string url, Cancellable? cancellable) throws Error {
