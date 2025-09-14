@@ -122,7 +122,6 @@ public abstract class SubmissionPage : Adw.NavigationPage {
     private unowned Gtk.Button load_more_comments_btt {get;}
 
     public Cancellable cancellable {get; set;}
-    public Gamebanana.Submissions api {get; set;}
 
     public abstract SubmissionType? submission_type {get; set;}
 
@@ -177,8 +176,6 @@ public abstract class SubmissionPage : Adw.NavigationPage {
 
         submission_text = new Vanana.HtmlView ();
 
-        api = new Gamebanana.Submissions ();
-
         scrolled_box.append (submission_text);
 
         if (has_license) {
@@ -212,9 +209,9 @@ public abstract class SubmissionPage : Adw.NavigationPage {
     }
 
     public virtual void request_info () {
-        api.get_info.begin (submission_type, submission_id, cancellable, (obj, res) => {
+        Gamebanana.Submissions.get_info.begin (submission_type, submission_id, cancellable, (obj, res) => {
             try {
-                var info = api.get_info.end (res);
+                var info = Gamebanana.Submissions.get_info.end (res);
 
                 if (handle_info (info)) 
                     populate.begin (info);
@@ -230,9 +227,9 @@ public abstract class SubmissionPage : Adw.NavigationPage {
 
     private void request_comments () { 
         load_more_comments_btt.set_sensitive (false);
-        api.get_posts_feed.begin (submission_type, submission_id, current_comments_page, cancellable, PostsFeedSort.POPULAR, (_, res) => {
+        Gamebanana.Submissions.get_posts_feed.begin (submission_type, submission_id, current_comments_page, cancellable, PostsFeedSort.POPULAR, (_, res) => {
             try {
-                var response = api.get_posts_feed.end (res);
+                var response = Gamebanana.Submissions.get_posts_feed.end (res);
                 var metadata = response.get_object_member ("_aMetadata");
 
                 load_more_comments_btt.set_sensitive (!metadata.get_boolean_member ("_bIsComplete"));
@@ -388,7 +385,7 @@ public abstract class SubmissionPage : Adw.NavigationPage {
 
     public async void populate_updates () {
         try {
-            var response = yield api.get_updates (submission_type, submission_id);
+            var response = yield Gamebanana.Submissions.get_updates (submission_type, submission_id);
 
             foreach (var update_array in response) {
                 if (update_array.get_length () == 0) {

@@ -14,7 +14,7 @@ namespace Gamebanana {
 
     public Session? get_session () {
         if (gb_session == null) {
-            // user agent fixes the need of a recaptcha when logging
+            // user agent fixes the need of a recaptcha when logging... sometimes
             gb_session = new Session.with_options ("max_conns", 30, "timeout", 5, "user_agent", "Mozilla/5.0 (X11; Linux x86_64; rv:142.0) Gecko/20100101 Firefox/142.0");
             var cookie_man = new CookieJarDB ("vanana_xd", false);
             gb_session.add_feature (cookie_man);
@@ -25,12 +25,37 @@ namespace Gamebanana {
 
     private async Json.Node request (Soup.Message msg, Cancellable? cancellable) throws Error {
         var stream = yield get_session ().send_async (msg, Priority.DEFAULT, cancellable);
+
+        var out_stream = File.new_for_path (msg.uri.get_path ().replace ("/", "_"));
+        var x = out_stream.open_readwrite (null);
+
+        stream.sp
+
         var parser = new Json.Parser ();
         yield parser.load_from_stream_async (stream, cancellable);
 
         return parser.get_root ();
     }
 
+
+    private async Json.Node _get (string url, Cancellable? cancellable) throws Error {
+        int retries = 0;
+
+        try {
+            return yield request (new Soup.Message ("GET", GB_API + url), cancellable);
+        } catch (Error e) {
+            if (e.message == "Socket I/O timed out") {
+                if (retries != 3) {
+                    retries += 1;
+                    return yield request (new Soup.Message ("GET", GB_API + url), cancellable);
+                }
+                warning ("max retries reached");
+            }
+
+            throw e;
+        }
+
+    }
 
     /**
      * Authenticates a user with the GameBanana API using the provided username and password.

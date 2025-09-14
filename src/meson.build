@@ -6,6 +6,7 @@ vanana_sources = [
   'api/gamebanana.vala',
   'api/submissions.vala',
   'api/manager.vala',
+  'api/user.vala',
   'widgets/pages/submission_page.vala',
   'widgets/pages/home_page.vala',
   'widgets/pages/downloadable_page.vala',

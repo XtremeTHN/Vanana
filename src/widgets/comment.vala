@@ -105,11 +105,10 @@ public class Comment : Gtk.ListBoxRow {
             index = get_index ();
 
         Gtk.ListBox box = (Gtk.ListBox) get_parent ();
-        var api = new Gamebanana.Submissions ();
 
-        api.get_post_replies.begin (post_id, current_replies_page, cancellable, (_, res) => {
+        Gamebanana.Submissions.get_post_replies.begin (post_id, current_replies_page, cancellable, (_, res) => {
             try {
-                var response = api.get_post_replies.end (res);
+                var response = Gamebanana.Submissions.get_post_replies.end (res);
                 
                 foreach (var records in response) {
                     if (records.get_length () == 0)

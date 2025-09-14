@@ -25,6 +25,11 @@ public class LoginDialog : Adw.Dialog {
         Object ();
     }
 
+    private void finish_login (int64 id) {
+        var user = new Gamebanana.CurrentUser ();
+        user.set_user.begin (id);
+    }
+
     [GtkCallback]
     private void login_with_username () {
         var user = username_entry.get_text ();
@@ -33,13 +38,15 @@ public class LoginDialog : Adw.Dialog {
         us_log_btt.set_sensitive (false);
         Gamebanana.login.begin (user, pass, null, (_, res) => {
             try {
-                Gamebanana.login.end(res);
+                var response = Gamebanana.login.end(res);
+                
+                finish_login (response.get_int_member ("_idRow"));
             } catch (Error e) {
                 error_revealer.set_reveal_child (true);
                 error_label.set_label ("%s: %s".printf (e.domain.to_string (), e.message));
+                us_log_btt.set_sensitive (true);
             }
-
-            us_log_btt.set_sensitive (true);
+            close ();
         });
     }
 

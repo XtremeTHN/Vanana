@@ -87,32 +87,7 @@ public enum PostsFeedSort {
     }
 }
 
-[SingleInstance]
-public class Gamebanana.Submissions : Object {
-
-    public Submissions () {
-        Object ();
-    }
-
-    private async Json.Node _get (string url, Cancellable? cancellable) throws Error {
-        int retries = 0;
-
-        try {
-            return yield request (new Soup.Message ("GET", GB_API + url), cancellable);
-        } catch (Error e) {
-            if (e.message == "Socket I/O timed out") {
-                if (retries != 3) {
-                    retries += 1;
-                    return yield request (new Soup.Message ("GET", GB_API + url), cancellable);
-                }
-                warning ("max retries reached");
-            }
-
-            throw e;
-        }
-
-    }
-
+namespace Gamebanana.Submissions {
     public async Json.Object? search (string query, SortType sort, int page = 1, Cancellable? cancellable = null) throws Error {
         string method = "/Game/%i/Subfeed?_nPage=%i&_sSort=%s&_sName=%s".printf (GAME_ID, page, sort.to_string().ascii_down (), query);
         var json = yield _get(method, cancellable);
@@ -131,7 +106,7 @@ public class Gamebanana.Submissions : Object {
         warn_if_fail (obj != null);
 
         if (obj.has_member ("_sErrorMessage")) {
-            throw new Error (Quark.from_string (obj.get_string_member ("_sErrorCode")), 1, obj.get_string_member ("_sErrorMessage"));
+            throw Utils.get_error_from_json(obj);
         }
 
         return obj;

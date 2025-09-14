@@ -21,9 +21,14 @@ public class HomePage : Adw.NavigationPage {
     [GtkChild]
     private unowned Gtk.Button load_btt;
 
+    [GtkChild]
+    private unowned Adw.Avatar avatar;
+
+    [GtkChild]
+    private unowned Gtk.MenuButton user_menu_btt;
+
     private bool auto_scroll_running;
     private Adw.NavigationView nav_view;
-    private Gamebanana.Submissions api;
     public int current_page = 1;
 
     public HomePage (Adw.NavigationView view) {
@@ -37,7 +42,23 @@ public class HomePage : Adw.NavigationPage {
         click_controller.released.connect (on_carousel_released);
         top_submissions.add_controller (click_controller);
 
-        api = new Gamebanana.Submissions ();
+        var user = new Gamebanana.CurrentUser ();
+
+        user.bind_property ("pfp", avatar, "custom-image", BindingFlags.SYNC_CREATE, (_, val) => {
+            var file = val.get_object () as File;
+            if (file == null) return false;
+
+            try {
+                var texture = Gdk.Texture.from_file (val.get_object () as File);
+                avatar.set_custom_image (texture);
+            } catch (Error e) {
+                warning ("error while setting pfp: %s", e.message);
+            }
+
+            return true;
+        }, null);
+
+        user.bind_property ("user-name", avatar, "tooltip-text", BindingFlags.SYNC_CREATE, null, null);
 
         populate ();
     }
@@ -86,9 +107,9 @@ public class HomePage : Adw.NavigationPage {
             submission_list.remove_all ();
         }
 
-        api.get_featured.begin (current_page, null, (obj, res) => {
+        Gamebanana.Submissions.get_featured.begin (current_page, null, (obj, res) => {
             try {
-                var subs = api.get_featured.end (res);
+                var subs = Gamebanana.Submissions.get_featured.end (res);
                 return_if_fail (subs.has_member ("_aRecords"));
 
                 populate_submission_list (subs);
@@ -101,9 +122,9 @@ public class HomePage : Adw.NavigationPage {
     }
 
     private void search (string query, bool remove_all = true) {
-        api.search.begin (query, SortType.DEFAULT, current_page, null, (obj, res) => {
+        Gamebanana.Submissions.search.begin (query, SortType.DEFAULT, current_page, null, (obj, res) => {
             try {
-                var response = api.search.end (res);
+                var response = Gamebanana.Submissions.search.end (res);
                 populate_search (response, remove_all);
 
             } catch (Error e) {
@@ -167,9 +188,9 @@ public class HomePage : Adw.NavigationPage {
     private void populate () {
         stack.set_visible_child_name ("loading");
 
-        api.get_top.begin (null, (obj, res) => {
+        Gamebanana.Submissions.get_top.begin (null, (obj, res) => {
             try {
-                var subs = api.get_top.end (res);
+                var subs = Gamebanana.Submissions.get_top.end (res);
                 populate_carousel (subs);
                 start_auto_scroll ();
             } catch (Error e) {

@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schemalist gettext-domain="vanana">
 	<schema id="com.github.XtremeTHN.Vanana" path="/com/github/XtremeTHN/Vanana/">
+		<key name="user-id" type="x">
+			<default>0</default>
+			<summary>User id</summary>
+			<description>The id of the user that is currently logged in</description>
+		</key>
 	</schema>
 </schemalist>

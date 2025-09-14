@@ -119,4 +119,8 @@ namespace Utils {
 
         win.navigation_view.push (page);
     }
+
+    public Error get_error_from_json (Json.Object obj) {
+        return new Error (Quark.from_string (obj.get_string_member ("_sErrorCode")), 1, obj.get_string_member ("_sErrorMessage"));
+    }
 }

@@ -14,8 +14,8 @@ template $HomePage: Adw.NavigationPage {
             }
 
             [end]
-            MenuButton {
-                icon-name: "folder-user-symbolic";
+            MenuButton user_menu_btt {
+                child: Adw.Avatar avatar {};
 
                 menu-model: menu account_menu {
                     item (_("Login"), "app.show-login")
