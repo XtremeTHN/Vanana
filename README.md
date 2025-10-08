@@ -1,6 +1,8 @@
 # vanana
-
 A fnf gamebanana client. Rewriting in vala
+
+## list-view
+Tried to change gtk list box to gtk list view. But it looks ugly
 
 # TODO
 
