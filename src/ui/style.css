@@ -26,3 +26,18 @@
 .red {
     color: var(--accent-red);
 }
+
+.submissions>row {
+    background-color: var(--card-bg-color);
+    margin-bottom: 10px;
+    border-radius: 10px;
+    transition: all 0.2s;
+}
+
+.submissions>row:hover {
+    background-image: image(color-mix(in srgb, currentColor 3%, transparent));
+}
+
+.submissions>row:active {
+    background-image: image(color-mix(in srgb, currentColor 8%, transparent));
+}

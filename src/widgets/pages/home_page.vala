@@ -1,3 +1,12 @@
+
+class SubmissionObject : Object {
+    public Json.Object? info;
+
+    public SubmissionObject(Json.Object? info) {
+        this.info = info;
+    }
+}
+
 [GtkTemplate (ui = "/com/github/XtremeTHN/Vanana/home-page.ui")]
 public class HomePage : Adw.NavigationPage {
     [GtkChild]
@@ -16,10 +25,12 @@ public class HomePage : Adw.NavigationPage {
     private unowned Adw.Carousel top_submissions;
 
     [GtkChild]
-    private unowned Gtk.ListBox submission_list;
+    private unowned Gtk.ListView submission_view;
 
     [GtkChild]
     private unowned Gtk.Button load_btt;
+
+    private ListStore submission_list;
 
     private bool auto_scroll_running;
     private Adw.NavigationView nav_view;
@@ -28,16 +39,46 @@ public class HomePage : Adw.NavigationPage {
 
     public HomePage (Adw.NavigationView view) {
         Object ();
+        
+
+        submission_list = new ListStore (typeof (SubmissionObject));
+        var factory = new Gtk.SignalListItemFactory ();
+        
+        factory.setup.connect ((list_item) => {
+            var submission = new SubmissionItem ();
+            ((Gtk.ListItem) list_item).set_child (submission);
+        });
+
+        factory.bind.connect ((list_item) => {
+            var item = (Gtk.ListItem) list_item;
+            var sub = (SubmissionObject) item.get_item ();
+            var child = (SubmissionItem) item.get_child ();
+            child.info = sub.info;
+        });
+
+        factory.unbind.connect ((list_item) => {
+            var item = (Gtk.ListItem) list_item;
+            var child = (SubmissionItem) item.get_child ();
+            child.info = null;
+        });
+
+        var model = new Gtk.SingleSelection (submission_list);
+        submission_view.set_model (model);
+        submission_view.set_factory (factory);
+
 
         nav_view = view;
         var spin = new Adw.SpinnerPaintable (loading_page);
         loading_page.set_paintable (spin);
 
+
         var click_controller = new Gtk.GestureClick ();
         click_controller.released.connect (on_carousel_released);
         top_submissions.add_controller (click_controller);
 
+
         api = new Gamebanana.Submissions ();
+
 
         populate ();
     }
@@ -156,7 +197,7 @@ public class HomePage : Adw.NavigationPage {
         }
     }
 
-    [GtkCallback]
+    //  [GtkCallback]
     private void on_row_activate (Gtk.ListBox box, Gtk.ListBoxRow row) {
         var item = (SubmissionItem) row;
 
@@ -207,10 +248,8 @@ public class HomePage : Adw.NavigationPage {
             submission_list.remove_all ();
 
         foreach (var item in submissions.get_elements ()) {
-            var sub = item.get_object ();
-
-            var widget = new SubmissionItem (sub);
-            submission_list.append (widget);
+            var sub = new SubmissionObject (item.get_object ());
+            submission_list.append ((Object) sub);
         }
 
         load_btt.set_sensitive (!metadata.get_boolean_member_with_default ("_bIsComplete", true));
@@ -229,8 +268,8 @@ public class HomePage : Adw.NavigationPage {
 
         var submissions = response.get_array_member ("_aRecords");
         foreach (var sub in submissions.get_elements ()) {
-            var item = new SubmissionItem (sub.get_object ());
-            submission_list.append (item);
+            var item = new SubmissionObject (sub.get_object ());
+            submission_list.append ((Object) item);
         }
         load_btt.set_sensitive (!metadata.get_boolean_member_with_default ("_bIsComplete", true));
     }

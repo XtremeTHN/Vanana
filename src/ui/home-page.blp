@@ -118,13 +118,14 @@ template $HomePage: Adw.NavigationPage {
                                     };
                                 }
 
-                                ListBox submission_list {
+                                ListView submission_view {
                                     styles [
-                                        "boxed-list-separate",
+                                        "submissions",
                                     ]
 
-                                    selection-mode: browse;
-                                    row-activated => $on_row_activate();
+                                    // activate => $on_row_activate();
+                                    // selection-mode: browse;
+                                    // row-activated => $on_row_activate();
                                 }
 
                                 Button load_btt {

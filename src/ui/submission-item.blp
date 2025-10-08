@@ -1,131 +1,128 @@
 using Gtk 4.0;
 using Adw 1;
 
-template $SubmissionItem: ListBoxRow {
+template $SubmissionItem: Box {
     vexpand: false;
+    margin-start: 5;
+    margin-end: 5;
+    margin-bottom: 5;
+    margin-top: 5;
+    spacing: 10;
+    hexpand: true;
 
-    child: Box {
-        margin-start: 5;
-        margin-end: 5;
-        margin-bottom: 5;
-        margin-top: 5;
+    Overlay cover_overlay {
+        height-request: 80;
+        width-request: 100;
+    }
+
+    Box {
         spacing: 10;
-        hexpand: true;
-
-        Overlay cover_overlay {
-            height-request: 80;
-            width-request: 100;
-        }
+        orientation: vertical;
+        valign: center;
 
         Box {
-            spacing: 10;
             orientation: vertical;
-            valign: center;
+
+            Label submission_name {
+                styles [
+                    "heading",
+                ]
+
+                xalign: 0;
+                wrap-mode: word_char;
+            }
+
+            Label submission_type {
+                styles [
+                    "caption",
+                ]
+
+                xalign: 0;
+            }
+        }
+
+        Adw.WrapBox {
+            child-spacing: 5;
 
             Box {
-                orientation: vertical;
+                styles [
+                    "card",
+                    "sub-data",
+                ]
 
-                Label submission_name {
-                    styles [
-                        "heading",
-                    ]
+                spacing: 5;
 
-                    xalign: 0;
-                    wrap-mode: word_char;
+                Image {
+                    icon-name: "clock-alt-symbolic";
+                    pixel-size: 11;
                 }
 
-                Label submission_type {
+                Label submission_upload_date {
                     styles [
                         "caption",
                     ]
-
-                    xalign: 0;
                 }
             }
 
-            Adw.WrapBox {
-                child-spacing: 5;
+            Box {
+                styles [
+                    "card",
+                    "sub-data",
+                ]
 
-                Box {
-                    styles [
-                        "card",
-                        "sub-data",
-                    ]
+                spacing: 5;
 
-                    spacing: 5;
-
-                    Image {
-                        icon-name: "clock-alt-symbolic";
-                        pixel-size: 11;
-                    }
-
-                    Label submission_upload_date {
-                        styles [
-                            "caption",
-                        ]
-                    }
+                Image {
+                    icon-name: "update-symbolic";
+                    pixel-size: 11;
                 }
 
-                Box {
+                Label submission_update_date {
                     styles [
-                        "card",
-                        "sub-data",
+                        "caption",
                     ]
+                }
+            }
 
-                    spacing: 5;
+            Box {
+                styles [
+                    "card",
+                    "sub-data",
+                ]
 
-                    Image {
-                        icon-name: "update-symbolic";
-                        pixel-size: 11;
-                    }
+                spacing: 5;
 
-                    Label submission_update_date {
-                        styles [
-                            "caption",
-                        ]
-                    }
+                Image {
+                    icon-name: "heart-filled-symbolic";
+                    pixel-size: 11;
                 }
 
-                Box {
+                Label submission_likes {
                     styles [
-                        "card",
-                        "sub-data",
+                        "caption",
                     ]
+                }
+            }
 
-                    spacing: 5;
+            Box {
+                styles [
+                    "card",
+                    "sub-data",
+                ]
 
-                    Image {
-                        icon-name: "heart-filled-symbolic";
-                        pixel-size: 11;
-                    }
+                spacing: 5;
 
-                    Label submission_likes {
-                        styles [
-                            "caption",
-                        ]
-                    }
+                Image {
+                    icon-name: "views-symbolic";
+                    pixel-size: 11;
                 }
 
-                Box {
+                Label submission_views {
                     styles [
-                        "card",
-                        "sub-data",
+                        "caption",
                     ]
-
-                    spacing: 5;
-
-                    Image {
-                        icon-name: "views-symbolic";
-                        pixel-size: 11;
-                    }
-
-                    Label submission_views {
-                        styles [
-                            "caption",
-                        ]
-                    }
                 }
             }
         }
-    };
+    }
 }
