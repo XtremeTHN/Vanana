@@ -49,10 +49,7 @@ public class Vanana.Application : Adw.Application {
 
         create_cache_dir ();
 
-        var provider = new Gtk.CssProvider ();
-        provider.load_from_resource ("/com/github/XtremeTHN/Vanana/style.css");
-
-        Gtk.StyleContext.add_provider_for_display (Gdk.Display.get_default (), provider, Gtk.STYLE_PROVIDER_PRIORITY_USER);
+        new Screenshot ();
 
         var win = new Window (this);
         add_window (win);

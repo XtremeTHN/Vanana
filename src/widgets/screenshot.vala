@@ -6,6 +6,14 @@ public abstract class ScreenshotWidget : Gtk.Frame {
     [GtkChild]
     private unowned Gtk.Picture pic;
 
+    public bool has_preview {get; set;}
+
+    public File cover_file {
+        set {
+            set_file (value);
+        }
+    }
+
     public Gtk.ContentFit content_fit {
         set {
             pic.set_content_fit (value);
@@ -31,7 +39,8 @@ public abstract class ScreenshotWidget : Gtk.Frame {
 
     public void set_file (File? img) {
         if (img == null) {
-            stack.set_visible_child_name ("no-preview");
+            if (has_preview == false)
+                stack.set_visible_child_name ("no-preview");
             return;
         }
         pic.set_file (img);

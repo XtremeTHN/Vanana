@@ -1,128 +1,146 @@
 using Gtk 4.0;
 using Adw 1;
 
-template $SubmissionItem: Box {
-    vexpand: false;
-    margin-start: 5;
-    margin-end: 5;
-    margin-bottom: 5;
-    margin-top: 5;
-    spacing: 10;
-    hexpand: true;
-
-    Overlay cover_overlay {
-        height-request: 80;
-        width-request: 100;
-    }
-
-    Box {
+template ListItem {
+    child: Box {
+        vexpand: false;
+        margin-start: 5;
+        margin-end: 5;
+        margin-bottom: 5;
+        margin-top: 5;
         spacing: 10;
-        orientation: vertical;
-        valign: center;
+        hexpand: true;
+
+        Overlay cover_overlay {
+            height-request: 80;
+            width-request: 100;
+
+            [overlay]
+            $Screenshot {
+                cover-file: bind template.item as <$SubmissionData>.cover;
+                has-preview: bind template.item as <$SubmissionData>.has-preview;
+            }
+        }
 
         Box {
+            spacing: 10;
             orientation: vertical;
+            valign: center;
 
-            Label submission_name {
-                styles [
-                    "heading",
-                ]
+            Box {
+                orientation: vertical;
 
-                xalign: 0;
-                wrap-mode: word_char;
+                Label submission_name {
+                    styles [
+                        "heading",
+                    ]
+
+                    xalign: 0;
+                    label: bind template.item as <$SubmissionData>.name;
+                    wrap-mode: word_char;
+                }
+
+                Label submission_type {
+                    styles [
+                        "caption",
+                    ]
+
+                    label: bind template.item as <$SubmissionData>.sub-type;
+                    xalign: 0;
+                }
             }
 
-            Label submission_type {
-                styles [
-                    "caption",
-                ]
+            Adw.WrapBox {
+                child-spacing: 5;
 
-                xalign: 0;
+                Box {
+                    styles [
+                        "card",
+                        "sub-data",
+                    ]
+
+                    spacing: 5;
+
+                    Image {
+                        icon-name: "clock-alt-symbolic";
+                        pixel-size: 11;
+                    }
+
+                    Label submission_upload_date {
+                        styles [
+                            "caption",
+                        ]
+
+                        label: bind template.item as <$SubmissionData>.upload-date;
+                    }
+                }
+
+                Box {
+                    styles [
+                        "card",
+                        "sub-data",
+                    ]
+
+                    spacing: 5;
+
+                    Image {
+                        icon-name: "update-symbolic";
+                        pixel-size: 11;
+                    }
+
+                    Label submission_update_date {
+                        styles [
+                            "caption",
+                        ]
+
+                        label: bind template.item as <$SubmissionData>.update-date;
+                    }
+                }
+
+                Box {
+                    styles [
+                        "card",
+                        "sub-data",
+                    ]
+
+                    spacing: 5;
+
+                    Image {
+                        icon-name: "heart-filled-symbolic";
+                        pixel-size: 11;
+                    }
+
+                    Label submission_likes {
+                        styles [
+                            "caption",
+                        ]
+
+                        label: bind template.item as <$SubmissionData>.likes;
+                    }
+                }
+
+                Box {
+                    styles [
+                        "card",
+                        "sub-data",
+                    ]
+
+                    spacing: 5;
+
+                    Image {
+                        icon-name: "views-symbolic";
+                        pixel-size: 11;
+                    }
+
+                    Label submission_views {
+                        styles [
+                            "caption",
+                        ]
+
+                        label: bind template.item as <$SubmissionData>.views;
+                    }
+                }
             }
         }
-
-        Adw.WrapBox {
-            child-spacing: 5;
-
-            Box {
-                styles [
-                    "card",
-                    "sub-data",
-                ]
-
-                spacing: 5;
-
-                Image {
-                    icon-name: "clock-alt-symbolic";
-                    pixel-size: 11;
-                }
-
-                Label submission_upload_date {
-                    styles [
-                        "caption",
-                    ]
-                }
-            }
-
-            Box {
-                styles [
-                    "card",
-                    "sub-data",
-                ]
-
-                spacing: 5;
-
-                Image {
-                    icon-name: "update-symbolic";
-                    pixel-size: 11;
-                }
-
-                Label submission_update_date {
-                    styles [
-                        "caption",
-                    ]
-                }
-            }
-
-            Box {
-                styles [
-                    "card",
-                    "sub-data",
-                ]
-
-                spacing: 5;
-
-                Image {
-                    icon-name: "heart-filled-symbolic";
-                    pixel-size: 11;
-                }
-
-                Label submission_likes {
-                    styles [
-                        "caption",
-                    ]
-                }
-            }
-
-            Box {
-                styles [
-                    "card",
-                    "sub-data",
-                ]
-
-                spacing: 5;
-
-                Image {
-                    icon-name: "views-symbolic";
-                    pixel-size: 11;
-                }
-
-                Label submission_views {
-                    styles [
-                        "caption",
-                    ]
-                }
-            }
-        }
-    }
+    };
 }

@@ -15,7 +15,7 @@ namespace Vanana {
         }
     }
 
-    void cache_download (string url, CacheCallback callback, Cancellable cancel) {
+    void cache_download (string url, CacheCallback callback, Cancellable? cancel = new Cancellable ()) {
         string cache_dir = Path.build_filename (Environment.get_user_cache_dir (), "vanana");
 
         string file_name = Utils.get_url_file_basename (url);

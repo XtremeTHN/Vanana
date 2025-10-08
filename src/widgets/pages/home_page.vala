@@ -1,12 +1,3 @@
-
-class SubmissionObject : Object {
-    public Json.Object? info;
-
-    public SubmissionObject(Json.Object? info) {
-        this.info = info;
-    }
-}
-
 [GtkTemplate (ui = "/com/github/XtremeTHN/Vanana/home-page.ui")]
 public class HomePage : Adw.NavigationPage {
     [GtkChild]
@@ -41,27 +32,9 @@ public class HomePage : Adw.NavigationPage {
         Object ();
         
 
-        submission_list = new ListStore (typeof (SubmissionObject));
-        var factory = new Gtk.SignalListItemFactory ();
+        submission_list = new ListStore (typeof (SubmissionData));
+        var factory = new Gtk.BuilderListItemFactory.from_resource (null, "/com/github/XtremeTHN/Vanana/submission-item.ui");
         
-        factory.setup.connect ((list_item) => {
-            var submission = new SubmissionItem ();
-            ((Gtk.ListItem) list_item).set_child (submission);
-        });
-
-        factory.bind.connect ((list_item) => {
-            var item = (Gtk.ListItem) list_item;
-            var sub = (SubmissionObject) item.get_item ();
-            var child = (SubmissionItem) item.get_child ();
-            child.info = sub.info;
-        });
-
-        factory.unbind.connect ((list_item) => {
-            var item = (Gtk.ListItem) list_item;
-            var child = (SubmissionItem) item.get_child ();
-            child.info = null;
-        });
-
         var model = new Gtk.SingleSelection (submission_list);
         submission_view.set_model (model);
         submission_view.set_factory (factory);
@@ -198,11 +171,11 @@ public class HomePage : Adw.NavigationPage {
     }
 
     //  [GtkCallback]
-    private void on_row_activate (Gtk.ListBox box, Gtk.ListBoxRow row) {
-        var item = (SubmissionItem) row;
+    //  private void on_row_activate (Gtk.ListBox box, Gtk.ListBoxRow row) {
+    //      var item = (SubmissionItem) row;
 
-        Utils.show_submission_page (this, item.type, item.submission_id);
-    }
+    //      Utils.show_submission_page (this, item.type, item.submission_id);
+    //  }
 
     [GtkCallback]
     private void populate () {
@@ -248,7 +221,7 @@ public class HomePage : Adw.NavigationPage {
             submission_list.remove_all ();
 
         foreach (var item in submissions.get_elements ()) {
-            var sub = new SubmissionObject (item.get_object ());
+            var sub = new SubmissionData (item.get_object ());
             submission_list.append ((Object) sub);
         }
 
@@ -268,7 +241,7 @@ public class HomePage : Adw.NavigationPage {
 
         var submissions = response.get_array_member ("_aRecords");
         foreach (var sub in submissions.get_elements ()) {
-            var item = new SubmissionObject (sub.get_object ());
+            var item = new SubmissionData (sub.get_object ());
             submission_list.append ((Object) item);
         }
         load_btt.set_sensitive (!metadata.get_boolean_member_with_default ("_bIsComplete", true));

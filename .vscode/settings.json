@@ -1,7 +1,6 @@
 {
     "[vala]": {
-        "editor.defaultFormatter": "ColinKiama.linter-vala",
-        "editor.formatOnSave": true
+        "editor.formatOnSave": false
     },
     "[blueprint-gtk]": {
         "editor.formatOnSave": true

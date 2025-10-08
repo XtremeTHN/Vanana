@@ -4,9 +4,13 @@ using Adw 1;
 template $ScreenshotWidget: Frame {
   // hexpand: true;
   child: Stack stack {
-    Adw.Spinner {
-      width-request: 20;
-      height-request: 20;
+    StackPage {
+      name: "loading";
+
+      child: Adw.Spinner {
+        width-request: 20;
+        height-request: 20;
+      };
     }
 
     StackPage {
