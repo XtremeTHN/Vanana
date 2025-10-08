@@ -8,8 +8,15 @@ public abstract class ScreenshotWidget : Gtk.Frame {
 
     public bool has_preview {get; set;}
 
-    public File cover_file {
+    public bool loaded {
         set {
+            if (value == false)
+                stack.set_visible_child_name ("loading");
+        }
+    }
+
+    public File cover_file {
+        set {                
             set_file (value);
         }
     }

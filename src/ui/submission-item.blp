@@ -19,6 +19,7 @@ template ListItem {
             $Screenshot {
                 cover-file: bind template.item as <$SubmissionData>.cover;
                 has-preview: bind template.item as <$SubmissionData>.has-preview;
+                loaded: bind template.item as <$SubmissionData>.cover-loaded;
             }
         }
 
@@ -37,6 +38,7 @@ template ListItem {
 
                     xalign: 0;
                     label: bind template.item as <$SubmissionData>.name;
+                    wrap: true;
                     wrap-mode: word_char;
                 }
 

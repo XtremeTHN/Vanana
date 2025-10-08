@@ -15,6 +15,7 @@ public class SubmissionData : Object {
     }
 
     public bool has_preview { get; set; }
+    public bool cover_loaded { get; set; }
 
     public File? cover { get; set; }
     public string name {
@@ -32,7 +33,7 @@ public class SubmissionData : Object {
     private string __upload_date;
     public string upload_date {
         get {
-            __upload_date = Utils.format_relative_time (info.get_int_member ("_tsDateAdded"));
+            __upload_date = Utils.format_relative_time (info.get_int_member_with_default ("_tsDateAdded", 0));
             return __upload_date;
         }
     }
@@ -40,7 +41,7 @@ public class SubmissionData : Object {
     private string __update_date;
     public string update_date {
         get {
-            __update_date = Utils.format_relative_time (info.get_int_member ("_tsDateModified"));
+            __update_date = Utils.format_relative_time (info.get_int_member_with_default ("_tsDateModified", 0));
             return __update_date;
         }
     }
@@ -48,7 +49,7 @@ public class SubmissionData : Object {
     private string __likes;
     public string likes {
         get {
-            __likes = info.get_int_member ("_nLikeCount").to_string ();
+            __likes = info.get_int_member_with_default ("_nLikeCount", 0).to_string ();
             return __likes;
         }
     }
@@ -56,20 +57,22 @@ public class SubmissionData : Object {
     private string __views;
     public string views {
         get {
-            __views = info.get_int_member ("_nViewCount").to_string ();
+            __views = info.get_int_member_with_default ("_nViewCount", 0).to_string ();
             return __views;
         }
     }
 
     private void set_file (File? f) {
         cover = f;
+        cover_loaded = true;
     }
 
     public SubmissionData (Json.Object? info) {
         Object ();
         this.info = info;
-
+        
         if (preview.has_member ("_aImages")) {
+            cover_loaded = false;
             var images = preview.get_array_member ("_aImages");
             var first_image = images.get_element (0).get_object ();
 
