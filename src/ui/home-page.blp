@@ -130,9 +130,29 @@ template $HomePage: Adw.NavigationPage {
                                 Button load_btt {
                                     clicked => $on_load_clicked();
 
-                                    child: Adw.ButtonContent {
-                                        icon-name: "load-symbolic";
-                                        label: _("Load more");
+                                    child: Box {
+                                        spacing: 10;
+                                        halign: center;
+
+                                        Stack load_btt_stack {
+                                            StackPage {
+                                                name: "icon";
+
+                                                child: Image {
+                                                    icon-name: "load-symbolic";
+                                                };
+                                            }
+
+                                            StackPage {
+                                                name: "spin";
+
+                                                child: Adw.Spinner {};
+                                            }
+                                        }
+
+                                        Label {
+                                            label: "Load more";
+                                        }
                                     };
                                 }
                             };
