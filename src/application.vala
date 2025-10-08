@@ -49,6 +49,9 @@ public class Vanana.Application : Adw.Application {
 
         create_cache_dir ();
 
+        // Register custom widgets
+        new LoadingBtt ();
+
         var provider = new Gtk.CssProvider ();
         provider.load_from_resource ("/com/github/XtremeTHN/Vanana/style.css");
 

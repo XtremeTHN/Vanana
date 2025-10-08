@@ -127,33 +127,10 @@ template $HomePage: Adw.NavigationPage {
                                     row-activated => $on_row_activate();
                                 }
 
-                                Button load_btt {
+                                $LoadingBtt load_btt {
+                                    margin-top: 10;
                                     clicked => $on_load_clicked();
-
-                                    child: Box {
-                                        spacing: 10;
-                                        halign: center;
-
-                                        Stack load_btt_stack {
-                                            StackPage {
-                                                name: "icon";
-
-                                                child: Image {
-                                                    icon-name: "load-symbolic";
-                                                };
-                                            }
-
-                                            StackPage {
-                                                name: "spin";
-
-                                                child: Adw.Spinner {};
-                                            }
-                                        }
-
-                                        Label {
-                                            label: "Load more";
-                                        }
-                                    };
+                                    label: "Load more";
                                 }
                             };
                         };

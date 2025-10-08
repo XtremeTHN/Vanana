@@ -19,10 +19,7 @@ public class HomePage : Adw.NavigationPage {
     private unowned Gtk.ListBox submission_list;
 
     [GtkChild]
-    private unowned Gtk.Button load_btt;
-
-    [GtkChild]
-    private unowned Gtk.Stack load_btt_stack;
+    private unowned LoadingBtt load_btt;
 
     private bool auto_scroll_running;
     private Adw.NavigationView nav_view;
@@ -113,8 +110,7 @@ public class HomePage : Adw.NavigationPage {
                 warning ("Error while querying submissions: %s", e.message);
                 Utils.show_toast (this, e.message);
                 
-                load_btt.set_sensitive (true);
-                load_btt_stack.set_visible_child_name ("icon");
+                load_btt.set_loading (false);
             }
         });
     }
@@ -149,8 +145,7 @@ public class HomePage : Adw.NavigationPage {
 
     [GtkCallback]
     private void on_load_clicked () {
-        load_btt.set_sensitive (false);
-        load_btt_stack.set_visible_child_name ("spin");
+        load_btt.set_loading (true);
         current_page += 1;
 
         // in search mode
@@ -237,8 +232,8 @@ public class HomePage : Adw.NavigationPage {
             var item = new SubmissionItem (sub.get_object ());
             submission_list.append (item);
         }
-
+        
+        load_btt.set_loading(false);
         load_btt.set_sensitive (!metadata.get_boolean_member_with_default ("_bIsComplete", true));
-        load_btt_stack.set_visible_child_name ("icon");
     }
 }

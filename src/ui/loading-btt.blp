@@ -1,0 +1,29 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $LoadingBtt: Button {
+    child: Box {
+        spacing: 10;
+        halign: center;
+
+        Stack stack {
+            StackPage {
+                name: "icon";
+
+                child: Image {
+                    icon-name: "load-symbolic";
+                };
+            }
+
+            StackPage {
+                name: "spin";
+
+                child: Adw.Spinner {};
+            }
+        }
+
+        Label lbl {
+            label: "Load more";
+        }
+    };
+}

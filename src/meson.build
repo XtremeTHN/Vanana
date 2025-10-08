@@ -14,6 +14,7 @@ vanana_sources = [
   'widgets/pages/question_page.vala',
   'widgets/html.vala',
   'widgets/comment.vala',
+  'widgets/loading_btt.vala',
   'widgets/sidebar.vala',
   'widgets/download_row.vala',
   'widgets/sub_download_dialog.vala',
@@ -32,22 +33,23 @@ vanana_deps = [
   dependency('libxml-2.0'),
   dependency('libadwaita-1', version: '>= 1.4'),
   dependency('gtk4'),
-
 ]
-
 
 subdir('ui')
 
-vanana_sources += gnome.compile_resources('vanana-resources',
+vanana_sources += gnome.compile_resources(
+  'vanana-resources',
   'vanana.gresource.xml',
   c_name: 'vanana',
-  dependencies: blueprints
+  dependencies: blueprints,
 )
 
 add_project_arguments('-g', '--save-temps', language: 'vala')
 
-executable('vanana', vanana_sources,
+executable(
+  'vanana',
+  vanana_sources,
   dependencies: vanana_deps,
   include_directories: config_inc,
-       install: true,
+  install: true,
 )

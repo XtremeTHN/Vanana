@@ -17,5 +17,6 @@
         "vscrollbar",
         "xalign",
         "Xtreme"
-    ]
+    ],
+    "mesonbuild.configureOnOpen": false
 }

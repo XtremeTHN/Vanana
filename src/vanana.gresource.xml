@@ -14,6 +14,7 @@
         <file preprocess="xml-stripblanks">screenshot.ui</file>
         <file preprocess="xml-stripblanks">download-dialog.ui</file>
         <file preprocess="xml-stripblanks">download-row.ui</file>
+        <file preprocess="xml-stripblanks">loading-btt.ui</file>
         
         <file preprocess="xml-stripblanks">submission-item.ui</file>
         <file preprocess="xml-stripblanks">top-submission.ui</file>
