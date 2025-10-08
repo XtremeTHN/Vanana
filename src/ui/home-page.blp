@@ -118,14 +118,18 @@ template $HomePage: Adw.NavigationPage {
                                     };
                                 }
 
-                                ListView submission_view {
-                                    styles [
-                                        "submissions",
-                                    ]
+                                ScrolledWindow {
+                                    propagate-natural-height: true;
 
-                                    // activate => $on_row_activate();
-                                    // selection-mode: browse;
-                                    // row-activated => $on_row_activate();
+                                    child: ListView submission_view {
+                                        styles [
+                                            "submissions",
+                                        ]
+
+                                        // activate => $on_row_activate();
+                                        // selection-mode: browse;
+                                        // row-activated => $on_row_activate();
+                                    };
                                 }
 
                                 Button load_btt {
