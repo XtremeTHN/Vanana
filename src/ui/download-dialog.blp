@@ -8,29 +8,34 @@ template $DownloadDialog: Adw.Dialog {
         [top]
         Adw.HeaderBar {}
 
-        content: Box {
-            styles [
-                "box-10",
-            ]
+        content: ScrolledWindow {
+            propagate-natural-height: true;
+            propagate-natural-width: true;
 
-            width-request: 350;
-            orientation: vertical;
-            spacing: 10;
+            child: Box {
+                styles [
+                    "box-10",
+                ]
 
-            Adw.PreferencesGroup files_group {
-                visible: false;
-                title: _("Files");
-            }
+                width-request: 350;
+                orientation: vertical;
+                spacing: 10;
 
-            Adw.PreferencesGroup alt_files_group {
-                visible: false;
-                title: _("Alternate files");
-            }
+                Adw.PreferencesGroup files_group {
+                    visible: false;
+                    title: _("Files");
+                }
 
-            Adw.PreferencesGroup archived_files_group {
-                title: _("Archived files");
-                visible: false;
-            }
+                Adw.PreferencesGroup alt_files_group {
+                    visible: false;
+                    title: _("Alternate files");
+                }
+
+                Adw.PreferencesGroup archived_files_group {
+                    title: _("Archived files");
+                    visible: false;
+                }
+            };
         };
     };
 }
