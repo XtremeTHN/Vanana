@@ -46,6 +46,16 @@ template $Comment: ListBoxRow {
             Box {
                 orientation: vertical;
 
+                Label comment_label {
+                    styles [
+                        "comment-label",
+                        "caption",
+                    ]
+
+                    halign: end;
+                    visible: false;
+                }
+
                 Label replying_to_label {
                     styles [
                         "caption",
