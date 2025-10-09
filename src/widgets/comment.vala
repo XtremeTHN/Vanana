@@ -25,7 +25,7 @@ public class Comment : Gtk.ListBoxRow {
     private unowned Gtk.ScrolledWindow scrolled_html;
 
     [GtkChild]
-    public unowned Gtk.Button load_replies_btt;
+    public unowned LoadingBtt load_replies_btt;
 
     private Cancellable cancellable = new Cancellable ();
     public bool is_reply;
@@ -84,7 +84,6 @@ public class Comment : Gtk.ListBoxRow {
             edit_btt.set_visible (access.get_boolean_member ("Post_Edit"));
             trash_btt.set_visible (access.get_boolean_member ("Post_Trash"));
         }
-
     }
 
     [GtkCallback] // TODO
@@ -100,6 +99,7 @@ public class Comment : Gtk.ListBoxRow {
     [GtkCallback]
     private void load_replies () {
         set_sensitive (false);
+        load_replies_btt.set_loading (true);
 
         if (index == null)
             index = get_index ();

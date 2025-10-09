@@ -86,7 +86,12 @@ template $Comment: ListBoxRow {
             hscrollbar-policy: automatic;
         }
 
-        Button load_replies_btt {
+        // Button load_replies_btt {
+        //     visible: false;
+        //     label: _("Load replies");
+        //     clicked => $load_replies();
+        // }
+        $LoadingBtt load_replies_btt {
             visible: false;
             label: _("Load replies");
             clicked => $load_replies();
