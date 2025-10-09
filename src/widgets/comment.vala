@@ -25,6 +25,9 @@ public class Comment : Gtk.ListBoxRow {
     private unowned Gtk.ScrolledWindow scrolled_html;
 
     [GtkChild]
+    private unowned Gtk.Label comment_label;
+
+    [GtkChild]
     public unowned LoadingBtt load_replies_btt;
 
     private Cancellable cancellable = new Cancellable ();
@@ -84,6 +87,19 @@ public class Comment : Gtk.ListBoxRow {
             edit_btt.set_visible (access.get_boolean_member ("Post_Edit"));
             trash_btt.set_visible (access.get_boolean_member ("Post_Trash"));
         }
+
+        if (post_info.has_member ("_aLabels")) {
+            var labels = post_info.get_array_member ("_aLabels");
+
+            if (labels.get_length () == 0)
+                return;
+            
+            comment_label.set_visible (true);
+            var label = labels.get_string_element (0);
+            comment_label.set_label (label);
+            comment_label.add_css_class (label.ascii_down ());
+        }
+
     }
 
     [GtkCallback] // TODO
@@ -123,6 +139,8 @@ public class Comment : Gtk.ListBoxRow {
                         index += 1;
                         box.insert (post_widget, index);
                     }
+
+                    box.get_row_at_index (index).set_margin_bottom (10);
                 }
 
                 load_replies_btt.set_visible (false);

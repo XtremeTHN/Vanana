@@ -15,6 +15,10 @@
     padding: 10px;
 }
 
+.comment-label.submitter {
+    color: var(--accent-color);
+}
+
 .green {
     color: var(--accent-green);
 }
