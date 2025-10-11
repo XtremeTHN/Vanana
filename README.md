@@ -15,15 +15,18 @@ A fnf gamebanana client. Rewriting in vala
     - [ ] Add a like button to submissions pages
     - [ ] Add support for user commenting
 
-- [ ] Support this submissions:
+- [x] Support this submissions:
     - [x] Mod
     - [x] WiPs
     - [x] Questions
     - [x] Tools
-    - [ ] Sounds
-    - [ ] Concepts
     - [x] Tutorials
+    
+- Not planned:
+    - [ ] Concepts
     - [ ] Scripts
+    - [ ] Sounds
+
 
 ## Preview
 ![preview](./assets/preview1.png)
