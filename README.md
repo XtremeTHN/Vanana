@@ -23,9 +23,9 @@ A fnf gamebanana client. Rewriting in vala
     - [x] Tutorials
     
 Not planned:
-    - [ ] Concepts
-    - [ ] Scripts
-    - [ ] Sounds
+- [ ] Concepts
+- [ ] Scripts
+- [ ] Sounds
 
 
 ## Preview
