@@ -411,6 +411,11 @@ public abstract class SubmissionPage : Adw.NavigationPage {
                         updates_group.add (row);
                         continue;
                     }
+                    
+                    var expander = new Adw.ExpanderRow ();
+
+                    expander.title = name;
+                    expander.subtitle = text;
 
                     var changelog = update.get_array_member ("_aChangeLog");
                     foreach (var c_item in changelog.get_elements ()) {
@@ -420,8 +425,10 @@ public abstract class SubmissionPage : Adw.NavigationPage {
                         row.set_title (remove_html_tags (change.get_string_member ("cat")));
                         row.set_subtitle (remove_html_tags (change.get_string_member ("text")));
                         
-                        updates_group.add (row);
+                        expander.add_row (row);
                     }
+
+                    updates_group.add (expander);
                 }
             }
         } catch (Error e) {
