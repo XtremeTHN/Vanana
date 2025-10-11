@@ -44,8 +44,6 @@ vanana_sources += gnome.compile_resources(
   dependencies: blueprints,
 )
 
-add_project_arguments('-g', '--save-temps', language: 'vala')
-
 executable(
   'vanana',
   vanana_sources,
