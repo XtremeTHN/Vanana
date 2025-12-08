@@ -1,11 +1,12 @@
+using Gtk;
 
-public class Vanana.HtmlView : Gtk.TextView {
+public class Vanana.HtmlView : TextView {
     private Gdk.RGBA red_adw;
     private Gdk.RGBA green_adw;
     private Gdk.RGBA accent;
 
     public HtmlView (bool background_visible = false) {
-        Object (editable: false,  cursor_visible: false, wrap_mode: Gtk.WrapMode.WORD_CHAR);
+        Object (editable: false,  cursor_visible: false, wrap_mode: WrapMode.WORD_CHAR);
 
         var manager = Adw.StyleManager.get_default ();
         accent = manager.get_accent_color_rgba ();
@@ -13,8 +14,8 @@ public class Vanana.HtmlView : Gtk.TextView {
         red_adw.parse ("#e62d42");
         green_adw.parse ("#3a944a");
 
-        var click_controller = new Gtk.GestureClick ();
-        var motion_controller = new Gtk.EventControllerMotion ();
+        var click_controller = new GestureClick ();
+        var motion_controller = new EventControllerMotion ();
 
         click_controller.released.connect (on_released);
         motion_controller.motion.connect (on_motion);
@@ -27,7 +28,7 @@ public class Vanana.HtmlView : Gtk.TextView {
     }
 
     public void set_html (string html) {
-        Gtk.TextBuffer buff = get_formatted_buffer (html);
+        TextBuffer buff = get_formatted_buffer (html);
         set_buffer (buff);
     }
 
@@ -38,14 +39,14 @@ public class Vanana.HtmlView : Gtk.TextView {
         set_right_margin (margin);
     }
 
-    private void on_motion (Gtk.EventControllerMotion _, double dx, double dy) {
+    private void on_motion (EventControllerMotion _, double dx, double dy) {
         int tx, ty;
         int x = (int) dx;
         int y = (int) dy;
 
-        Gtk.TextIter iter;
+        TextIter iter;
 
-        window_to_buffer_coords (Gtk.TextWindowType.WIDGET,  x, y, out tx, out ty);
+        window_to_buffer_coords (TextWindowType.WIDGET,  x, y, out tx, out ty);
 
         if (get_iter_at_location (out iter, x, y) == false)
             return;
@@ -59,8 +60,8 @@ public class Vanana.HtmlView : Gtk.TextView {
         set_cursor_from_name ("text");
     }
 
-    private void on_released (Gtk.GestureClick gesture, int n_press, double dx, double dy) {
-        Gtk.TextIter iter;
+    private void on_released (GestureClick gesture, int n_press, double dx, double dy) {
+        TextIter iter;
         int tx, ty;
         int x = (int) dx;
         int y = (int) dy;
@@ -68,7 +69,7 @@ public class Vanana.HtmlView : Gtk.TextView {
         if (gesture.get_button () > 1)
             return;
         
-        window_to_buffer_coords (Gtk.TextWindowType.WIDGET, x, y, out tx, out ty);
+        window_to_buffer_coords (TextWindowType.WIDGET, x, y, out tx, out ty);
         
         if (buffer == null)
             return;
@@ -85,9 +86,9 @@ public class Vanana.HtmlView : Gtk.TextView {
     }
 
 
-    private void insert_with_tags (Gtk.TextBuffer buff, string text, ref Gtk.TextIter iter, List<Gtk.TextTag> tags) {
+    private void insert_with_tags (TextBuffer buff, string text, ref TextIter iter, List<TextTag> tags) {
         int offset = iter.get_offset ();
-        Gtk.TextIter start;
+        TextIter start;
 
         buff.insert(ref iter, text, -1);
 
@@ -167,12 +168,15 @@ public class Vanana.HtmlView : Gtk.TextView {
             }
             return;
         }
-
+        
+        // TODO: make a function that runs shared code. I think this can be reduced.
         if (name == "ul") {
             for (Xml.Node* child = node->children; child != null; child = child->next) {
-                if (child->name == "li") {
-                    var text = "\n• " + child->children->content;
-                    buffer.insert_with_tags_by_name (ref iter, text, -1, "li");
+                if (child->name != "li") continue;
+
+                buffer.insert (ref iter, "\n• ", -1);
+                for (Xml.Node* li_child = child->children; li_child != null; li_child = li_child->next) {
+                    walk_node (li_child, ref iter, tag_stack, buffer);
                 }
             }
             buffer.insert (ref iter, "\n", 1);
@@ -183,13 +187,14 @@ public class Vanana.HtmlView : Gtk.TextView {
         if (name == "ol") {
             int count = 1;
             for (Xml.Node* child = node->children; child != null; child = child->next) {
-                if (child->name == "li") {
-                    if (child->children == null)
-                        continue;
-                    var text = "\n%i. %s".printf(count, child->children->content);
-                    buffer.insert_with_tags_by_name (ref iter, text, -1, "li");
-                    count += 1;
+                if (child->name != "li" || child->children == null) continue;
+
+                buffer.insert (ref iter, "\n%i. %s", -1);
+
+                for (Xml.Node* li_child = child->children; li_child != null; li_child = li_child->next) {
+                    walk_node (li_child, ref iter, tag_stack, buffer);
                 }
+                count += 1;
             }
             buffer.insert (ref iter, "\n", 1);
 
@@ -230,21 +235,21 @@ public class Vanana.HtmlView : Gtk.TextView {
         }
     }
 
-    public Gtk.TextBuffer get_formatted_buffer (string? text) {
-        var buff = new Gtk.TextBuffer (null);
+    public TextBuffer get_formatted_buffer (string? text) {
+        var buff = new TextBuffer (null);
         if (text == null)
             return buff;
 
         add_tags_to_buffer (buff);
 
-        Gtk.TextIter iter; 
+        TextIter iter; 
         buff.get_start_iter (out iter);
 
         Html.Doc* parser = Html.Doc.read_memory ((char []) text, text.length, "", "utf-8", 0);
         
         var root = parser->get_root_element ();
 
-        var stack = new List<Gtk.TextTag> ();
+        var stack = new List<TextTag> ();
 
         for (Xml.Node* x_iter = root->children; x_iter != null; x_iter = x_iter->next) {
             if (x_iter->name == "html")
@@ -257,7 +262,7 @@ public class Vanana.HtmlView : Gtk.TextView {
         return buff;
     }
 
-    private void add_tags_to_buffer (Gtk.TextBuffer buff) {
+    private void add_tags_to_buffer (TextBuffer buff) {
         buff.create_tag ("strong", "weight", 700);
         buff.create_tag ("b", "weight", 700);
 
@@ -278,10 +283,10 @@ public class Vanana.HtmlView : Gtk.TextView {
         buff.create_tag ("GreenColor", "foreground-rgba", green_adw);
     }
 
-    private Gtk.TextTag get_link_tag (Gtk.TextBuffer buff, owned string url) {
+    private TextTag get_link_tag (TextBuffer buff, owned string url) {
         var table = buff.get_tag_table ();
         
-        var tag = new Gtk.TextTag ();
+        var tag = new TextTag ();
         tag.weight = 500;
         tag.foreground_rgba = accent;
         tag.underline = Pango.Underline.SINGLE;
