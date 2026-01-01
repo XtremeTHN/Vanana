@@ -1,5 +1,6 @@
 using Gtk;
 
+// TODO: Replace libxml2 with another html parsing library
 public class Vanana.HtmlView : TextView {
     private Gdk.RGBA red_adw;
     private Gdk.RGBA green_adw;
@@ -237,13 +238,16 @@ public class Vanana.HtmlView : TextView {
 
     public TextBuffer get_formatted_buffer (string? text) {
         var buff = new TextBuffer (null);
+        add_tags_to_buffer (buff);
+
         if (text == null)
             return buff;
 
-        add_tags_to_buffer (buff);
-
         TextIter iter; 
         buff.get_start_iter (out iter);
+
+        if (print_html)
+            message ("HtmlView: %s", text);
 
         Html.Doc* parser = Html.Doc.read_memory ((char []) text, text.length, "", "utf-8", 0);
         

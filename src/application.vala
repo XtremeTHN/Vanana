@@ -18,66 +18,91 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-public class Vanana.Application : Adw.Application {
-    public Application () {
-        Object (
-            application_id: "com.github.XtremeTHN.Vanana",
-            flags: ApplicationFlags.DEFAULT_FLAGS,
-            resource_base_path: "/com/github/XtremeTHN/Vanana"
-        );
+namespace Vanana {
+    bool print_html;
+    
+    public class Application : Adw.Application {
 
-    }
+        public Application () {
+            Object (
+                application_id: "com.github.XtremeTHN.Vanana",
+                flags: ApplicationFlags.HANDLES_COMMAND_LINE,
+                resource_base_path: "/com/github/XtremeTHN/Vanana"
+            );
+        }
 
-    construct {
-        ActionEntry[] action_entries = {
-            { "about", this.on_about_action },
-            { "preferences", this.on_preferences_action },
-            { "quit", this.quit }
-        };
-        this.add_action_entries (action_entries, this);
-        this.set_accels_for_action ("app.quit", {"<primary>q"});
-    }
+        construct {
+            ActionEntry[] action_entries = {
+                { "about", this.on_about_action },
+                { "preferences", this.on_preferences_action },
+                { "quit", this.quit }
+            };
+            this.add_action_entries (action_entries, this);
+            this.set_accels_for_action ("app.quit", {"<primary>q"});
+        }
 
-    public SimpleAction create_action (string name, VariantType? type = null) {
-        var action = new SimpleAction (name, type);
-        add_action (action);
-        return action;
-    }
+        protected override int command_line (ApplicationCommandLine cmd) {
+            string[] args = cmd.get_arguments ();
+            var ctx = new OptionContext ();
 
-    public override void activate () {
-        base.activate ();
+            OptionEntry[] entries = {
+                { "print-html", 'p', OptionFlags.NONE, OptionArg.NONE, ref print_html, "Prints the HTML string provided to an HtmlView widget." }
+            };
 
-        create_cache_dir ();
+            ctx.add_main_entries (entries, null);
 
-        // Register custom widgets
-        new LoadingBtt ();
+            try {
+                ctx.parse_strv (ref args);
+            } catch (Error e) {
+                cmd.printerr ("Couldn't parse arguments: %s", e.message);
+                return 1;
+            }
 
-        var provider = new Gtk.CssProvider ();
-        provider.load_from_resource ("/com/github/XtremeTHN/Vanana/style.css");
+            init ();
 
-        Gtk.StyleContext.add_provider_for_display (Gdk.Display.get_default (), provider, Gtk.STYLE_PROVIDER_PRIORITY_USER);
+            return 0;
+        }
 
-        var win = new Window (this);
-        add_window (win);
-        win.present ();
-    }
+        public SimpleAction create_action (string name, VariantType? type = null) {
+            var action = new SimpleAction (name, type);
+            add_action (action);
+            return action;
+        }
 
-    private void on_about_action () {
-        string[] developers = { "Axel Andres Valles Gonzalez" };
-        var about = new Adw.AboutDialog () {
-            application_name = "vanana",
-            application_icon = "com.github.XtremeTHN.Vanana",
-            developer_name = "Axel Andres Valles Gonzalez",
-            translator_credits = _("translator-credits"),
-            version = "0.1.0",
-            developers = developers,
-            copyright = "© 2025 Axel Andres Valles Gonzalez",
-        };
+        public void init () {
+            create_cache_dir ();
 
-        about.present (this.active_window);
-    }
+            // Register custom widgets
+            new LoadingBtt ();
 
-    private void on_preferences_action () {
-        message ("app.preferences action activated");
+            // TODO: Remove this
+            var provider = new Gtk.CssProvider ();
+            provider.load_from_resource ("/com/github/XtremeTHN/Vanana/style.css");
+
+            Gtk.StyleContext.add_provider_for_display (Gdk.Display.get_default (), provider, Gtk.STYLE_PROVIDER_PRIORITY_USER);
+
+            var win = new Window (this);
+            add_window (win);
+            win.present ();
+        }
+
+        private void on_about_action () {
+            string[] developers = { "Axel Andres Valles Gonzalez" };
+            var about = new Adw.AboutDialog () {
+                application_name = "vanana",
+                application_icon = "com.github.XtremeTHN.Vanana",
+                developer_name = "Axel Andres Valles Gonzalez",
+                translator_credits = _("translator-credits"),
+                version = "0.1.0",
+                developers = developers,
+                copyright = "© 2025 Axel Andres Valles Gonzalez",
+            };
+
+            about.present (this.active_window);
+        }
+
+        private void on_preferences_action () {
+            message ("app.preferences action activated");
+        }
     }
 }
