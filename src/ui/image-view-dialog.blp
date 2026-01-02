@@ -1,0 +1,68 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $ImageViewDialog: Adw.Dialog {
+  width-request: 600;
+  height-request: 400;
+
+  child: Gtk.Overlay {
+    child: Stack stack {
+      StackPage {
+        child: Adw.Spinner {};
+      }
+
+      StackPage {
+        name: "view";
+
+        child: ScrolledWindow {
+          child: $ImageView view {};
+        };
+      }
+    };
+
+    [overlay]
+    WindowControls {
+      valign: start;
+      halign: end;
+      side: end;
+      margin-top: 5;
+      margin-end: 5;
+    }
+
+    [overlay]
+    Box {
+      styles [
+        "osd",
+        "toolbar",
+        "overlay-tool",
+      ]
+
+      halign: end;
+      valign: end;
+      margin-end: 5;
+      margin-bottom: 5;
+
+      Revealer rev {
+        child: Box {
+          Button {
+            icon-name: "plus-symbolic";
+            clicked => $zoom_in();
+          }
+
+          Button {
+            icon-name: "minus-symbolic";
+            clicked => $zoom_out();
+          }
+        };
+
+        transition-duration: 250;
+        transition-type: slide_left;
+      }
+
+      Button {
+        icon-name: "loupe-large-symbolic";
+        clicked => $toggle_revealer();
+      }
+    }
+  };
+}

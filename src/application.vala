@@ -74,6 +74,7 @@ namespace Vanana {
 
             // register custom widgets
             new LoadingBtt ();
+            new ImageView ();
 
             var win = new Window (this);
             add_window (win);

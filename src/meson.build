@@ -16,6 +16,7 @@ vanana_sources = [
   'widgets/comment.vala',
   'widgets/loading_btt.vala',
   'widgets/sidebar.vala',
+  'widgets/image_view.vala',
   'widgets/download_row.vala',
   'widgets/sub_download_dialog.vala',
   'widgets/top_submission.vala',

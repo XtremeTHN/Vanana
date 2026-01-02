@@ -15,6 +15,7 @@
         <file preprocess="xml-stripblanks">download-dialog.ui</file>
         <file preprocess="xml-stripblanks">download-row.ui</file>
         <file preprocess="xml-stripblanks">loading-btt.ui</file>
+        <file preprocess="xml-stripblanks">image-view-dialog.ui</file>
         
         <file preprocess="xml-stripblanks">submission-item.ui</file>
         <file preprocess="xml-stripblanks">top-submission.ui</file>
@@ -34,5 +35,7 @@
         <file preprocess="xml-stripblanks" alias="update-symbolic.svg">icons/update-symbolic.svg</file>
         <file preprocess="xml-stripblanks" alias="load-symbolic.svg">icons/load-symbolic.svg</file>
         <file preprocess="xml-stripblanks" alias="warning-symbolic.svg">icons/warning-symbolic.svg</file>
+        <file preprocess="xml-stripblanks" alias="plus-symbolic.svg">icons/plus-symbolic.svg</file>
+        <file preprocess="xml-stripblanks" alias="minus-symbolic.svg">icons/minus-symbolic.svg</file>
     </gresource>
 </gresources>

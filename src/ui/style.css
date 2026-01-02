@@ -19,6 +19,11 @@
     color: var(--accent-color);
 }
 
+.overlay-tool {
+    padding: 6px;
+    border-spacing: 0px;
+}
+
 .green {
     color: var(--accent-green);
 }

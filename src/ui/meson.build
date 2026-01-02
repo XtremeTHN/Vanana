@@ -6,6 +6,7 @@ blueprints = custom_target(
     'download-row.blp',
     'downloadable-page.blp',
     'home-page.blp',
+    'image-view-dialog.blp',
     'loading-btt.blp',
     'question-page.blp',
     'screenshot.blp',
