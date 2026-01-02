@@ -6,6 +6,9 @@
     "[blueprint-gtk]": {
         "editor.formatOnSave": true
     },
+    "[xml]": {
+        "editor.formatOnSave": false
+    },
     "cSpell.words": [
         "activatable",
         "gamebanana",
