@@ -54,10 +54,14 @@ public class Vanana.HtmlView : TextView {
 
         foreach (var tag in iter.get_tags ()) {
             string? url = tag.get_data<string?> ("url");
-            if (url != null)
-                set_cursor_from_name ("pointer");
-                return;
+            if (url == null) continue;
+
+            set_tooltip_text (url);
+            set_cursor_from_name ("pointer");
+            return;
         }
+
+        set_tooltip_text (null);
         set_cursor_from_name ("text");
     }
 
