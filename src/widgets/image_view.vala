@@ -113,6 +113,10 @@ public class ImageViewDialog : Adw.Dialog {
         }
     }
 
+    public void set_from_url (string url, Cancellable cancellable = new Cancellable ()) {
+        Vanana.cache_download (url, set_from_file, cancellable);
+    }
+
     [GtkCallback]
     void zoom_in () {
         view.scale = float.min (1024.0f, (float) (view.scale * Math.SQRT2));

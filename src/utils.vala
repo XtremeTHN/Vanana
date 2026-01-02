@@ -77,8 +77,12 @@ namespace Utils {
         warning (message);
     }
 
+    public Vanana.Window? get_parent_window (Gtk.Widget self) {
+        return (Vanana.Window) self.get_root ();
+    }
+
     public void show_toast (Gtk.Widget self, string message) {
-        var root = (Vanana.Window) self.get_root ();
+        var root = get_parent_window (self);
         if (root == null) {
             warning (message);
             warning ("root is null, append self to some widget");
@@ -94,7 +98,7 @@ namespace Utils {
             return;
         }
 
-        Vanana.Window win = (Vanana.Window) self.get_root ();
+        Vanana.Window win = get_parent_window (self);
         Adw.NavigationPage page;
 
         switch (type) {

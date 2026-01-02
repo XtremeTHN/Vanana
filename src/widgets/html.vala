@@ -80,9 +80,17 @@ public class Vanana.HtmlView : TextView {
 
         foreach (var tag in iter.get_tags ()) {
             string? url = tag.get_data<string?> ("url");
-            if (url != null) {
-                AppInfo.launch_default_for_uri_async.begin (url, null, null);
+            if (url == null) continue;
+
+            bool is_img = tag.get_data<bool> ("is-img");
+            if (is_img) {
+                var diag = new ImageViewDialog ();
+                diag.set_from_url (url);
+                diag.present (Utils.get_parent_window (this));
+                break;
             }
+
+            AppInfo.launch_default_for_uri_async.begin (url, null, null);
         }
     }
 
@@ -144,7 +152,7 @@ public class Vanana.HtmlView : TextView {
             var new_stack = new List<Gtk.TextTag> ();
             tag_stack.foreach ((j) => {new_stack.append(j);});
 
-            var link_tag = get_link_tag (buffer, src);
+            var link_tag = get_link_tag (buffer, src, true);
             new_stack.append (link_tag);
 
             insert_with_tags (buffer, alt, ref iter, new_stack);
@@ -287,7 +295,7 @@ public class Vanana.HtmlView : TextView {
         buff.create_tag ("GreenColor", "foreground-rgba", green_adw);
     }
 
-    private TextTag get_link_tag (TextBuffer buff, owned string url) {
+    private TextTag get_link_tag (TextBuffer buff, owned string url, bool is_image = false) {
         var table = buff.get_tag_table ();
         
         var tag = new TextTag ();
@@ -297,6 +305,7 @@ public class Vanana.HtmlView : TextView {
         tag.underline_rgba = accent;
 
         tag.set_data<string> ("url", url);
+        tag.set_data<bool> ("is-img", is_image);
 
         table.add (tag);
 
