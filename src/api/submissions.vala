@@ -89,39 +89,17 @@ public enum PostsFeedSort {
 
 [SingleInstance]
 public class Gamebanana.Submissions : Object {
-    Session s_session;
+    Requests rq;
 
     public Submissions () {
         Object ();
 
-        s_session = new Session.with_options ("max_conns", 30, "timeout", 5);
-    }
-
-    private async Json.Node request (Soup.Message msg, Cancellable? cancellable) throws Error {
-        var stream = yield s_session.send_async (msg, Priority.DEFAULT, cancellable);
-        var parser = new Json.Parser ();
-        yield parser.load_from_stream_async (stream, cancellable);
-
-        return parser.get_root ();
+        rq = new Requests ();
+        rq.create_session ();
     }
 
     private async Json.Node _get (string url, Cancellable? cancellable) throws Error {
-        int retries = 0;
-
-        try {
-            return yield request (new Soup.Message ("GET", GB_API + url), cancellable);
-        } catch (Error e) {
-            if (e.message == "Socket I/O timed out") {
-                if (retries != 3) {
-                    retries += 1;
-                    return yield request (new Soup.Message ("GET", GB_API + url), cancellable);
-                }
-                warning ("max retries reached");
-            }
-
-            throw e;
-        }
-
+        return yield rq.fetch_json (GB_API + url, cancellable);
     }
 
     public async Json.Object? search (string query, SortType sort, int page = 1, Cancellable? cancellable = null) throws Error {
