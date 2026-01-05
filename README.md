@@ -7,7 +7,7 @@ A fnf gamebanana client. Rewriting in vala
 - [x] Fix occasional segmentation faults when loading images
 - [ ] Fix occasional soup socket timeout errors (i think this error is from my internet connection xd)
 - [x] Make the downloads page
-- [ ] Add a full screen screenshot preview
+- [x] Add a full screen screenshot preview
 - [x] Add windows support
 - [x] Add submission comments
 
