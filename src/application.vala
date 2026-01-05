@@ -34,7 +34,6 @@ namespace Vanana {
         construct {
             ActionEntry[] action_entries = {
                 { "about", this.on_about_action },
-                { "preferences", this.on_preferences_action },
                 { "quit", this.quit }
             };
             this.add_action_entries (action_entries, this);
@@ -75,6 +74,7 @@ namespace Vanana {
             // register custom widgets
             new LoadingBtt ();
             new ImageView ();
+            new LoadingWidget ();
 
             var win = new Window (this);
             add_window (win);
@@ -84,7 +84,7 @@ namespace Vanana {
         private void on_about_action () {
             string[] developers = { "Axel Andres Valles Gonzalez" };
             var about = new Adw.AboutDialog () {
-                application_name = "vanana",
+                application_name = "Vanana",
                 application_icon = "com.github.XtremeTHN.Vanana",
                 developer_name = "Axel Andres Valles Gonzalez",
                 translator_credits = _("translator-credits"),
@@ -94,10 +94,6 @@ namespace Vanana {
             };
 
             about.present (this.active_window);
-        }
-
-        private void on_preferences_action () {
-            message ("app.preferences action activated");
         }
     }
 }

@@ -1,15 +1,17 @@
 public class Requests {
-    private Soup.Session? s_session;
+    public Soup.Session? s_session;
+    public bool print_content = false;
 
     public void create_session () {
         if (s_session != null)
             s_session = null;
         
-        s_session = s_session = new Soup.Session.with_options ("max_conns", 30, "timeout", 5);
+        s_session = new Soup.Session.with_options ("max_conns", 30, "timeout", 5);
     }
 
     public async Json.Node request (Soup.Message msg, Cancellable? cancellable) throws Error {
         var stream = yield s_session.send_async (msg, Priority.DEFAULT, cancellable);
+    
         var parser = new Json.Parser ();
         yield parser.load_from_stream_async (stream, cancellable);
 

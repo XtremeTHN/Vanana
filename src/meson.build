@@ -4,6 +4,8 @@ vanana_sources = [
   'utils.vala',
   'cache.vala',
   'api/gamebanana.vala',
+  'api/github.vala',
+  'api/requests.vala',
   'api/submissions.vala',
   'api/manager.vala',
   'widgets/pages/submission_page.vala',
@@ -14,7 +16,9 @@ vanana_sources = [
   'widgets/pages/question_page.vala',
   'widgets/html.vala',
   'widgets/comment.vala',
+  'widgets/loading_widget.vala',
   'widgets/loading_btt.vala',
+  'widgets/engine_downloads_dialog.vala',
   'widgets/sidebar.vala',
   'widgets/image_view.vala',
   'widgets/download_row.vala',
@@ -44,6 +48,9 @@ vanana_sources += gnome.compile_resources(
   c_name: 'vanana',
   dependencies: blueprints,
 )
+
+add_project_arguments(['-X', '-lm'], language: 'vala') # math library
+
 
 executable(
   'vanana',

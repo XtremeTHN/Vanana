@@ -12,6 +12,7 @@
         <file preprocess="xml-stripblanks">tutorial-page.ui</file>
         <file preprocess="xml-stripblanks">wip-page.ui</file>
         <file preprocess="xml-stripblanks">screenshot.ui</file>
+        <file preprocess="xml-stripblanks">engine-downloads.ui</file>
         <file preprocess="xml-stripblanks">download-dialog.ui</file>
         <file preprocess="xml-stripblanks">download-row.ui</file>
         <file preprocess="xml-stripblanks">loading-btt.ui</file>

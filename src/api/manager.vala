@@ -14,13 +14,22 @@ public class DownloadManager : Object {
         download_finish (row);
     }
 
-    public void add_download (Json.Object file_info, File save_file, string submission_name) {
-        var row = new DownloadRow (file_info, submission_name);
+    void start_row (DownloadRow row, File save_file) {
         row.start_download (save_file);
         row.finish.connect (on_download_finish);
 
         downloads.append (row);
         download_added (row);
+    }
+
+    public void add_download (string title, string filename, string url, File save_file) {
+        var row = new DownloadRow (title, filename, url);
+        start_row (row, save_file);
+    }
+
+    public void add_download_from_json (Json.Object file_info, File save_file, string submission_name) {
+        var row = DownloadRow.from_json (file_info, submission_name);
+        start_row (row, save_file);
     }
 
     public void stop_downloads () {
