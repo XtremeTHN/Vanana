@@ -71,11 +71,6 @@ namespace Vanana {
         public void init () {
             create_cache_dir ();
 
-            // register custom widgets
-            new LoadingBtt ();
-            new ImageView ();
-            new LoadingWidget ();
-
             var win = new Window (this);
             add_window (win);
             win.present ();

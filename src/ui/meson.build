@@ -10,7 +10,6 @@ blueprints = custom_target(
     'image-view-dialog.blp',
     'loading-btt.blp',
     'question-page.blp',
-    'screenshot.blp',
     'sidebar.blp',
     'submission-item.blp',
     'submission-page.blp',
