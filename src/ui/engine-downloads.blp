@@ -1,0 +1,75 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $EngineDownloadsDialog: Adw.Dialog {
+    width-request: 400;
+    height-request: 400;
+
+    child: Adw.ToolbarView {
+        [top]
+        Adw.HeaderBar {
+            title-widget: Adw.InlineViewSwitcher {
+                styles [
+                    "flat",
+                ]
+
+                homogeneous: true;
+                stack: view_stack;
+            };
+        }
+
+        content: Adw.ViewStack view_stack {
+            styles [
+                "box-10",
+            ]
+
+            Adw.ViewStackPage {
+                title: "Funkin";
+
+                child: $LoadingWidget funkin {
+                    name: "funkin";
+
+                    content: ScrolledWindow {
+                        child: Box {
+                            orientation: vertical;
+                            vexpand: true;
+                            spacing: 10;
+                        };
+                    };
+                };
+            }
+
+            Adw.ViewStackPage {
+                title: "Psych Engine";
+
+                child: $LoadingWidget psych {
+                    name: "psych";
+
+                    content: ScrolledWindow {
+                        child: Box {
+                            orientation: vertical;
+                            vexpand: true;
+                            spacing: 10;
+                        };
+                    };
+                };
+            }
+
+            Adw.ViewStackPage {
+                title: "Codename Engine";
+
+                child: $LoadingWidget codename {
+                    name: "codename";
+
+                    content: ScrolledWindow {
+                        child: Box {
+                            orientation: vertical;
+                            vexpand: true;
+                            spacing: 10;
+                        };
+                    };
+                };
+            }
+        };
+    };
+}

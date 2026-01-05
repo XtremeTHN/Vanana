@@ -9,6 +9,9 @@
     "[xml]": {
         "editor.formatOnSave": false
     },
+    "[meson]": {
+        "editor.formatOnSave": false
+    },
     "cSpell.words": [
         "activatable",
         "gamebanana",

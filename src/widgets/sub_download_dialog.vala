@@ -47,7 +47,7 @@ private class FileRow : Adw.ActionRow {
         try {
             File path = ((Gtk.FileDialog) obj).save.end (res);
             var man = new DownloadManager ();
-            man.add_download (info, path, submission_name);
+            man.add_download_from_json (info, path, submission_name);
         } catch (Error e) {
             if ((e is Gtk.DialogError.DISMISSED) == false) {
                 Utils.warn (this, "Error while showing save dialog: %s".printf (e.message));
