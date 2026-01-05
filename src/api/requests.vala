@@ -1,6 +1,5 @@
 public class Requests {
     public Soup.Session? s_session;
-    public bool print_content = false;
 
     public void create_session () {
         if (s_session != null)
