@@ -19,7 +19,7 @@ class Tag : Gtk.Box {
     void on_save (Object diag, AsyncResult res, string name, string url) {
         try {
             File dest = ((Gtk.FileDialog) diag).save.end (res);
-            new DownloadManager ().add_download (name, url, url, dest);
+            new DownloadManager ().add_download (name, "", url, dest);
         } catch (Error e) {}
     }
 
