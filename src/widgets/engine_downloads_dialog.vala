@@ -54,8 +54,6 @@ class Tag : Gtk.Box {
         row.set_subtitle (format_size (size));
         row.set_data<string> ("url", url);
 
-        message (url);
-
         row.activated.connect (download);
         
         box.append (row);

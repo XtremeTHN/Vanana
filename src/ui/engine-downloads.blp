@@ -8,9 +8,13 @@ template $EngineDownloadsDialog: Adw.Dialog {
     child: Adw.ToolbarView {
         [top]
         Adw.HeaderBar {
-            title-widget: Adw.ViewSwitcher {
+            title-widget: Adw.InlineViewSwitcher {
+                styles [
+                    "flat",
+                ]
+
+                homogeneous: true;
                 stack: view_stack;
-                policy: wide;
             };
         }
 
