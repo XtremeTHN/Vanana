@@ -95,12 +95,13 @@ public class EngineDownloadsDialog : Adw.Dialog {
 
         foreach (var item in releases.get_elements ()) {
             var tag = item.get_object ();
-            var widget = new Tag ();
-
-            widget.set_title (tag.get_string_member ("name"));
             
             var assets = tag.get_array_member ("assets");
-
+            if (assets.get_length () == 0) continue;
+            
+            var widget = new Tag ();
+            widget.set_title (tag.get_string_member ("name"));
+            
             foreach (var i in assets.get_elements ()) {
                 widget.add_source (i.get_object ());
             }
