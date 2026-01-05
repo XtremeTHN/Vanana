@@ -67,7 +67,11 @@ public class DownloadRow : Gtk.ListBoxRow {
             format_size (current_bytes, FormatSizeFlags.DEFAULT) + " of " +
             format_size (total, FormatSizeFlags.DEFAULT)
         );
+        
         var now = new DateTime.now_local ();
+        var minus_start = now.to_unix () - start_time;
+        if (minus_start == 0) return;
+
         speed.set_label (format_size ((current_bytes / (now.to_unix () - start_time)), FormatSizeFlags.DEFAULT));
     }
 
@@ -84,6 +88,11 @@ public class DownloadRow : Gtk.ListBoxRow {
             } catch (Error e) {
                 download_finish ();
 
+                try {
+                    dest.delete ();
+                } catch (Error e) {
+                    warning ("Couldn't remove the partial download: %s", e.message);
+                }
                 error_box.set_visible (true);
                 error_label.set_label (e.message);
             }
