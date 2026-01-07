@@ -157,7 +157,6 @@ public abstract class SubmissionPage : Adw.NavigationPage {
 
     private void on_hidden () {
         cancellable.cancel ();
-        message ("destroyed");
     }
 
     /**
@@ -191,8 +190,7 @@ public abstract class SubmissionPage : Adw.NavigationPage {
         continue_btt.clicked.connect (on_continue_clicked);
         load_more_comments_btt.clicked.connect (request_comments);
 
-        loading_status.set_description (loading_status.description.printf (submission_type.to_string ()));
-        //  trashed_status.set_description (trashe)
+        loading_status.set_description (loading_status.description.printf (submission_type.to_string ().ascii_down ()));
 
         request_info ();
     }
