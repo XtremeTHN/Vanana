@@ -1,6 +1,6 @@
 public class Screenshot : Gtk.Frame {
     private LoadingWidget loader;
-    private Gtk.Picture pic;
+    public Gtk.Picture pic;
 
     public Gtk.ContentFit content_fit {
         set {
@@ -42,5 +42,35 @@ public class Screenshot : Gtk.Frame {
 
         pic.set_file (img);
         loader.finish_loading ();
+    }
+}
+
+public class ScreenshotView : Adw.Bin{
+    public Screenshot widget;
+
+    construct {
+        var ovr = new Gtk.Overlay ();
+
+        widget = new Screenshot ();
+        ovr.set_child (widget);
+
+        var view_button = new HoverButton ();
+        view_button.parent = this;
+        view_button.set_css_classes ({"osd", "circular"});
+        view_button.set_halign (Gtk.Align.CENTER);
+        view_button.set_valign (Gtk.Align.CENTER);
+
+        view_button.set_icon_name ("external-link-symbolic");
+        view_button.clicked.connect (on_view_clicked);
+
+        ovr.add_overlay (view_button);
+
+        set_child (ovr);
+    }
+
+    void on_view_clicked () {
+        var diag = new ImageViewDialog ();
+        diag.present (Utils.get_parent_window (this));
+        diag.set_from_file (widget.pic.get_file ());
     }
 }

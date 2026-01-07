@@ -43,7 +43,7 @@ public abstract class SubmissionPage : Adw.NavigationPage {
     private unowned Gtk.Box heading_box {get;}
 
     [GtkChild]
-    public unowned Screenshot submission_icon {get;}
+    public unowned ScreenshotView submission_icon {get;}
     
     [GtkChild]
     public unowned Gtk.Label submission_title {get;}
@@ -358,7 +358,7 @@ public abstract class SubmissionPage : Adw.NavigationPage {
             warning ("No preview media");
             screenshots_clamp.visible = false;
             screenshots_carousel_dots.visible = false;
-            submission_icon.set_no_preview ();
+            submission_icon.widget.set_no_preview ();
 
             return;
         }
@@ -367,7 +367,7 @@ public abstract class SubmissionPage : Adw.NavigationPage {
 
         var sub_img = images.get_element (0).get_object ();
         
-        Vanana.cache_download (build_image_url (sub_img, Utils.ImageQuality.MEDIUM), submission_icon.set_file, cancellable);
+        Vanana.cache_download (build_image_url (sub_img, Utils.ImageQuality.MEDIUM), submission_icon.widget.set_file, cancellable);
         
         if (images.get_length () == 1) {
             screenshots_clamp.visible = false;

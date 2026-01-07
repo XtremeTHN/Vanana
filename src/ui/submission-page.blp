@@ -75,7 +75,6 @@ template $SubmissionPage: Adw.NavigationPage {
                 child: ScrolledWindow {
                     child: Adw.Clamp {
                         orientation: horizontal;
-                        halign: center;
                         maximum-size: 900;
 
                         child: Box {
@@ -89,7 +88,7 @@ template $SubmissionPage: Adw.NavigationPage {
                             Box {
                                 spacing: 20;
 
-                                $Screenshot submission_icon {
+                                $ScreenshotView submission_icon {
                                     width-request: 200;
                                     height-request: 100;
                                 }

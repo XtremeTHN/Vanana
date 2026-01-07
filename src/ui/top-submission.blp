@@ -30,7 +30,7 @@ template $TopSubmission: Adw.Bin {
         };
 
         [overlay]
-        Button open_btt {
+        $HoverButton open_btt {
             styles [
                 "osd",
                 "circular",
@@ -39,6 +39,7 @@ template $TopSubmission: Adw.Bin {
             valign: center;
             halign: center;
             visible: false;
+            parent: bind template;
             clicked => $show_submission_page();
         }
 

@@ -9,7 +9,7 @@ public class TopSubmission : Adw.Bin {
     private unowned Gtk.Stack stack;
 
     [GtkChild]
-    private unowned Gtk.Button open_btt;
+    private unowned HoverButton open_btt;
 
     [GtkChild]
     private unowned Gtk.Label submission_feature_type;
@@ -32,15 +32,9 @@ public class TopSubmission : Adw.Bin {
         cancellable.cancel ();
     }
 
-
     public TopSubmission (Json.Object info) {
         Object ();
         destroy.connect (on_destroy);
-        
-        var motion = new Gtk.EventControllerMotion ();
-        motion.enter.connect (on_hover);
-        motion.leave.connect (on_hover_lost);
-        add_controller (motion);
 
         var sub_info = info.get_object_member ("_aSubmitter");
         var period = info.get_string_member ("_sPeriod");
@@ -97,14 +91,6 @@ public class TopSubmission : Adw.Bin {
                 warning ("Unknown period: %s", period);
                 return "unknown";
         }
-    }
-
-    private void on_hover () {
-        open_btt.set_visible (true);
-    }
-
-    private void on_hover_lost () {
-        open_btt.set_visible (false);
     }
 
     private void set_submitter_pfp (File? pfp) {
